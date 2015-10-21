@@ -1,8 +1,8 @@
 #include <algorithm>
 #include <queue>
-#include "graph.hpp"
+#include "matrix_graph.hpp"
 
-Graph::Graph(int vertices) : vertices_(vertices)
+MatrixGraph::MatrixGraph(int vertices) : vertices_(vertices)
 {
     matrix_ = new bool[vertices * vertices];
     for (auto i = 0; i < vertices * vertices; ++i) {
@@ -10,12 +10,12 @@ Graph::Graph(int vertices) : vertices_(vertices)
     }
 }
 
-Graph::~Graph()
+MatrixGraph::~MatrixGraph()
 {
     delete[] matrix_;
 }
 
-int Graph::add_edge(int node1, int node2)
+int MatrixGraph::add_edge(int node1, int node2)
 {
     if ((node1 >= vertices_) || (node2 >= vertices_)) {
         return -1;
@@ -26,7 +26,7 @@ int Graph::add_edge(int node1, int node2)
     return 0;
 }
 
-int Graph::rm_edge(int node1, int node2)
+int MatrixGraph::rm_edge(int node1, int node2)
 {
     if ((node1 >= vertices_) || (node2 >= vertices_)) {
         return -1;
@@ -36,7 +36,7 @@ int Graph::rm_edge(int node1, int node2)
     return 0;
 }
 
-bool Graph::is_edge(int node1, int node2) const
+bool MatrixGraph::is_edge(int node1, int node2) const
 {
     if ((node1 >= vertices_) || (node2 >= vertices_)) {
         return false;
@@ -44,7 +44,7 @@ bool Graph::is_edge(int node1, int node2) const
     return matrix_[node1 * vertices_ + node2];
 }
 
-bool Graph::find_path(int node1, int node2, std::vector<int> *path) const
+bool MatrixGraph::find_path(int node1, int node2, std::vector<int> *path) const
 {
     bool visited[vertices_];
     int prev[vertices_];

@@ -2,10 +2,10 @@
 
 #include <vector>
 
-class Graph {
+class MatrixGraph {
 public:
-    explicit Graph(int vertices);
-    ~Graph();
+    explicit MatrixGraph(int vertices);
+    ~MatrixGraph();
 
     int add_edge(int node1, int node2);
     int rm_edge(int node1, int node2);

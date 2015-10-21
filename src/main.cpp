@@ -1,9 +1,9 @@
 #include <iostream>
-#include "graph/graph.hpp"
+#include "graph/matrix_graph.hpp"
 
 int main()
 {
-    Graph g(3);
+    MatrixGraph g(3);
     g.add_edge(0, 1);
     g.add_edge(1, 2);
     std::vector<int> path;
