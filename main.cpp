@@ -3,7 +3,7 @@
 
 int main()
 {
-    graph g(3);
+    Graph g(3);
     g.add_edge(0, 1);
     g.add_edge(1, 2);
     std::vector<int> path;

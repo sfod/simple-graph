@@ -2,7 +2,7 @@
 #include <queue>
 #include "graph.hpp"
 
-graph::graph(int vertices) : vertices_(vertices)
+Graph::Graph(int vertices) : vertices_(vertices)
 {
     matrix_ = new bool[vertices * vertices];
     for (auto i = 0; i < vertices * vertices; ++i) {
@@ -10,12 +10,12 @@ graph::graph(int vertices) : vertices_(vertices)
     }
 }
 
-graph::~graph()
+Graph::~Graph()
 {
     delete[] matrix_;
 }
 
-int graph::add_edge(int node1, int node2)
+int Graph::add_edge(int node1, int node2)
 {
     if ((node1 >= vertices_) || (node2 >= vertices_)) {
         return -1;
@@ -26,7 +26,7 @@ int graph::add_edge(int node1, int node2)
     return 0;
 }
 
-int graph::rm_edge(int node1, int node2)
+int Graph::rm_edge(int node1, int node2)
 {
     if ((node1 >= vertices_) || (node2 >= vertices_)) {
         return -1;
@@ -36,7 +36,7 @@ int graph::rm_edge(int node1, int node2)
     return 0;
 }
 
-bool graph::is_edge(int node1, int node2) const
+bool Graph::is_edge(int node1, int node2) const
 {
     if ((node1 >= vertices_) || (node2 >= vertices_)) {
         return false;
@@ -44,7 +44,7 @@ bool graph::is_edge(int node1, int node2) const
     return matrix_[node1 * vertices_ + node2];
 }
 
-bool graph::find_path(int node1, int node2, std::vector<int> *path) const
+bool Graph::find_path(int node1, int node2, std::vector<int> *path) const
 {
     bool visited[vertices_];
     int prev[vertices_];

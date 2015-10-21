@@ -2,10 +2,10 @@
 
 #include <vector>
 
-class graph {
+class Graph {
 public:
-    explicit graph(int vertices);
-    ~graph();
+    explicit Graph(int vertices);
+    ~Graph();
 
     int add_edge(int node1, int node2);
     int rm_edge(int node1, int node2);
