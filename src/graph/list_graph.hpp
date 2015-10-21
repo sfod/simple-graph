@@ -1,17 +1,20 @@
 #pragma once
 
+#include <map>
+#include <set>
 #include "graphi.hpp"
 
 class ListGraph : public GraphI {
 public:
     explicit ListGraph(int vertices);
-    virtual ~ListGraph();
+    virtual ~ListGraph() = default;
 
     virtual int add_edge(int node1, int node2) override;
     virtual int rm_edge(int node1, int node2) override;
     virtual bool is_edge(int node1, int node2) const override;
-    virtual bool find_path(int node1, int node2, std::vector<int> *path) const override;
+    virtual int vertex_num() const { return vertices_; };
 
 private:
     int vertices_;
+    std::map<int, std::set<int>> edges_;
 };
