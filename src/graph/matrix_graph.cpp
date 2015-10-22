@@ -1,28 +1,20 @@
-#include <algorithm>
-#include <queue>
 #include "matrix_graph.hpp"
 
-MatrixGraph::MatrixGraph(int vertices) : vertices_(vertices)
+MatrixGraph::MatrixGraph() : vertices_(0), matrix_()
 {
-    matrix_ = new bool[vertices * vertices];
-    for (auto i = 0; i < vertices * vertices; ++i) {
-        matrix_[i] = false;
-    }
-}
-
-MatrixGraph::~MatrixGraph()
-{
-    delete[] matrix_;
 }
 
 int MatrixGraph::add_edge(int node1, int node2)
 {
-    if ((node1 >= vertices_) || (node2 >= vertices_)) {
-        return -1;
+    int max_node = std::max(node1, node2);
+    if (vertices_ < max_node + 1) {
+        vertices_ = max_node + 1;
+        matrix_.resize(vertices_ * vertices_, false);
     }
 
     matrix_[node1 * vertices_ + node2] = true;
     matrix_[node2 * vertices_ + node1] = true;
+
     return 0;
 }
 

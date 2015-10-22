@@ -6,7 +6,7 @@
 
 class ListGraph : public GraphI {
 public:
-    explicit ListGraph(int vertices);
+    ListGraph();
     virtual ~ListGraph() = default;
 
     virtual int add_edge(int node1, int node2) override;

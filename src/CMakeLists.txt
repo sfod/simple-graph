@@ -1,4 +1,5 @@
 set(SOURCE_FILES
+    graph/graph.hpp
     graph/graphi.hpp
     graph/graphi.cpp
     graph/matrix_graph.hpp

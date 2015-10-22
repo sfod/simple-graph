@@ -1,10 +1,11 @@
 #include <iostream>
-#include <graph/list_graph.hpp>
+#include "graph/graph.hpp"
+#include "graph/list_graph.hpp"
 #include "graph/matrix_graph.hpp"
 
 int main()
 {
-    MatrixGraph mg(3);
+    Graph<MatrixGraph, int> mg;
     mg.add_edge(0, 1);
     mg.add_edge(1, 2);
     std::vector<int> mpath;
@@ -17,7 +18,7 @@ int main()
         std::cout << "no path" << std::endl;
     }
 
-    ListGraph lg(3);
+    Graph<ListGraph, int> lg;
     lg.add_edge(0, 1);
     lg.add_edge(1, 2);
     std::vector<int> lpath;

@@ -5,8 +5,8 @@
 
 class MatrixGraph : public GraphI {
 public:
-    explicit MatrixGraph(int vertices);
-    ~MatrixGraph();
+    explicit MatrixGraph();
+    ~MatrixGraph() = default;
 
     virtual int add_edge(int node1, int node2) override;
     virtual int rm_edge(int node1, int node2) override;
@@ -15,5 +15,5 @@ public:
 
 private:
     int vertices_;
-    bool *matrix_;
+    std::vector<bool> matrix_;
 };
