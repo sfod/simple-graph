@@ -20,6 +20,7 @@ private:
 template<typename GraphImp, typename Dir>
 Graph<GraphImp, Dir>::Graph() : graph_()
 {
+    static_assert(std::is_base_of<GraphI, GraphImp>::value, "GraphImp must implement GraphI");
 }
 
 template<typename GraphImp, typename Dir>
