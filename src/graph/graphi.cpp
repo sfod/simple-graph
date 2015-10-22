@@ -5,9 +5,9 @@
 bool GraphI::find_path(int node1, int node2, std::vector<int> *path) const
 {
     int vnum = vertex_num();
-    bool visited[vnum];
-    int prev[vnum];
-    int dist[vnum];
+    std::vector<bool> visited(vnum, false);
+    std::vector<int> prev(vnum, -1);
+    std::vector<int> dist(vnum, vnum + 1);
     for (auto i = 0; i < vnum; ++i) {
         visited[i] = false;
         prev[i] = -1;
