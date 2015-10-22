@@ -8,7 +8,7 @@ template<typename GraphImp, typename Dir>
 class Graph {
 public:
     Graph();
-    virtual ~Graph();
+    virtual ~Graph() = default;
 
     int add_edge(int node1, int node2);
     virtual bool find_path(int node1, int node2, std::vector<int> *path) const;
@@ -21,12 +21,6 @@ template<typename GraphImp, typename Dir>
 Graph<GraphImp, Dir>::Graph() : graph_()
 {
     static_assert(std::is_base_of<GraphI, GraphImp>::value, "GraphImp must implement GraphI");
-}
-
-template<typename GraphImp, typename Dir>
-Graph<GraphImp, Dir>::~Graph()
-{
-
 }
 
 template<typename GraphImp, typename Dir>
