@@ -49,7 +49,7 @@ public:
         return matrix_[node1 * vertices_ + node2];
     }
 
-    virtual int vertex_num() const { return vertices_; };
+    virtual int vertex_num() const override { return vertices_; };
 
 private:
     int vertices_;

@@ -43,7 +43,7 @@ public:
         return (edges_.at(node1).count(node2) > 0);
     }
 
-    virtual int vertex_num() const { return vertices_; };
+    virtual int vertex_num() const override { return vertices_; };
 
 private:
     int vertices_;
