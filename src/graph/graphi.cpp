@@ -49,6 +49,7 @@ bool GraphI::find_path(int node1, int node2, std::vector<int> *path) const
             path->push_back(v);
             v = prev[v];
         } while (v != -1);
+        // FIXME
         std::reverse(path->begin(), path->end());
     }
 
