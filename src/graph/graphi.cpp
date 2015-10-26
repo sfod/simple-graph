@@ -5,6 +5,10 @@
 bool GraphI::find_path(int node1, int node2, std::vector<int> *path) const
 {
     int vnum = vertex_num();
+    if (std::max(node1, node2) > vnum) {
+        return false;
+    }
+
     std::vector<bool> visited(vnum, false);
     std::vector<int> prev(vnum, -1);
     std::vector<int> dist(vnum, vnum + 1);
