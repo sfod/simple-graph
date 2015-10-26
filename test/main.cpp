@@ -5,11 +5,11 @@
 
 int main()
 {
-    Graph<MatrixGraph, int> mg;
+    Graph<MatrixGraph, true> mg;
     mg.add_edge(0, 1);
     mg.add_edge(1, 2);
     std::vector<int> mpath;
-    if (mg.find_path(1, 2, &mpath)) {
+    if (mg.find_path(2, 1, &mpath)) {
         for (auto n : mpath) {
             std::cout << n << std::endl;
         }
@@ -18,7 +18,7 @@ int main()
         std::cout << "no path" << std::endl;
     }
 
-    Graph<ListGraph, int> lg;
+    Graph<ListGraph, false> lg;
     lg.add_edge(0, 1);
     lg.add_edge(1, 2);
     std::vector<int> lpath;
