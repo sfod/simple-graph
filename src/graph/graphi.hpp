@@ -15,8 +15,8 @@ public:
 
     int idx() const { return idx_; }
 
-    bool operator<(const Vertex<T> &node) const {
-        return idx_ < node.idx_;
+    bool operator<(const Vertex<T> &vertex) const {
+        return idx_ < vertex.idx_;
     }
 
 private:
@@ -28,15 +28,18 @@ template<typename T>
 class GraphI {
 public:
     virtual ~GraphI() = default;
-    virtual int add_edge(const Vertex<T> &node1, const Vertex<T> &node2) = 0;
-    virtual int rm_edge(const Vertex<T> &node1, const Vertex<T> &node2) = 0;
 
-    virtual int vertex_num() const = 0;
+    virtual int add_vertex(const Vertex<T> &vertex) = 0;
+    virtual void rm_vertex(const Vertex<T> &vertex) = 0;
+
     virtual const Vertex<T> &vertex(int idx) const = 0;
+    virtual int vertex_num() const = 0;
+
+    virtual int add_edge(int idx1, int idx2) = 0;
+    virtual int rm_edge(int idx1, int idx2) = 0;
+    virtual bool is_edge(int idx1, int idx2) const = 0;
 
     virtual bool find_path(const Vertex<T> &node1, const Vertex<T> &node2, std::vector<int> *path) const;
-
-    virtual bool is_edge(int idx1, int idx2) const = 0;
 };
 
 

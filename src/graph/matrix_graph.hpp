@@ -7,78 +7,76 @@
 template <bool Dir, typename T>
 class MatrixGraph : public GraphI<T> {
 public:
-    MatrixGraph() : vertices_(0), matrix_(), nodes_() {}
+    MatrixGraph() : vertex_num_(0), vertices_(), matrix_() {}
     virtual ~MatrixGraph() = default;
 
-    virtual int add_edge(const Vertex<T> &node1, const Vertex<T> &node2) override{
-        auto minmax = std::minmax(node1, node2);
-        if (vertices_ < minmax.second.idx() + 1) {
-            vertices_ = minmax.second.idx() + 1;
-            matrix_.resize(vertices_ * vertices_, false);
+    virtual int add_vertex(const Vertex<T> &vertex) override {
+        if (vertex.idx() >= vertex_num_) {
+            vertex_num_ = vertex.idx() + 1;
+            matrix_.resize(vertex_num_ * vertex_num_, false);
         }
-        int idx1 = node1.idx();
-        int idx2 = node2.idx();
-        if (!Dir) {
-            idx1 = minmax.first.idx();
-            idx2 = minmax.second.idx();
+        if (vertices_.count(vertex.idx()) != 0) {
+            return -1;
         }
-
-        add_vertex(node1);
-        add_vertex(node2);
-
-        matrix_[idx1 * vertices_ + idx2] = true;
-
+        vertices_[vertex.idx()] = vertex;
         return 0;
     }
 
-    virtual int rm_edge(const Vertex<T> &node1, const Vertex<T> &node2) override {
-        auto minmax = std::minmax(node1, node2);
-        if (minmax.second.idx() >= vertices_) {
-            return -1;
+    void rm_vertex(const Vertex<T> &vertex) override {
+        if (vertices_.count(vertex.idx()) > 0) {
+            vertices_.erase(vertex.idx());
         }
-        int idx1 = node1.idx();
-        int idx2 = node2.idx();
-        if (!Dir) {
-            idx1 = minmax.first.idx();
-            idx2 = minmax.second.idx();
-        }
-        matrix_[idx1 * vertices_ + idx2] = false;
-        return 0;
     }
 
     virtual const Vertex<T> &vertex(int idx) const override {
-        return nodes_.at(idx);
+        return vertices_.at(idx);
     }
 
-    virtual bool is_edge(int idx1, int idx2) const override {
+    virtual int vertex_num() const override {
+        return vertex_num_;
+    }
+
+    virtual int add_edge(int idx1, int idx2) override {
         auto minmax = std::minmax(idx1, idx2);
-        if (minmax.second >= vertices_) {
+        if (minmax.second >= vertex_num_) {
             return -1;
         }
         if (!Dir) {
             idx1 = minmax.first;
             idx2 = minmax.second;
         }
-        return matrix_[idx1 * vertices_ + idx2];
+        matrix_[idx1 * vertex_num_ + idx2] = true;
+        return 0;
     }
 
-    virtual int vertex_num() const override { return vertices_; };
+    virtual int rm_edge(int idx1, int idx2) override {
+        auto minmax = std::minmax(idx1, idx2);
+        if (minmax.second >= vertex_num_) {
+            return -1;
+        }
+        if (!Dir) {
+            idx1 = minmax.first;
+            idx2 = minmax.second;
+        }
+        matrix_[idx1 * vertex_num_ + idx2] = false;
+        return 0;
+    }
+
+
+    virtual bool is_edge(int idx1, int idx2) const override {
+        auto minmax = std::minmax(idx1, idx2);
+        if (minmax.second >= vertex_num_) {
+            return -1;
+        }
+        if (!Dir) {
+            idx1 = minmax.first;
+            idx2 = minmax.second;
+        }
+        return matrix_[idx1 * vertex_num_ + idx2];
+    }
 
 private:
-    void add_vertex(const Vertex<T> &node) {
-        if (nodes_.count(node.idx()) == 0) {
-            nodes_[node.idx()] = node;
-        }
-    }
-
-    void rm_vertex(const Vertex<T> &node) {
-        if (nodes_.count(node.idx()) > 0) {
-            nodes_.erase(node.idx());
-        }
-    }
-
-private:
-    int vertices_;
+    int vertex_num_;
+    std::map<int, Vertex<T>> vertices_;
     std::vector<bool> matrix_;
-    std::map<int, Vertex<T>> nodes_;
 };

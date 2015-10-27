@@ -6,8 +6,11 @@
 int main()
 {
     Graph<MatrixGraph, true, std::string> mg;
-    mg.add_edge(Vertex<std::string>(0), Vertex<std::string>(1));
-    mg.add_edge(Vertex<std::string>(1), Vertex<std::string>(2));
+    mg.add_vertex(Vertex<std::string>(0, "zero"));
+    mg.add_vertex(Vertex<std::string>(1, "one"));
+    mg.add_vertex(Vertex<std::string>(2, "two"));
+    mg.add_edge(0, 1);
+    mg.add_edge(1, 2);
     std::vector<int> mpath;
     if (mg.find_path(Vertex<std::string>(1), Vertex<std::string>(2), &mpath)) {
         for (auto n : mpath) {
@@ -18,11 +21,14 @@ int main()
         std::cout << "no path" << std::endl;
     }
 
-    Graph<ListGraph, false, int> lg;
-    lg.add_edge(Vertex<int>(0), Vertex<int>(1));
-    lg.add_edge(Vertex<int>(1), Vertex<int>(2));
+    Graph<ListGraph, false, std::string> lg;
+    lg.add_vertex(Vertex<std::string>(0, "zero"));
+    lg.add_vertex(Vertex<std::string>(1, "one"));
+    lg.add_vertex(Vertex<std::string>(2, "two"));
+    lg.add_edge(0, 1);
+    lg.add_edge(1, 2);
     std::vector<int> lpath;
-    if (lg.find_path(Vertex<int>(2), Vertex<int>(1), &lpath)) {
+    if (lg.find_path(Vertex<std::string>(2), Vertex<std::string>(1), &lpath)) {
         for (auto n : lpath) {
             std::cout << n << std::endl;
         }
