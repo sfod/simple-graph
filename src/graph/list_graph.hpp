@@ -36,6 +36,9 @@ public:
             idx1 = minmax.first.idx();
             idx2 = minmax.second.idx();
         }
+        if (edges_.count(idx1) == 0) {
+            return -1;
+        }
         edges_[idx1].erase(idx2);
         return 0;
     }
