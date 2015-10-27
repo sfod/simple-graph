@@ -4,34 +4,34 @@
 #include <vector>
 #include "graphi.hpp"
 
-template<template<bool> class GraphImp, bool Dir>
+template<template<bool, typename> class GraphImp, bool Dir, typename T>
 class Graph {
 public:
     Graph();
     virtual ~Graph() = default;
 
-    int add_edge(int node1, int node2);
-    virtual bool find_path(int node1, int node2, std::vector<int> *path) const;
+    int add_edge(const Node<T> &node1, const Node<T> &node2);
+    virtual bool find_path(const Node<T> &node1, const Node<T> &node2, std::vector<int> *path) const;
 
 private:
-    GraphImp<Dir> graph_;
+    GraphImp<Dir, T> graph_;
 };
 
-template<template<bool> class GraphImp, bool Dir>
-Graph<GraphImp, Dir>::Graph() : graph_()
+template<template<bool, typename> class GraphImp, bool Dir, typename T>
+Graph<GraphImp, Dir, T>::Graph() : graph_()
 {
-    static_assert(std::is_base_of<GraphI, GraphImp<Dir>>::value, "GraphImp must implement GraphI");
+    static_assert(std::is_base_of<GraphI<T>, GraphImp<Dir, T>>::value, "GraphImp must implement GraphI");
 }
 
-template<template<bool> class GraphImp, bool Dir>
-int Graph<GraphImp, Dir>::add_edge(int node1, int node2)
+template<template<bool, typename> class GraphImp, bool Dir, typename T>
+int Graph<GraphImp, Dir, T>::add_edge(const Node<T> &node1, const Node<T> &node2)
 {
     graph_.add_edge(node1, node2);
     return 0;
 }
 
-template<template<bool> class GraphImp, bool Dir>
-bool Graph<GraphImp, Dir>::find_path(int node1, int node2, std::vector<int> *path) const
+template<template<bool, typename> class GraphImp, bool Dir, typename T>
+bool Graph<GraphImp, Dir, T>::find_path(const Node<T> &node1, const Node<T> &node2, std::vector<int> *path) const
 {
     return graph_.find_path(node1, node2, path);
 }

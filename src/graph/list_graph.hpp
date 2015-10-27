@@ -5,42 +5,49 @@
 #include <set>
 #include "graphi.hpp"
 
-template <bool Dir>
-class ListGraph : public GraphI {
+template <bool Dir, typename T>
+class ListGraph : public GraphI<T> {
 public:
-    ListGraph() = default;
+    ListGraph() : vertices_(0), edges_() {}
     virtual ~ListGraph() = default;
 
-    virtual int add_edge(int node1, int node2) override {
+    virtual int add_edge(const Node<T> &node1, const Node<T> &node2) override {
         auto minmax = std::minmax(node1, node2);
-        if (vertices_ < minmax.second + 1) {
-            vertices_ = minmax.second + 1;
+        if (vertices_ < minmax.second.idx() + 1) {
+            vertices_ = minmax.second.idx() + 1;
         }
+        int idx1 = node1.idx();
+        int idx2 = node2.idx();
         if (!Dir) {
-            node1 = minmax.first;
-            node2 = minmax.second;
+            idx1 = minmax.first.idx();
+            idx2 = minmax.second.idx();
         }
-        edges_[node1].insert(node2);
+        edges_[idx1].insert(idx2);
         return 0;
     }
 
-    virtual int rm_edge(int node1, int node2) override {
+    virtual int rm_edge(const Node<T> &node1, const Node<T> &node2) override {
         auto minmax = std::minmax(node1, node2);
+        int idx1 = node1.idx();
+        int idx2 = node2.idx();
         if (!Dir) {
-            node1 = minmax.first;
-            node2 = minmax.second;
+            idx1 = minmax.first.idx();
+            idx2 = minmax.second.idx();
         }
-        edges_[node1].erase(node2);
+        edges_[idx1].erase(idx2);
         return 0;
     }
 
-    virtual bool is_edge(int node1, int node2) const override {
-        auto minmax = std::minmax(node1, node2);
+    virtual bool is_edge(int idx1, int idx2) const override {
+        auto minmax = std::minmax(idx1, idx2);
         if (!Dir) {
-            node1 = minmax.first;
-            node2 = minmax.second;
+            idx1 = minmax.first;
+            idx2 = minmax.second;
         }
-        return (edges_.at(node1).count(node2) > 0);
+        if (edges_.count(idx1) == 0) {
+            return false;
+        }
+        return (edges_.at(idx1).count(idx2) > 0);
     }
 
     virtual int vertex_num() const override { return vertices_; };
