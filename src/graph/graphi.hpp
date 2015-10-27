@@ -39,15 +39,15 @@ public:
     virtual int rm_edge(int idx1, int idx2) = 0;
     virtual bool is_edge(int idx1, int idx2) const = 0;
 
-    virtual bool find_path(const Vertex<T> &node1, const Vertex<T> &node2, std::vector<int> *path) const;
+    virtual bool find_path(int start_idx, int end_idx, std::vector<int> *path) const;
 };
 
 
 template<typename T>
-bool GraphI<T>::find_path(const Vertex<T> &node1, const Vertex<T> &node2, std::vector<int> *path) const
+bool GraphI<T>::find_path(int start_idx, int end_idx, std::vector<int> *path) const
 {
     int vnum = vertex_num();
-    if (std::max(node1.idx(), node2.idx()) > vnum) {
+    if (std::max(start_idx, end_idx) > vnum) {
         return false;
     }
 
@@ -58,8 +58,8 @@ bool GraphI<T>::find_path(const Vertex<T> &node1, const Vertex<T> &node2, std::v
 
     bool path_found = false;
 
-    queue.push(node1.idx());
-    dist[node1.idx()] = 0;
+    queue.push(start_idx);
+    dist[start_idx] = 0;
 
     while (!path_found && !queue.empty()) {
         int u = queue.front();
@@ -75,7 +75,7 @@ bool GraphI<T>::find_path(const Vertex<T> &node1, const Vertex<T> &node2, std::v
                 }
 
                 queue.push(v);
-                if (v == node2.idx()) {
+                if (v == end_idx) {
                     path_found = true;
                     break;
                 }
@@ -84,7 +84,7 @@ bool GraphI<T>::find_path(const Vertex<T> &node1, const Vertex<T> &node2, std::v
     }
 
     if (path_found) {
-        int v = node2.idx();
+        int v = end_idx;
         do {
             path->push_back(v);
             v = prev[v];

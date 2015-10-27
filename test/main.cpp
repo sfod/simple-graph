@@ -12,7 +12,7 @@ int main()
     mg.add_edge(0, 1);
     mg.add_edge(1, 2);
     std::vector<int> mpath;
-    if (mg.find_path(Vertex<std::string>(1), Vertex<std::string>(2), &mpath)) {
+    if (mg.find_path(0, 2, &mpath)) {
         for (auto n : mpath) {
             std::cout << n << std::endl;
         }
@@ -28,7 +28,7 @@ int main()
     lg.add_edge(0, 1);
     lg.add_edge(1, 2);
     std::vector<int> lpath;
-    if (lg.find_path(Vertex<std::string>(2), Vertex<std::string>(1), &lpath)) {
+    if (lg.find_path(2, 1, &lpath)) {
         for (auto n : lpath) {
             std::cout << n << std::endl;
         }

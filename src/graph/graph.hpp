@@ -14,7 +14,7 @@ public:
     void rm_vertex(const Vertex<T> &vertex);
 
     int add_edge(int idx1, int idx2);
-    virtual bool find_path(const Vertex<T> &node1, const Vertex<T> &node2, std::vector<int> *path) const;
+    virtual bool find_path(int start_idx, int end_idx, std::vector<int> *path) const;
 
 private:
     GraphImp<Dir, T> graph_;
@@ -46,7 +46,7 @@ int Graph<GraphImp, Dir, T>::add_edge(int idx1, int idx2)
 }
 
 template<template<bool, typename> class GraphImp, bool Dir, typename T>
-bool Graph<GraphImp, Dir, T>::find_path(const Vertex<T> &node1, const Vertex<T> &node2, std::vector<int> *path) const
+bool Graph<GraphImp, Dir, T>::find_path(int start_idx, int end_idx, std::vector<int> *path) const
 {
-    return graph_.find_path(node1, node2, path);
+    return graph_.find_path(start_idx, end_idx, path);
 }
