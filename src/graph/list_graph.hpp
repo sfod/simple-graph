@@ -11,7 +11,7 @@ public:
     ListGraph() : vertices_(0), edges_(), nodes_() {}
     virtual ~ListGraph() = default;
 
-    virtual int add_edge(const Node<T> &node1, const Node<T> &node2) override {
+    virtual int add_edge(const Vertex<T> &node1, const Vertex<T> &node2) override {
         auto minmax = std::minmax(node1, node2);
         if (vertices_ < minmax.second.idx() + 1) {
             vertices_ = minmax.second.idx() + 1;
@@ -28,7 +28,7 @@ public:
         return 0;
     }
 
-    virtual int rm_edge(const Node<T> &node1, const Node<T> &node2) override {
+    virtual int rm_edge(const Vertex<T> &node1, const Vertex<T> &node2) override {
         auto minmax = std::minmax(node1, node2);
         int idx1 = node1.idx();
         int idx2 = node2.idx();
@@ -43,7 +43,7 @@ public:
         return 0;
     }
 
-    virtual const Node<T> &vertex(int idx) const override {
+    virtual const Vertex<T> &vertex(int idx) const override {
         return nodes_.at(idx);
     }
 
@@ -62,13 +62,13 @@ public:
     virtual int vertex_num() const override { return vertices_; };
 
 private:
-    void add_vertex(const Node<T> &node) {
+    void add_vertex(const Vertex<T> &node) {
         if (nodes_.count(node.idx()) == 0) {
             nodes_[node.idx()] = node;
         }
     }
 
-    void rm_vertex(const Node<T> &node) {
+    void rm_vertex(const Vertex<T> &node) {
         if (nodes_.count(node.idx()) > 0) {
             nodes_.erase(node.idx());
         }
@@ -77,5 +77,5 @@ private:
 private:
     int vertices_;
     std::map<int, std::set<int>> edges_;
-    std::map<int, Node<T>> nodes_;
+    std::map<int, Vertex<T>> nodes_;
 };

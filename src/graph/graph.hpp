@@ -10,8 +10,8 @@ public:
     Graph();
     virtual ~Graph() = default;
 
-    int add_edge(const Node<T> &node1, const Node<T> &node2);
-    virtual bool find_path(const Node<T> &node1, const Node<T> &node2, std::vector<int> *path) const;
+    int add_edge(const Vertex<T> &node1, const Vertex<T> &node2);
+    virtual bool find_path(const Vertex<T> &node1, const Vertex<T> &node2, std::vector<int> *path) const;
 
 private:
     GraphImp<Dir, T> graph_;
@@ -24,14 +24,14 @@ Graph<GraphImp, Dir, T>::Graph() : graph_()
 }
 
 template<template<bool, typename> class GraphImp, bool Dir, typename T>
-int Graph<GraphImp, Dir, T>::add_edge(const Node<T> &node1, const Node<T> &node2)
+int Graph<GraphImp, Dir, T>::add_edge(const Vertex<T> &node1, const Vertex<T> &node2)
 {
     graph_.add_edge(node1, node2);
     return 0;
 }
 
 template<template<bool, typename> class GraphImp, bool Dir, typename T>
-bool Graph<GraphImp, Dir, T>::find_path(const Node<T> &node1, const Node<T> &node2, std::vector<int> *path) const
+bool Graph<GraphImp, Dir, T>::find_path(const Vertex<T> &node1, const Vertex<T> &node2, std::vector<int> *path) const
 {
     return graph_.find_path(node1, node2, path);
 }

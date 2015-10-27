@@ -6,16 +6,16 @@
 #include <queue>
 
 template<typename T>
-class Node {
+class Vertex {
 public:
-    Node() : idx_(-1), data_() {}
-    explicit Node(int idx) : idx_(idx), data_() {}
-    Node(int idx, const T &data) : idx_(idx), data_(data) {}
-    virtual ~Node() = default;
+    Vertex() : idx_(-1), data_() {}
+    explicit Vertex(int idx) : idx_(idx), data_() {}
+    Vertex(int idx, const T &data) : idx_(idx), data_(data) {}
+    virtual ~Vertex() = default;
 
     int idx() const { return idx_; }
 
-    bool operator<(const Node<T> &node) const {
+    bool operator<(const Vertex<T> &node) const {
         return idx_ < node.idx_;
     }
 
@@ -28,20 +28,20 @@ template<typename T>
 class GraphI {
 public:
     virtual ~GraphI() = default;
-    virtual int add_edge(const Node<T> &node1, const Node<T> &node2) = 0;
-    virtual int rm_edge(const Node<T> &node1, const Node<T> &node2) = 0;
+    virtual int add_edge(const Vertex<T> &node1, const Vertex<T> &node2) = 0;
+    virtual int rm_edge(const Vertex<T> &node1, const Vertex<T> &node2) = 0;
 
     virtual int vertex_num() const = 0;
     virtual const Vertex<T> &vertex(int idx) const = 0;
 
-    virtual bool find_path(const Node<T> &node1, const Node<T> &node2, std::vector<int> *path) const;
+    virtual bool find_path(const Vertex<T> &node1, const Vertex<T> &node2, std::vector<int> *path) const;
 
     virtual bool is_edge(int idx1, int idx2) const = 0;
 };
 
 
 template<typename T>
-bool GraphI<T>::find_path(const Node<T> &node1, const Node<T> &node2, std::vector<int> *path) const
+bool GraphI<T>::find_path(const Vertex<T> &node1, const Vertex<T> &node2, std::vector<int> *path) const
 {
     int vnum = vertex_num();
     if (std::max(node1.idx(), node2.idx()) > vnum) {
