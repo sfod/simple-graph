@@ -12,6 +12,8 @@ public:
 
     int add_vertex(const Vertex<T> &vertex);
     void rm_vertex(const Vertex<T> &vertex);
+    const Vertex<T> &vertex(int idx) const;
+    int vertex_num() const;
 
     int add_edge(int idx1, int idx2);
     virtual bool find_path(int start_idx, int end_idx, std::vector<int> *path) const;
@@ -36,6 +38,18 @@ template<template<bool, typename> class GraphImp, bool Dir, typename T>
 void Graph<GraphImp, Dir, T>::rm_vertex(const Vertex<T> &vertex)
 {
     graph_.rm_vertex(vertex);
+}
+
+template<template<bool, typename> class GraphImp, bool Dir, typename T>
+const Vertex<T> &Graph<GraphImp, Dir, T>::vertex(int idx) const
+{
+    return graph_.vertex(idx);
+}
+
+template<template<bool, typename> class GraphImp, bool Dir, typename T>
+int Graph<GraphImp, Dir, T>::vertex_num() const
+{
+    return graph_.vertex_num();
 }
 
 template<template<bool, typename> class GraphImp, bool Dir, typename T>
