@@ -8,6 +8,7 @@
 template<typename T>
 class Node {
 public:
+    Node() : idx_(-1), data_() {}
     explicit Node(int idx) : idx_(idx), data_() {}
     Node(int idx, const T &data) : idx_(idx), data_(data) {}
     virtual ~Node() = default;
@@ -31,6 +32,7 @@ public:
     virtual int rm_edge(const Node<T> &node1, const Node<T> &node2) = 0;
 
     virtual int vertex_num() const = 0;
+    virtual const Vertex<T> &vertex(int idx) const = 0;
 
     virtual bool find_path(const Node<T> &node1, const Node<T> &node2, std::vector<int> *path) const;
 

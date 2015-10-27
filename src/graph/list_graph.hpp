@@ -8,7 +8,7 @@
 template <bool Dir, typename T>
 class ListGraph : public GraphI<T> {
 public:
-    ListGraph() : vertices_(0), edges_() {}
+    ListGraph() : vertices_(0), edges_(), nodes_() {}
     virtual ~ListGraph() = default;
 
     virtual int add_edge(const Node<T> &node1, const Node<T> &node2) override {
@@ -22,6 +22,8 @@ public:
             idx1 = minmax.first.idx();
             idx2 = minmax.second.idx();
         }
+        add_vertex(node1);
+        add_vertex(node2);
         edges_[idx1].insert(idx2);
         return 0;
     }
@@ -36,6 +38,10 @@ public:
         }
         edges_[idx1].erase(idx2);
         return 0;
+    }
+
+    virtual const Node<T> &vertex(int idx) const override {
+        return nodes_.at(idx);
     }
 
     virtual bool is_edge(int idx1, int idx2) const override {
@@ -53,6 +59,20 @@ public:
     virtual int vertex_num() const override { return vertices_; };
 
 private:
+    void add_vertex(const Node<T> &node) {
+        if (nodes_.count(node.idx()) == 0) {
+            nodes_[node.idx()] = node;
+        }
+    }
+
+    void rm_vertex(const Node<T> &node) {
+        if (nodes_.count(node.idx()) > 0) {
+            nodes_.erase(node.idx());
+        }
+    }
+
+private:
     int vertices_;
     std::map<int, std::set<int>> edges_;
+    std::map<int, Node<T>> nodes_;
 };
