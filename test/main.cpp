@@ -14,7 +14,7 @@ int main()
     std::vector<int> mpath;
     if (mg.find_path(0, 2, &mpath)) {
         for (auto n : mpath) {
-            std::cout << n << std::endl;
+            std::cout << mg.vertex(n).data() << std::endl;
         }
     }
     else {

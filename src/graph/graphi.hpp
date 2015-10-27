@@ -14,6 +14,7 @@ public:
     virtual ~Vertex() = default;
 
     int idx() const { return idx_; }
+    T data() const { return data_; }
 
     bool operator<(const Vertex<T> &vertex) const {
         return idx_ < vertex.idx_;
