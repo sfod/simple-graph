@@ -34,7 +34,7 @@ public:
     }
 
     virtual bool find_path(int start_idx, int end_idx, std::vector<int> *path) const {
-        return graph_.find_path(start_idx, end_idx, path);
+        return graph_.bfs(start_idx, end_idx, path);
     }
 
 private:

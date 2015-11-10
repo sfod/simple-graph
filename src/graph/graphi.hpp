@@ -40,12 +40,12 @@ public:
     virtual int rm_edge(int idx1, int idx2) = 0;
     virtual bool is_edge(int idx1, int idx2) const = 0;
 
-    virtual bool find_path(int start_idx, int end_idx, std::vector<int> *path) const;
+    virtual bool bfs(int start_idx, int end_idx, std::vector<int> *path) const;
 };
 
 
 template<typename T>
-bool GraphI<T>::find_path(int start_idx, int end_idx, std::vector<int> *path) const
+bool GraphI<T>::bfs(int start_idx, int end_idx, std::vector<int> *path) const
 {
     int vnum = vertex_num();
     if (std::max(start_idx, end_idx) > vnum) {
