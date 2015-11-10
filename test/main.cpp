@@ -12,7 +12,9 @@ int main()
     mg.add_edge(0, 1);
     mg.add_edge(1, 2);
     std::vector<int> mpath;
-    if (mg.find_path(0, 2, &mpath)) {
+    std::string ms = "two";
+    std::function<bool(std::string)> mf = [&] (const std::string &d) { return d == ms; };
+    if (mg.find_vertex(0, mf, &mpath)) {
         for (auto n : mpath) {
             std::cout << mg.vertex(n).data() << std::endl;
         }
@@ -28,7 +30,9 @@ int main()
     lg.add_edge(0, 1);
     lg.add_edge(1, 2);
     std::vector<int> lpath;
-    if (lg.find_path(2, 1, &lpath)) {
+    std::string ls = "two";
+    std::function<bool(std::string)> lf = [&] (const std::string &d) { return d == ls; };
+    if (lg.find_vertex(0, lf, &lpath)) {
         for (auto n : lpath) {
             std::cout << n << std::endl;
         }

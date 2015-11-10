@@ -40,15 +40,15 @@ public:
     virtual int rm_edge(int idx1, int idx2) = 0;
     virtual bool is_edge(int idx1, int idx2) const = 0;
 
-    virtual bool bfs(int start_idx, int end_idx, std::vector<int> *path) const;
+    virtual bool bfs(int start_idx, std::function<bool(T)> &pred, std::vector<int> *path) const;
 };
 
 
 template<typename T>
-bool GraphI<T>::bfs(int start_idx, int end_idx, std::vector<int> *path) const
+bool GraphI<T>::bfs(int start_idx, std::function<bool(T)> &pred, std::vector<int> *path) const
 {
     int vnum = vertex_num();
-    if (std::max(start_idx, end_idx) > vnum) {
+    if (start_idx > vnum) {
         return false;
     }
 
@@ -57,12 +57,13 @@ bool GraphI<T>::bfs(int start_idx, int end_idx, std::vector<int> *path) const
     std::vector<int> dist(vnum, vnum + 1);
     std::queue<int> queue;
 
-    bool path_found = false;
+    bool vertex_found = false;
 
     queue.push(start_idx);
     dist[start_idx] = 0;
+    int end_idx = -1;
 
-    while (!path_found && !queue.empty()) {
+    while (!vertex_found && !queue.empty()) {
         int u = queue.front();
         queue.pop();
         visited[u] = true;
@@ -76,15 +77,16 @@ bool GraphI<T>::bfs(int start_idx, int end_idx, std::vector<int> *path) const
                 }
 
                 queue.push(v);
-                if (v == end_idx) {
-                    path_found = true;
+                if (pred(vertex(v).data())) {
+                    vertex_found = true;
+                    end_idx = v;
                     break;
                 }
             }
         }
     }
 
-    if (path_found) {
+    if (vertex_found) {
         int v = end_idx;
         do {
             path->push_back(v);
@@ -94,5 +96,5 @@ bool GraphI<T>::bfs(int start_idx, int end_idx, std::vector<int> *path) const
         std::reverse(path->begin(), path->end());
     }
 
-    return path_found;
+    return vertex_found;
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <type_traits>
 #include <vector>
 #include "graphi.hpp"
@@ -33,8 +34,8 @@ public:
         return graph_.add_edge(idx1, idx2);
     }
 
-    virtual bool find_path(int start_idx, int end_idx, std::vector<int> *path) const {
-        return graph_.bfs(start_idx, end_idx, path);
+    virtual int find_vertex(int start_idx, std::function<bool(std::string)> &pred, std::vector<int> *path) const {
+        return graph_.bfs(start_idx, pred, path);;
     }
 
 private:
