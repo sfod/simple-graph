@@ -34,7 +34,7 @@ public:
         return graph_.add_edge(idx1, idx2);
     }
 
-    virtual int find_vertex(int start_idx, std::function<bool(std::string)> &pred, std::vector<int> *path) const {
+    virtual int find_vertex(int start_idx, std::function<bool(T)> &pred, std::vector<int> *path) const {
         return graph_.bfs(start_idx, pred, path);;
     }
 
