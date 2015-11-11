@@ -22,6 +22,14 @@ public:
         return 0;
     }
 
+    virtual int set_vertex(const Vertex<T> &vertex) override {
+        if (vertex.idx() >= vertex_num_) {
+            vertex_num_ = vertex.idx() + 1;
+        }
+        vertices_[vertex.idx()] = vertex;
+        return 0;
+    }
+
     void rm_vertex(const Vertex<T> &vertex) override {
         if (vertices_.count(vertex.idx()) > 0) {
             vertices_.erase(vertex.idx());

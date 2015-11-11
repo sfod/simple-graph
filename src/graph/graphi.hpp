@@ -32,6 +32,7 @@ public:
     virtual ~GraphI() = default;
 
     virtual int add_vertex(const Vertex<T> &vertex) = 0;
+    virtual int set_vertex(const Vertex<T> &vertex) = 0;
     virtual void rm_vertex(const Vertex<T> &vertex) = 0;
 
     virtual const Vertex<T> &vertex(int idx) const = 0;
