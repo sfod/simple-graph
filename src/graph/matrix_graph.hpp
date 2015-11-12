@@ -37,6 +37,10 @@ public:
         }
     }
 
+    virtual const std::set<int> &adjacent_vertices(int idx) const override {
+        return std::set<int>();
+    }
+
     virtual const Vertex<T> &vertex(int idx) const override {
         return vertices_.at(idx);
     }
@@ -69,19 +73,6 @@ public:
         }
         matrix_[idx1 * vertex_num_ + idx2] = false;
         return 0;
-    }
-
-
-    virtual bool is_edge(int idx1, int idx2) const override {
-        std::pair<int, int> minmax = std::minmax(idx1, idx2);
-        if (minmax.second >= vertex_num_) {
-            return -1;
-        }
-        if (!Dir) {
-            idx1 = minmax.first;
-            idx2 = minmax.second;
-        }
-        return matrix_[idx1 * vertex_num_ + idx2];
     }
 
 private:

@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <functional>
 #include <queue>
+#include <set>
 #include <vector>
 
 template<typename T>
@@ -34,13 +35,13 @@ public:
     virtual int add_vertex(const Vertex<T> &vertex) = 0;
     virtual int set_vertex(const Vertex<T> &vertex) = 0;
     virtual void rm_vertex(const Vertex<T> &vertex) = 0;
+    virtual const std::set<int> &adjacent_vertices(int idx) const = 0;
 
     virtual const Vertex<T> &vertex(int idx) const = 0;
     virtual int vertex_num() const = 0;
 
     virtual int add_edge(int idx1, int idx2) = 0;
     virtual int rm_edge(int idx1, int idx2) = 0;
-    virtual bool is_edge(int idx1, int idx2) const = 0;
 
     virtual bool bfs(int start_idx, std::function<bool(T)> &pred, std::vector<int> *path) const;
 };
@@ -70,8 +71,10 @@ bool GraphI<T>::bfs(int start_idx, std::function<bool(T)> &pred, std::vector<int
         queue.pop();
         visited[u] = true;
 
-        for (auto v = 0; v < vnum; ++v) {
-            if (is_edge(u, v) && !visited[v]) {
+        std::set<int> vertices = adjacent_vertices(u);
+
+        for (auto v : vertices) {
+            if (!visited[v]) {
                 int alt = dist[u] + 1;
                 if (alt < dist[v]) {
                     dist[v] = alt;

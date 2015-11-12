@@ -19,6 +19,7 @@ public:
             return -1;
         }
         vertices_[vertex.idx()] = vertex;
+        edges_[vertex.idx()] = std::set<int>();
         return 0;
     }
 
@@ -34,54 +35,42 @@ public:
         if (vertices_.count(vertex.idx()) > 0) {
             vertices_.erase(vertex.idx());
         }
+        for (auto v : edges_[vertex.idx()]) {
+            rm_edge(v, vertex.idx());
+        }
+    }
+
+    virtual const std::set<int> &adjacent_vertices(int idx) const override {
+        return edges_.at(idx);
     }
 
     virtual int add_edge(int idx1, int idx2) override {
-        std::pair<int, int> minmax = std::minmax(idx1, idx2);
-        if (minmax.second >= vertex_num_) {
+        if (std::max(idx1, idx2) >= vertex_num_) {
             return -1;
         }
-        if (!Dir) {
-            idx1 = minmax.first;
-            idx2 = minmax.second;
-        }
         edges_[idx1].insert(idx2);
+        if (!Dir) {
+            edges_[idx2].insert(idx1);
+        }
         return 0;
     }
 
     virtual int rm_edge(int idx1, int idx2) override {
-        std::pair<int, int> minmax = std::minmax(idx1, idx2);
-        if (minmax.second >= vertex_num_) {
+        if (std::max(idx1, idx2) >= vertex_num_) {
             return -1;
-        }
-        if (!Dir) {
-            idx1 = minmax.first;
-            idx2 = minmax.second;
         }
         if (edges_.count(idx1) == 0) {
             return -1;
         }
         edges_[idx1].erase(idx2);
-        if (edges_[idx1].size() == 0) {
-            edges_.erase(idx1);
+        if (!Dir) {
+            edges_[idx2].erase(idx1);
         }
         return 0;
     }
 
     virtual const Vertex<T> &vertex(int idx) const override {
         return vertices_.at(idx);
-    }
-
-    virtual bool is_edge(int idx1, int idx2) const override {
-        std::pair<int, int> minmax = std::minmax(idx1, idx2);
-        if (!Dir) {
-            idx1 = minmax.first;
-            idx2 = minmax.second;
-        }
-        if (edges_.count(idx1) == 0) {
-            return false;
-        }
-        return (edges_.at(idx1).count(idx2) > 0);
     }
 
     virtual int vertex_num() const override { return vertex_num_; };
