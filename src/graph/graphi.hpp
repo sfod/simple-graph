@@ -69,6 +69,10 @@ bool GraphI<T>::bfs(int start_idx, std::function<bool(T)> &pred, std::vector<int
     while (!vertex_found && !queue.empty()) {
         int u = queue.front();
         queue.pop();
+        if (visited[u]) {
+            continue;
+        }
+
         visited[u] = true;
 
         std::set<int> vertices = adjacent_vertices(u);
