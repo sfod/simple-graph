@@ -46,7 +46,7 @@ public:
     }
 
     virtual int add_edge(int idx1, int idx2) override {
-        auto minmax = std::minmax(idx1, idx2);
+        std::pair<int, int> minmax = std::minmax(idx1, idx2);
         if (minmax.second >= vertex_num_) {
             return -1;
         }
@@ -59,7 +59,7 @@ public:
     }
 
     virtual int rm_edge(int idx1, int idx2) override {
-        auto minmax = std::minmax(idx1, idx2);
+        std::pair<int, int> minmax = std::minmax(idx1, idx2);
         if (minmax.second >= vertex_num_) {
             return -1;
         }
@@ -73,7 +73,7 @@ public:
 
 
     virtual bool is_edge(int idx1, int idx2) const override {
-        auto minmax = std::minmax(idx1, idx2);
+        std::pair<int, int> minmax = std::minmax(idx1, idx2);
         if (minmax.second >= vertex_num_) {
             return -1;
         }
