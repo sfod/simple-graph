@@ -5,13 +5,13 @@
 #include <set>
 #include "graphi.hpp"
 
-template <bool Dir, typename T>
-class ListGraph : public GraphI<T> {
+template <bool Dir, typename V, typename E>
+class ListGraph : public GraphI<V, E> {
 public:
     ListGraph() : vertex_num_(0), vertices_(), edges_() {}
     virtual ~ListGraph() = default;
 
-    virtual int add_vertex(const Vertex<T> &vertex) override {
+    virtual int add_vertex(const Vertex<V> &vertex) override {
         if (vertex.idx() >= vertex_num_) {
             vertex_num_ = vertex.idx() + 1;
         }
@@ -23,7 +23,7 @@ public:
         return 0;
     }
 
-    virtual int set_vertex(const Vertex<T> &vertex) override {
+    virtual int set_vertex(const Vertex<V> &vertex) override {
         if (vertex.idx() >= vertex_num_) {
             vertex_num_ = vertex.idx() + 1;
         }
@@ -31,12 +31,12 @@ public:
         return 0;
     }
 
-    void rm_vertex(const Vertex<T> &vertex) override {
+    void rm_vertex(const Vertex<V> &vertex) override {
         if (vertices_.count(vertex.idx()) > 0) {
             vertices_.erase(vertex.idx());
         }
         for (auto v : edges_[vertex.idx()]) {
-            rm_edge(v, vertex.idx());
+            rm_edge(Edge<E>(v, vertex.idx()));
         }
     }
 
@@ -44,32 +44,32 @@ public:
         return edges_.at(idx);
     }
 
-    virtual int add_edge(int idx1, int idx2) override {
-        if (std::max(idx1, idx2) >= vertex_num_) {
+    virtual int add_edge(const Edge<E> &edge) override {
+        if (std::max(edge.idx1(), edge.idx2()) >= vertex_num_) {
             return -1;
         }
-        edges_[idx1].insert(idx2);
+        edges_[edge.idx1()].insert(edge.idx2());
         if (!Dir) {
-            edges_[idx2].insert(idx1);
+            edges_[edge.idx2()].insert(edge.idx1());
         }
         return 0;
     }
 
-    virtual int rm_edge(int idx1, int idx2) override {
-        if (std::max(idx1, idx2) >= vertex_num_) {
+    virtual int rm_edge(const Edge<E> &edge) override {
+        if (std::max(edge.idx1(), edge.idx2()) >= vertex_num_) {
             return -1;
         }
-        if (edges_.count(idx1) == 0) {
+        if (edges_.count(edge.idx1()) == 0) {
             return -1;
         }
-        edges_[idx1].erase(idx2);
+        edges_[edge.idx1()].erase(edge.idx2());
         if (!Dir) {
-            edges_[idx2].erase(idx1);
+            edges_[edge.idx2()].erase(edge.idx1());
         }
         return 0;
     }
 
-    virtual const Vertex<T> &vertex(int idx) const override {
+    virtual const Vertex<V> &vertex(int idx) const override {
         return vertices_.at(idx);
     }
 
@@ -77,6 +77,6 @@ public:
 
 private:
     int vertex_num_;
-    std::map<int, Vertex<T>> vertices_;
+    std::map<int, Vertex<V>> vertices_;
     std::map<int, std::set<int>> edges_;
 };

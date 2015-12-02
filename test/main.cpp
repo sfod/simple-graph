@@ -5,12 +5,12 @@
 
 int main()
 {
-    Graph<MatrixGraph, true, std::string> mg;
+    Graph<MatrixGraph, true, std::string, int> mg;
     mg.add_vertex(Vertex<std::string>(0, "zero"));
     mg.add_vertex(Vertex<std::string>(1, "one"));
     mg.add_vertex(Vertex<std::string>(2, "two"));
-    mg.add_edge(0, 1);
-    mg.add_edge(1, 2);
+    mg.add_edge(Edge<int>(0, 1));
+    mg.add_edge(Edge<int>(1, 2));
     std::vector<int> mpath;
     std::string ms = "two";
     std::function<bool(std::string)> mf = [&] (const std::string &d) { return d == ms; };
@@ -23,12 +23,12 @@ int main()
         std::cout << "no path" << std::endl;
     }
 
-    Graph<ListGraph, false, std::string> lg;
+    Graph<ListGraph, false, std::string, int> lg;
     lg.add_vertex(Vertex<std::string>(0, "zero"));
     lg.add_vertex(Vertex<std::string>(1, "one"));
     lg.add_vertex(Vertex<std::string>(2, "two"));
-    lg.add_edge(0, 1);
-    lg.add_edge(1, 2);
+    lg.add_edge(Edge<int>(0, 1));
+    lg.add_edge(Edge<int>(1, 2));
     std::vector<int> lpath;
     std::string ls = "two";
     std::function<bool(std::string)> lf = [&] (const std::string &d) { return d == ls; };

@@ -4,24 +4,24 @@
 #include <vector>
 #include "graphi.hpp"
 
-template<template<bool, typename> class GraphImp, bool Dir, typename T>
+template<template<bool, typename, typename> class GraphImp, bool Dir, typename V, typename E>
 class Graph {
 public:
     Graph() : graph_() {
-        static_assert(std::is_base_of<GraphI<T>, GraphImp<Dir, T>>::value, "GraphImp must implement GraphI");
+        static_assert(std::is_base_of<GraphI<V, E>, GraphImp<Dir, V, E>>::value, "GraphImp must implement GraphI");
     }
 
     virtual ~Graph() = default;
 
-    int add_vertex(const Vertex<T> &vertex) {
+    int add_vertex(const Vertex<V> &vertex) {
         return graph_.add_vertex(vertex);
     }
 
-    void rm_vertex(const Vertex<T> &vertex) {
+    void rm_vertex(const Vertex<V> &vertex) {
         graph_.rm_vertex(vertex);
     }
 
-    const Vertex<T> &vertex(int idx) const {
+    const Vertex<V> &vertex(int idx) const {
         return graph_.vertex(idx);
     }
 
@@ -29,14 +29,14 @@ public:
         return graph_.vertex_num();
     }
 
-    int add_edge(int idx1, int idx2) {
-        return graph_.add_edge(idx1, idx2);
+    int add_edge(const Edge<E> &edge) {
+        return graph_.add_edge(edge);
     }
 
-    virtual int find_vertex(int start_idx, std::function<bool(T)> &pred, std::vector<int> *path) const {
+    virtual int find_vertex(int start_idx, std::function<bool(V)> &pred, std::vector<int> *path) const {
         return graph_.bfs(start_idx, pred, path);;
     }
 
 private:
-    GraphImp<Dir, T> graph_;
+    GraphImp<Dir, V, E> graph_;
 };

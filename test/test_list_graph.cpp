@@ -5,7 +5,7 @@ namespace {
 
 class ListGraphUndirectedTest : public ::testing::Test {
 protected:
-    ListGraph<false, int> g;
+    ListGraph<false, int, int> g;
 };
 
 TEST_F(ListGraphUndirectedTest, test_add_vertex)
@@ -37,9 +37,9 @@ TEST_F(ListGraphUndirectedTest, test_bfs_direct_order)
 
     EXPECT_EQ(4, g.vertex_num());
 
-    g.add_edge(0, 1);
-    g.add_edge(1, 2);
-    g.add_edge(2, 3);
+    g.add_edge(Edge<int>(0, 1));
+    g.add_edge(Edge<int>(1, 2));
+    g.add_edge(Edge<int>(2, 3));
 
     std::vector<int> path;
     int p = 3;
@@ -55,9 +55,9 @@ TEST_F(ListGraphUndirectedTest, test_bfs_reverse_order)
 
     EXPECT_EQ(4, g.vertex_num());
 
-    g.add_edge(0, 1);
-    g.add_edge(1, 2);
-    g.add_edge(2, 3);
+    g.add_edge(Edge<int>(0, 1));
+    g.add_edge(Edge<int>(1, 2));
+    g.add_edge(Edge<int>(2, 3));
 
     std::vector<int> path;
     int p = 0;
