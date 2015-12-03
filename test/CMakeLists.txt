@@ -9,3 +9,6 @@ target_link_libraries(test_simple_graph simple_graph)
 
 add_executable(test_list_graph test_list_graph.cpp)
 target_link_libraries(test_list_graph ${GTEST_LIBRARIES} pthread)
+
+add_executable(test_astar test_astar.cpp)
+target_link_libraries(test_astar ${GTEST_LIBRARIES} pthread)
