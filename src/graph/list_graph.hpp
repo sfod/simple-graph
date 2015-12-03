@@ -44,6 +44,12 @@ public:
         return edges_.at(idx);
     }
 
+    virtual const Vertex<V> &vertex(int idx) const override {
+        return vertices_.at(idx);
+    }
+
+    virtual int vertex_num() const override { return vertex_num_; };
+
     virtual int add_edge(const Edge<E> &edge) override {
         if (std::max(edge.idx1(), edge.idx2()) >= vertex_num_) {
             return -1;
@@ -68,12 +74,6 @@ public:
         }
         return 0;
     }
-
-    virtual const Vertex<V> &vertex(int idx) const override {
-        return vertices_.at(idx);
-    }
-
-    virtual int vertex_num() const override { return vertex_num_; };
 
 private:
     int vertex_num_;
