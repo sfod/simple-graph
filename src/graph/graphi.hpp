@@ -57,7 +57,8 @@ public:
     virtual int rm_edge(const Edge<E> &edge) = 0;
 
     virtual bool bfs(int start_idx, std::function<bool(V)> &pred, std::vector<int> *path) const;
-    virtual bool astar(int start_idx, int goal_idx, std::function<float(int, int)> &heuristic, std::vector<int> *path) const;
+    virtual bool astar(int start_idx, int goal_idx,
+            std::function<float(int, int)> &heuristic, std::vector<int> *path) const;
 };
 
 
@@ -137,7 +138,8 @@ int min_idx(const std::set<int> &opened, const std::vector<float> &f_score)
 }
 
 template<typename V, typename E>
-bool GraphI<V, E>::astar(int start_idx, int goal_idx, std::function<float(int, int)> &heuristic, std::vector<int> *path) const
+bool GraphI<V, E>::astar(int start_idx, int goal_idx,
+        std::function<float(int, int)> &heuristic, std::vector<int> *path) const
 {
     int vnum = vertex_num();
 
