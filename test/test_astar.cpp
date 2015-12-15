@@ -25,10 +25,11 @@ TEST_F(ListGraphUndirectedTest, test_astar)
     g.add_edge(Edge<int>(6, 7));
     g.add_edge(Edge<int>(3, 5));
 
-
     std::vector<int> path;
-    std::function<float(int, int)> f = [&](int c, int r) { return 1; };
-    EXPECT_EQ(true, g.astar(0, 7, f, &path));
+    std::function<float(int, int)> heuristic = [&](int c, int r) {
+        return std::abs(g.vertex(c).data() - g.vertex(r).data());
+    };
+    EXPECT_EQ(true, g.astar(0, 7, heuristic, &path));
     EXPECT_EQ(7, path.size());
 }
 

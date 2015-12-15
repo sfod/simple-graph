@@ -29,6 +29,23 @@ TEST_F(ListGraphUndirectedTest, test_set_vertex)
     EXPECT_EQ(5, g.vertex(1).data());
 }
 
+TEST_F(ListGraphUndirectedTest, test_add_edge)
+{
+    for (int i = 0; i < 4; ++i) {
+        g.set_vertex(Vertex<int>(i, i));
+    }
+
+    EXPECT_EQ(4, g.vertex_num());
+
+    g.add_edge(Edge<int>(0, 1, 11));
+    g.add_edge(Edge<int>(1, 2, 12));
+    g.add_edge(Edge<int>(2, 3, 13));
+
+    Edge<int> e = g.edge(1, 2);
+
+    EXPECT_EQ(12, e.weight());
+}
+
 TEST_F(ListGraphUndirectedTest, test_bfs_direct_order)
 {
     for (int i = 0; i < 4; ++i) {
