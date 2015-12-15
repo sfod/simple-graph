@@ -71,6 +71,17 @@ public:
         return 0;
     }
 
+    virtual const Edge<E> &edge(int idx1, int idx2) const
+    {
+        if (Dir) {
+            return edges_.at(idx1).at(idx2);
+        }
+        else {
+            std::pair<int, int> p = std::minmax(idx1, idx2);
+            return edges_.at(p.first).at(p.second);
+        }
+    }
+
     virtual int rm_edge(const Edge<E> &edge) override {
         if (std::max(edge.idx1(), edge.idx2()) >= vertex_num_) {
             return -1;

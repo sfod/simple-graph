@@ -59,6 +59,7 @@ public:
     virtual int vertex_num() const = 0;
 
     virtual int add_edge(const Edge<E> &edge) = 0;
+    virtual const Edge<E> &edge(int idx1, int idx2) const = 0;
     virtual int rm_edge(const Edge<E> &edge) = 0;
 
     virtual bool bfs(int start_idx, std::function<bool(V)> &pred, std::vector<int> *path) const;
