@@ -1,7 +1,6 @@
 set(SOURCE_FILES
     graph/graph.hpp
     graph/graphi.hpp
-    graph/matrix_graph.hpp
     graph/list_graph.hpp
 )
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
