@@ -30,14 +30,19 @@ private:
 template<typename T>
 class Edge {
 public:
-    Edge(int idx1, int idx2) : idx1_(idx1), idx2_(idx2) {}
+    Edge() : idx1_(-1), idx2_(-1), weight_() {}
+    Edge(int idx1, int idx2) : idx1_(idx1), idx2_(idx2), weight_(1) {}
+    Edge(int idx1, int idx2, const T &weight) : idx1_(idx1), idx2_(idx2), weight_(weight) {}
+
     virtual ~Edge() = default;
     int idx1() const { return idx1_; }
     int idx2() const { return idx2_; }
+    const T &weight() const { return weight_; }
 
 private:
     int idx1_;
     int idx2_;
+    T weight_;
 };
 
 template<typename V, typename E>
