@@ -155,6 +155,9 @@ bool GraphI<V, E>::astar(int start_idx, int goal_idx,
     std::vector<float> g_score(vnum, std::numeric_limits<float>::max());
     std::vector<float> f_score(vnum, std::numeric_limits<float>::max());
 
+    g_score[start_idx] = 0;
+    f_score[start_idx] = heuristic(start_idx, goal_idx);
+
     opened.insert(start_idx);
 
     bool vertex_found = false;
@@ -173,7 +176,7 @@ bool GraphI<V, E>::astar(int start_idx, int goal_idx,
                 continue;
             }
 
-            float tentative_score = g_score[current] + 1;
+            float tentative_score = g_score[current] + edge(current, neighbour).weight();
             if (opened.count(neighbour) == 0) {
                 opened.insert(neighbour);
             }
