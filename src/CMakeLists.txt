@@ -1,5 +1,4 @@
 set(SOURCE_FILES
-    graph/graph.hpp
     graph/graphi.hpp
     graph/list_graph.hpp
     graph/astar.hpp
