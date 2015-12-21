@@ -2,6 +2,8 @@
 
 #include <set>
 
+// TODO use move semantics
+
 namespace simple_graph {
 
 template<typename T>
@@ -50,6 +52,7 @@ public:
     virtual int add_vertex(const Vertex<V> &vertex) = 0;
     virtual int set_vertex(const Vertex<V> &vertex) = 0;
     virtual void rm_vertex(const Vertex<V> &vertex) = 0;
+    // TODO measure performance
     virtual const std::set<int> &adjacent_vertices(int idx) const = 0;
 
     virtual const Vertex<V> &vertex(int idx) const = 0;

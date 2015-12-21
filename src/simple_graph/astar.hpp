@@ -66,6 +66,7 @@ bool astar(const Graph<V, E> &g, int start_idx, int goal_idx,
         }
     }
 
+    // FIXME optimize
     if (vertex_found) {
         int idx = goal_idx;
         do {

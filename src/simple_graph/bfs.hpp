@@ -55,13 +55,13 @@ bool bfs(const Graph<V, E> &g, int start_idx, std::function<bool(V)> &pred, std:
         }
     }
 
+    // FIXME optimize
     if (vertex_found) {
         int v = end_idx;
         do {
             path->push_back(v);
             v = prev[v];
         } while (v != -1);
-        // FIXME
         std::reverse(path->begin(), path->end());
     }
 
