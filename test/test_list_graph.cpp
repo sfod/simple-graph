@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
-#include <graph/list_graph.hpp>
+#include "graph/list_graph.hpp"
+#include "graph/bfs.hpp"
 
 namespace {
 
@@ -61,7 +62,7 @@ TEST_F(ListGraphUndirectedTest, test_bfs_direct_order)
     std::vector<int> path;
     int p = 3;
     std::function<bool(int)> f = [&](int c) { return c == p; };
-    EXPECT_EQ(true, g.bfs(0, f, &path));
+    EXPECT_EQ(true, bfs(g, 0, f, &path));
 }
 
 TEST_F(ListGraphUndirectedTest, test_bfs_reverse_order)
@@ -79,7 +80,7 @@ TEST_F(ListGraphUndirectedTest, test_bfs_reverse_order)
     std::vector<int> path;
     int p = 0;
     std::function<bool(int)> f = [&](int c) { return c == p; };
-    EXPECT_EQ(true, g.bfs(3, f, &path));
+    EXPECT_EQ(true, bfs(g, 3, f, &path));
 }
 
 }  // namespace

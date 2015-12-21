@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
-#include <graph/list_graph.hpp>
+#include "graph/list_graph.hpp"
+#include "graph/astar.hpp"
 
 namespace {
 
@@ -43,7 +44,7 @@ TEST_F(ListGraphUndirectedTest, test_astar)
     std::function<float(int, int)> heuristic = [&](int c, int r) {
         return dist(g, c, r);
     };
-    EXPECT_EQ(true, g.astar(0, 7, heuristic, &path));
+    EXPECT_EQ(true, astar(g, 0, 7, heuristic, &path));
     EXPECT_EQ(6, path.size());
     EXPECT_EQ(1, path[1]);
     EXPECT_EQ(4, path[4]);
@@ -75,7 +76,7 @@ TEST_F(ListGraphUndirectedTest, test_astar_neg)
     std::function<float(int, int)> heuristic = [&](int c, int r) {
         return dist(g, c, r);
     };
-    EXPECT_EQ(true, g.astar(0, 7, heuristic, &path));
+    EXPECT_EQ(true, astar(g, 0, 7, heuristic, &path));
     EXPECT_EQ(4, path.size());
     EXPECT_EQ(5, path[1]);
     EXPECT_EQ(6, path[2]);
