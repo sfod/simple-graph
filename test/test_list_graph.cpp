@@ -2,7 +2,7 @@
 #include "graph/list_graph.hpp"
 #include "graph/bfs.hpp"
 
-namespace {
+namespace simple_graph {
 
 class ListGraphUndirectedTest : public ::testing::Test {
 protected:
@@ -83,7 +83,7 @@ TEST_F(ListGraphUndirectedTest, test_bfs_reverse_order)
     EXPECT_EQ(true, bfs(g, 3, f, &path));
 }
 
-}  // namespace
+}  // namespace simple_graph
 
 int main(int argc, char **argv)
 {

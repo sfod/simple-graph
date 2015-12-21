@@ -5,6 +5,8 @@
 #include <queue>
 #include <set>
 
+namespace simple_graph {
+
 template<typename V, typename E>
 bool bfs(const Graph<V, E> &g, int start_idx, std::function<bool(V)> &pred, std::vector<int> *path)
 {
@@ -65,3 +67,5 @@ bool bfs(const Graph<V, E> &g, int start_idx, std::function<bool(V)> &pred, std:
 
     return vertex_found;
 }
+
+}  // namespace simple_graph

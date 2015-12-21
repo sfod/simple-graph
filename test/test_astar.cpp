@@ -2,7 +2,7 @@
 #include "graph/list_graph.hpp"
 #include "graph/astar.hpp"
 
-namespace {
+namespace simple_graph {
 
 class ListGraphUndirectedTest : public ::testing::Test {
 protected:
@@ -82,7 +82,7 @@ TEST_F(ListGraphUndirectedTest, test_astar_neg)
     EXPECT_EQ(6, path[2]);
 }
 
-}  // namespace
+}  // namespace simple_graph
 
 int main(int argc, char **argv)
 {

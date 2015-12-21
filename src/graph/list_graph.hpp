@@ -5,6 +5,8 @@
 #include <set>
 #include "graph.hpp"
 
+namespace simple_graph {
+
 template <bool Dir, typename V, typename E>
 class ListGraph : public Graph<V, E> {
 public:
@@ -116,3 +118,5 @@ private:
     std::map<int, std::set<int>> neighbours_;
     std::map<int, std::map<int, Edge<E>>> edges_;
 };
+
+}  // namespace simple_graph

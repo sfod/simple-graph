@@ -2,6 +2,8 @@
 
 #include <set>
 
+namespace simple_graph {
+
 template<typename T>
 class Vertex {
 public:
@@ -57,3 +59,5 @@ public:
     virtual const Edge<E> &edge(int idx1, int idx2) const = 0;
     virtual int rm_edge(const Edge<E> &edge) = 0;
 };
+
+}  // namespace simple_graph

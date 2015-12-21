@@ -4,6 +4,8 @@
 #include <functional>
 #include <set>
 
+namespace simple_graph {
+
 int min_idx(const std::set<int> &opened, const std::vector<float> &f_score)
 {
     int min_idx = -1;
@@ -75,3 +77,5 @@ bool astar(const Graph<V, E> &g, int start_idx, int goal_idx,
 
     return vertex_found;
 }
+
+}  // namespace simple_graph
