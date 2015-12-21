@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include "graph/list_graph.hpp"
-#include "graph/bfs.hpp"
+#include "simple_graph/list_graph.hpp"
+#include "simple_graph/bfs.hpp"
 
 namespace {
 
