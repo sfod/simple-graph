@@ -1,10 +1,11 @@
 #include <iostream>
 #include "graph/graph.hpp"
 #include "graph/list_graph.hpp"
+#include "graph/bfs.hpp"
 
 int main()
 {
-    Graph<ListGraph, false, std::string, int> lg;
+    ListGraph<false, std::string, int> lg;
     lg.add_vertex(Vertex<std::string>(0, "zero"));
     lg.add_vertex(Vertex<std::string>(1, "one"));
     lg.add_vertex(Vertex<std::string>(2, "two"));
@@ -13,7 +14,7 @@ int main()
     std::vector<int> lpath;
     std::string ls = "two";
     std::function<bool(std::string)> lf = [&] (const std::string &d) { return d == ls; };
-    if (lg.find_vertex(0, lf, &lpath)) {
+    if (bfs(lg, 0, lf, &lpath)) {
         for (auto n : lpath) {
             std::cout << n << std::endl;
         }

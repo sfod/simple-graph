@@ -33,10 +33,6 @@ public:
         return graph_.add_edge(edge);
     }
 
-    virtual int find_vertex(int start_idx, std::function<bool(V)> &pred, std::vector<int> *path) const {
-        return graph_.bfs(start_idx, pred, path);;
-    }
-
 private:
     GraphImp<Dir, V, E> graph_;
 };
