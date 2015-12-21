@@ -2,30 +2,30 @@
 #include "graph/list_graph.hpp"
 #include "graph/bfs.hpp"
 
-namespace simple_graph {
+namespace {
 
 class ListGraphUndirectedTest : public ::testing::Test {
 protected:
-    ListGraph<false, int, int> g;
+    simple_graph::ListGraph<false, int, int> g;
 };
 
 TEST_F(ListGraphUndirectedTest, test_add_vertex)
 {
     EXPECT_EQ(0, g.vertex_num());
-    g.add_vertex(Vertex<int>(2));
+    g.add_vertex(simple_graph::Vertex<int>(2));
     EXPECT_EQ(3, g.vertex_num());
-    EXPECT_EQ(-1, g.add_vertex(Vertex<int>(2)));
+    EXPECT_EQ(-1, g.add_vertex(simple_graph::Vertex<int>(2)));
 }
 
 TEST_F(ListGraphUndirectedTest, test_set_vertex)
 {
     EXPECT_EQ(0, g.vertex_num());
 
-    g.set_vertex(Vertex<int>(1, 4));
+    g.set_vertex(simple_graph::Vertex<int>(1, 4));
     EXPECT_EQ(2, g.vertex_num());
     EXPECT_EQ(4, g.vertex(1).data());
 
-    g.set_vertex(Vertex<int>(1, 5));
+    g.set_vertex(simple_graph::Vertex<int>(1, 5));
     EXPECT_EQ(2, g.vertex_num());
     EXPECT_EQ(5, g.vertex(1).data());
 }
@@ -33,16 +33,16 @@ TEST_F(ListGraphUndirectedTest, test_set_vertex)
 TEST_F(ListGraphUndirectedTest, test_add_edge)
 {
     for (int i = 0; i < 4; ++i) {
-        g.set_vertex(Vertex<int>(i, i));
+        g.set_vertex(simple_graph::Vertex<int>(i, i));
     }
 
     EXPECT_EQ(4, g.vertex_num());
 
-    g.add_edge(Edge<int>(0, 1, 11));
-    g.add_edge(Edge<int>(1, 2, 12));
-    g.add_edge(Edge<int>(2, 3, 13));
+    g.add_edge(simple_graph::Edge<int>(0, 1, 11));
+    g.add_edge(simple_graph::Edge<int>(1, 2, 12));
+    g.add_edge(simple_graph::Edge<int>(2, 3, 13));
 
-    Edge<int> e = g.edge(1, 2);
+    simple_graph::Edge<int> e = g.edge(1, 2);
 
     EXPECT_EQ(12, e.weight());
 }
@@ -50,14 +50,14 @@ TEST_F(ListGraphUndirectedTest, test_add_edge)
 TEST_F(ListGraphUndirectedTest, test_bfs_direct_order)
 {
     for (int i = 0; i < 4; ++i) {
-        g.set_vertex(Vertex<int>(i, i));
+        g.set_vertex(simple_graph::Vertex<int>(i, i));
     }
 
     EXPECT_EQ(4, g.vertex_num());
 
-    g.add_edge(Edge<int>(0, 1));
-    g.add_edge(Edge<int>(1, 2));
-    g.add_edge(Edge<int>(2, 3));
+    g.add_edge(simple_graph::Edge<int>(0, 1));
+    g.add_edge(simple_graph::Edge<int>(1, 2));
+    g.add_edge(simple_graph::Edge<int>(2, 3));
 
     std::vector<int> path;
     int p = 3;
@@ -68,14 +68,14 @@ TEST_F(ListGraphUndirectedTest, test_bfs_direct_order)
 TEST_F(ListGraphUndirectedTest, test_bfs_reverse_order)
 {
     for (int i = 0; i < 4; ++i) {
-        g.set_vertex(Vertex<int>(i, i));
+        g.set_vertex(simple_graph::Vertex<int>(i, i));
     }
 
     EXPECT_EQ(4, g.vertex_num());
 
-    g.add_edge(Edge<int>(0, 1));
-    g.add_edge(Edge<int>(1, 2));
-    g.add_edge(Edge<int>(2, 3));
+    g.add_edge(simple_graph::Edge<int>(0, 1));
+    g.add_edge(simple_graph::Edge<int>(1, 2));
+    g.add_edge(simple_graph::Edge<int>(2, 3));
 
     std::vector<int> path;
     int p = 0;
@@ -83,7 +83,7 @@ TEST_F(ListGraphUndirectedTest, test_bfs_reverse_order)
     EXPECT_EQ(true, bfs(g, 3, f, &path));
 }
 
-}  // namespace simple_graph
+}  // namespace
 
 int main(int argc, char **argv)
 {
