@@ -1,6 +1,8 @@
 #pragma once
 
 #include "graphi.hpp"
+#include <functional>
+#include <set>
 
 int min_idx(const std::set<int> &opened, const std::vector<float> &f_score)
 {

@@ -1,11 +1,6 @@
 #pragma once
 
-#include <algorithm>
-#include <cstddef>
-#include <functional>
-#include <queue>
 #include <set>
-#include <vector>
 
 template<typename T>
 class Vertex {
