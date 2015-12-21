@@ -1,12 +1,12 @@
 #pragma once
 
-#include "graphi.hpp"
+#include "graph.hpp"
 #include <functional>
 #include <queue>
 #include <set>
 
 template<typename V, typename E>
-bool bfs(const GraphI<V, E> &g, int start_idx, std::function<bool(V)> &pred, std::vector<int> *path)
+bool bfs(const Graph<V, E> &g, int start_idx, std::function<bool(V)> &pred, std::vector<int> *path)
 {
     int vnum = g.vertex_num();
     if (start_idx > vnum) {

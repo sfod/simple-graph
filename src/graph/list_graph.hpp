@@ -3,10 +3,10 @@
 #include <algorithm>
 #include <map>
 #include <set>
-#include "graphi.hpp"
+#include "graph.hpp"
 
 template <bool Dir, typename V, typename E>
-class ListGraph : public GraphI<V, E> {
+class ListGraph : public Graph<V, E> {
 public:
     ListGraph() : vertex_num_(0), vertices_(), neighbours_(), edges_() {}
     virtual ~ListGraph() = default;

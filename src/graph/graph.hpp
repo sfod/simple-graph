@@ -41,9 +41,9 @@ private:
 };
 
 template<typename V, typename E>
-class GraphI {
+class Graph {
 public:
-    virtual ~GraphI() = default;
+    virtual ~Graph() = default;
 
     virtual int add_vertex(const Vertex<V> &vertex) = 0;
     virtual int set_vertex(const Vertex<V> &vertex) = 0;

@@ -2,10 +2,10 @@
 
 #include <algorithm>
 #include <vector>
-#include "graphi.hpp"
+#include "graph.hpp"
 
 template <bool Dir, typename V, typename E>
-class MatrixGraph : public GraphI<V, E> {
+class MatrixGraph : public Graph<V, E> {
 public:
     MatrixGraph() : vertex_num_(0), vertices_(), matrix_() {}
     virtual ~MatrixGraph() = default;

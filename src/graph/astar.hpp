@@ -1,6 +1,6 @@
 #pragma once
 
-#include "graphi.hpp"
+#include "graph.hpp"
 #include <functional>
 #include <set>
 
@@ -18,7 +18,7 @@ int min_idx(const std::set<int> &opened, const std::vector<float> &f_score)
 }
 
 template<typename V, typename E>
-bool astar(const GraphI<V, E> &g, int start_idx, int goal_idx,
+bool astar(const Graph<V, E> &g, int start_idx, int goal_idx,
         std::function<float(int, int)> &heuristic, std::vector<int> *path)
 {
     int vnum = g.vertex_num();
