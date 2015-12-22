@@ -14,6 +14,9 @@ public:
     virtual ~ListGraph() = default;
 
     virtual int add_vertex(const Vertex<V> &vertex) override {
+        if (vertex.idx() < 0) {
+            return -1;
+        }
         if (vertex.idx() >= vertex_num_) {
             vertex_num_ = vertex.idx() + 1;
         }
