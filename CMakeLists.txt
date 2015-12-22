@@ -3,5 +3,8 @@ project(simple_graph CXX)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -pedantic -O0 -ggdb")
 
+# TODO make it optional
+add_subdirectory(libs/benchmark)
+
 add_subdirectory(src)
 add_subdirectory(test)
