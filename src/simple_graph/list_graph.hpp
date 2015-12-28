@@ -23,10 +23,26 @@ public:
         if (vertices_.count(vertex.idx()) != 0) {
             return -1;
         }
-        vertices_[vertex.idx()] = vertex;
+        vertices_.insert(std::make_pair(vertex.idx(), vertex));
         neighbours_[vertex.idx()] = std::set<int>();
         return 0;
     }
+
+    virtual int add_vertex(Vertex<V> &&vertex) override {
+        if (vertex.idx() < 0) {
+            return -1;
+        }
+        if (vertex.idx() >= vertex_num_) {
+            vertex_num_ = vertex.idx() + 1;
+        }
+        if (vertices_.count(vertex.idx()) != 0) {
+            return -1;
+        }
+        neighbours_[vertex.idx()] = std::set<int>();
+        vertices_.insert(std::make_pair(vertex.idx(), std::move(vertex)));
+        return 0;
+    }
+
 
     virtual int set_vertex(const Vertex<V> &vertex) override {
         if (vertex.idx() >= vertex_num_) {

@@ -6,11 +6,30 @@
 
 namespace simple_graph {
 
+int creations = 0;
+int copies = 0;
+int moves = 0;
+int assigns = 0;
+
 template<typename T>
 class Vertex {
 public:
-    Vertex() : idx_(-1), data_() {}
-    explicit Vertex(int idx) : idx_(idx), data_() {}
+    Vertex() : idx_(-1), data_() {
+        ++creations;
+    }
+    Vertex(const Vertex<T> &v) {
+        ++copies;
+        idx_ = v.idx_;
+        data_ = v.data_;
+    }
+    Vertex(Vertex<T> &&v) {
+        ++moves;
+        idx_ = v.idx_;
+        std::swap(data_, v.data_);
+    }
+    explicit Vertex(int idx) : idx_(idx), data_() {
+        ++creations;
+    }
     Vertex(int idx, const T &data) : idx_(idx), data_(data) {}
     virtual ~Vertex() = default;
 
@@ -20,6 +39,25 @@ public:
     bool operator<(const Vertex<T> &vertex) const {
         return idx_ < vertex.idx_;
     }
+
+    Vertex &operator=(const Vertex<T> &v) {
+        ++assigns;
+        if (this != &v) {
+            idx_ = v.idx_;
+            data_ = v.data_;
+        }
+        return *this;
+    }
+
+    Vertex &operator=(Vertex<T> &&v) {
+        ++moves;
+        if (this != &v) {
+            idx_ = v.idx_;
+            std::swap(data_, v.data_);
+        }
+        return *this;
+    }
+
 
 private:
     int idx_;
@@ -50,6 +88,7 @@ public:
     virtual ~Graph() = default;
 
     virtual int add_vertex(const Vertex<V> &vertex) = 0;
+    virtual int add_vertex(Vertex<V> &&vertex) = 0;
     virtual int set_vertex(const Vertex<V> &vertex) = 0;
     virtual void rm_vertex(const Vertex<V> &vertex) = 0;
     // TODO measure performance
