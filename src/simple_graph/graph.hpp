@@ -85,6 +85,7 @@ private:
 template<typename V, typename E>
 class Graph {
 public:
+    // TODO add constructor from std::initializer_list
     virtual ~Graph() = default;
 
     virtual int add_vertex(const Vertex<V> &vertex) = 0;
