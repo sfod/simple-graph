@@ -39,7 +39,7 @@ public:
             return -1;
         }
         neighbours_[vertex.idx()] = std::set<int>();
-        vertices_.insert(std::make_pair(vertex.idx(), std::move(vertex)));
+        vertices_.emplace(vertex.idx(), std::move(vertex));
         return 0;
     }
 
