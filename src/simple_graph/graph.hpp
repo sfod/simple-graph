@@ -22,7 +22,9 @@ public:
         idx_ = v.idx_;
         data_ = v.data_;
     }
-    Vertex(Vertex<T> &&v) {
+    Vertex(Vertex<T> &&v) noexcept(noexcept(
+                std::is_nothrow_move_constructible<T>::value
+                    && std::is_nothrow_move_assignable<T>::value)) {
         ++moves;
         idx_ = v.idx_;
         std::swap(data_, v.data_);
@@ -49,7 +51,9 @@ public:
         return *this;
     }
 
-    Vertex &operator=(Vertex<T> &&v) {
+    Vertex &operator=(Vertex<T> &&v) noexcept(noexcept(
+                std::is_nothrow_move_constructible<T>::value
+                    && std::is_nothrow_move_assignable<T>::value)) {
         ++moves;
         if (this != &v) {
             idx_ = v.idx_;
