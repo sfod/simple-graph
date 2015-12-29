@@ -41,7 +41,7 @@ TEST_F(ListGraphUndirectedTest, test_astar)
     g.add_edge(simple_graph::Edge<float>(6, 7, dist(g, 6, 7)));
 
     std::vector<int> path;
-    std::function<float(int, int)> heuristic = [&](int c, int r) {
+    std::function<float(int, int)> heuristic = [=](int c, int r) {
         return dist(g, c, r);
     };
     EXPECT_EQ(true, astar(g, 0, 7, heuristic, &path));
@@ -73,7 +73,7 @@ TEST_F(ListGraphUndirectedTest, test_astar_neg)
     g.add_edge(simple_graph::Edge<float>(6, 7, dist(g, 6, 7)));
 
     std::vector<int> path;
-    std::function<float(int, int)> heuristic = [&](int c, int r) {
+    std::function<float(int, int)> heuristic = [=](int c, int r) {
         return dist(g, c, r);
     };
     EXPECT_EQ(true, astar(g, 0, 7, heuristic, &path));
