@@ -7,7 +7,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -pedantic")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE} -O3")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG} -O0 -ggdb")
 
-message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+if (NOT CMAKE_BUILD_TYPE)
+    message(STATUS "Build type is not specified, set to Release")
+    set(CMAKE_BUILD_TYPE "Release")
+else()
+    message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+endif()
 
 # TODO use cmake_dependent_option
 if (CMAKE_BUILD_TYPE STREQUAL "Release")
