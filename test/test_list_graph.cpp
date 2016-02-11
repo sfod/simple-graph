@@ -45,6 +45,11 @@ TEST_F(ListGraphUndirectedTest, test_add_edge)
     simple_graph::Edge<int> e = g.edge(1, 2);
 
     EXPECT_EQ(12, e.weight());
+
+    auto it = g.begin();
+    simple_graph::Edge<int> ep = *it;
+    EXPECT_EQ(0, ep.idx1());
+    EXPECT_EQ(1, ep.idx2());
 }
 
 TEST_F(ListGraphUndirectedTest, test_bfs_direct_order)

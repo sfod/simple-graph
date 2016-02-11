@@ -9,6 +9,20 @@ namespace simple_graph {
 
 template <bool Dir, typename V, typename E>
 class ListGraph : public Graph<V, E> {
+private:
+    template<typename T>
+    class ListGraphIterator : public IteratorImplBase<T> {
+    public:
+        ListGraphIterator(T *c) : current(c) {}
+        virtual IteratorImplBase<T> &operator++() {}
+        virtual T &operator*() {
+            return *current;
+        }
+
+    private:
+        T *current;
+    };
+
 public:
     ListGraph() : vertex_num_(0), vertices_(), neighbours_(), edges_() {}
     virtual ~ListGraph() = default;
@@ -129,6 +143,11 @@ public:
             }
         }
         return 0;
+    }
+
+    virtual iterator<Edge<E>> begin() {
+        iterator<Edge<E>> iter(new ListGraphIterator<Edge<E>>(&edges_.at(0).at(1)));
+        return iter;
     }
 
 private:

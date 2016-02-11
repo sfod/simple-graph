@@ -86,6 +86,32 @@ private:
     T weight_;
 };
 
+
+template<typename T>
+class IteratorImplBase {
+public:
+    virtual IteratorImplBase<T> &operator++() = 0;
+    virtual T &operator*() = 0;
+};
+
+template<typename T>
+class iterator {
+public:
+    iterator(IteratorImplBase<T> *b) : base_impl(b) {}
+    iterator &operator++() {
+        base_impl->operator++();
+        return *this;
+    }
+
+    T &operator*() {
+        return base_impl->operator*();
+    }
+
+private:
+    IteratorImplBase<T> *base_impl;
+};
+
+
 template<typename V, typename E>
 class Graph {
 public:
@@ -105,6 +131,8 @@ public:
     virtual int add_edge(const Edge<E> &edge) = 0;
     virtual const Edge<E> &edge(int idx1, int idx2) const = 0;
     virtual int rm_edge(const Edge<E> &edge) = 0;
+
+    virtual iterator<Edge<E>> begin() = 0;
 };
 
 }  // namespace simple_graph
