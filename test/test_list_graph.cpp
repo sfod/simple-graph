@@ -43,13 +43,17 @@ TEST_F(ListGraphUndirectedTest, test_add_edge)
     g.add_edge(simple_graph::Edge<int>(2, 3, 13));
 
     simple_graph::Edge<int> e = g.edge(1, 2);
-
     EXPECT_EQ(12, e.weight());
 
-    auto it = g.begin();
-    simple_graph::Edge<int> ep = *it;
-    EXPECT_EQ(0, ep.idx1());
-    EXPECT_EQ(1, ep.idx2());
+    int expected_edges[3][3] = {{0, 1, 11}, {1, 2, 12}, {2, 3, 13}};
+    int i = 0;
+    for (auto it = g.begin(); it != g.end(); ++it) {
+        simple_graph::Edge<int> ep = *it;
+        EXPECT_EQ(expected_edges[i][0], ep.idx1());
+        EXPECT_EQ(expected_edges[i][1], ep.idx2());
+        EXPECT_EQ(expected_edges[i][2], ep.weight());
+        ++i;
+    }
 }
 
 TEST_F(ListGraphUndirectedTest, test_bfs_direct_order)

@@ -90,6 +90,9 @@ private:
 template<typename T>
 class IteratorImplBase {
 public:
+    virtual ~IteratorImplBase() = default;
+    virtual bool operator==(const IteratorImplBase<T> &it) const = 0;
+    virtual bool operator!=(const IteratorImplBase<T> &it) const = 0;
     virtual IteratorImplBase<T> &operator++() = 0;
     virtual T &operator*() = 0;
 };
@@ -98,6 +101,15 @@ template<typename T>
 class iterator {
 public:
     iterator(IteratorImplBase<T> *b) : base_impl(b) {}
+
+    bool operator==(const iterator<T> &it) const {
+        return base_impl->operator==(*it.base_impl);
+    }
+
+    bool operator!=(const iterator<T> &it) const {
+        return !operator==(it);
+    }
+
     iterator &operator++() {
         base_impl->operator++();
         return *this;
@@ -133,6 +145,7 @@ public:
     virtual int rm_edge(const Edge<E> &edge) = 0;
 
     virtual iterator<Edge<E>> begin() = 0;
+    virtual iterator<Edge<E>> end() = 0;
 };
 
 }  // namespace simple_graph
