@@ -9,47 +9,67 @@ namespace simple_graph {
 
 template <bool Dir, typename V, typename E>
 class ListGraph : public Graph<V, E> {
+    typedef std::map<int, std::map<int, Edge<E>>> Edges;
+
 private:
-    class EdgeIterator : public IteratorImplBase<Edge<E>> {
-    public:
-        EdgeIterator(std::map<int, std::map<int, Edge<E>>> *edges, Edge<E> *current) : edges_(edges), current_(current) {}
-        virtual bool operator==(const IteratorImplBase<Edge<E>> &it) const override {
-            const EdgeIterator *tmp = dynamic_cast<const EdgeIterator*>(&it);
-            return tmp && current_ == tmp->current_;
-        }
+    class ListEdgesWrapper : public Graph<V, E>::EdgesWrapper {
+    private:
+        class EdgeIterator : public IteratorImplBase<Edge<E>> {
+        public:
+            EdgeIterator(Edges *edges, Edge<E> *current) : edges_(edges), current_(current) {}
+            virtual bool operator==(const IteratorImplBase<Edge<E>> &it) const override {
+                const EdgeIterator *tmp = dynamic_cast<const EdgeIterator*>(&it);
+                return tmp && current_ == tmp->current_;
+            }
 
-        virtual bool operator!=(const IteratorImplBase<Edge<E>> &it) const override {
-            return !this->operator==(it);
-        }
+            virtual bool operator!=(const IteratorImplBase<Edge<E>> &it) const override {
+                return !this->operator==(it);
+            }
 
-        virtual IteratorImplBase<Edge<E>> &operator++() override {
-            if (current_ != NULL) {
-                int idx1 = current_->idx1();
-                int idx2 = current_->idx2();
-                auto it = edges_->at(idx1).upper_bound(idx2);
-                if (it != edges_->at(idx1).end()) {
-                    current_ = &it->second;
-                }
-                else {
-                    auto it1 = edges_->upper_bound(idx1);
-                    if (it1 != edges_->end()) {
-                        current_ = &it1->second.begin()->second;
+            virtual IteratorImplBase<Edge<E>> &operator++() override {
+                if (current_ != NULL) {
+                    int idx1 = current_->idx1();
+                    int idx2 = current_->idx2();
+                    auto it = edges_->at(idx1).upper_bound(idx2);
+                    if (it != edges_->at(idx1).end()) {
+                        current_ = &it->second;
                     }
                     else {
-                        current_ = NULL;
+                        auto it1 = edges_->upper_bound(idx1);
+                        if (it1 != edges_->end()) {
+                            current_ = &it1->second.begin()->second;
+                        }
+                        else {
+                            current_ = NULL;
+                        }
                     }
                 }
+                return *this;
             }
-            return *this;
+
+            virtual Edge<E> &operator*() override {
+                return *current_;
+            }
+
+        private:
+            Edges *edges_;
+            Edge<E> *current_;
+        };
+    public:
+        explicit ListEdgesWrapper(Edges *edges) : edges_(edges) {}
+
+        virtual iterator<Edge<E>> begin() override {
+            iterator<Edge<E>> iter(new EdgeIterator(edges_, &edges_->begin()->second.begin()->second));
+            return iter;
         }
 
-        virtual Edge<E> &operator*() override {
-            return *current_;
+        virtual iterator<Edge<E>> end() override {
+            iterator<Edge<E>> iter(new EdgeIterator(edges_, NULL));
+            return iter;
         }
 
     private:
-        std::map<int, std::map<int, Edge<E>>> *edges_;
-        Edge<E> *current_;
+        Edges *edges_;
     };
 
 public:
@@ -174,21 +194,15 @@ public:
         return 0;
     }
 
-    virtual iterator<Edge<E>> begin() override {
-        iterator<Edge<E>> iter(new EdgeIterator(&edges_, &edges_.begin()->second.begin()->second));
-        return iter;
-    }
-
-    virtual iterator<Edge<E>> end() override {
-        iterator<Edge<E>> iter(new EdgeIterator(&edges_, NULL));
-        return iter;
+    virtual typename Graph<V, E>::EdgesWrapper *edges() override {
+        return new ListEdgesWrapper(&edges_);
     }
 
 private:
     int vertex_num_;
     std::map<int, Vertex<V>> vertices_;
     std::map<int, std::set<int>> neighbours_;
-    std::map<int, std::map<int, Edge<E>>> edges_;
+    Edges edges_;
 };
 
 }  // namespace simple_graph

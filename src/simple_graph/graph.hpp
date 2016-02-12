@@ -126,6 +126,13 @@ private:
 
 template<typename V, typename E>
 class Graph {
+protected:
+    class EdgesWrapper {
+    public:
+        virtual iterator<Edge<E>> begin() = 0;
+        virtual iterator<Edge<E>> end() = 0;
+    };
+
 public:
     // TODO add constructor from std::initializer_list
     virtual ~Graph() = default;
@@ -144,8 +151,7 @@ public:
     virtual const Edge<E> &edge(int idx1, int idx2) const = 0;
     virtual int rm_edge(const Edge<E> &edge) = 0;
 
-    virtual iterator<Edge<E>> begin() = 0;
-    virtual iterator<Edge<E>> end() = 0;
+    virtual EdgesWrapper *edges() = 0;
 };
 
 }  // namespace simple_graph

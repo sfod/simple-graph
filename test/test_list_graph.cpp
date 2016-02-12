@@ -47,7 +47,7 @@ TEST_F(ListGraphUndirectedTest, test_add_edge)
 
     int expected_edges[3][3] = {{0, 1, 11}, {1, 2, 12}, {2, 3, 13}};
     int i = 0;
-    for (auto it = g.begin(); it != g.end(); ++it) {
+    for (auto it = g.edges()->begin(); it != g.edges()->end(); ++it) {
         simple_graph::Edge<int> ep = *it;
         EXPECT_EQ(expected_edges[i][0], ep.idx1());
         EXPECT_EQ(expected_edges[i][1], ep.idx2());
