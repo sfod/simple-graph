@@ -73,7 +73,7 @@ private:
     };
 
 public:
-    ListGraph() : vertex_num_(0), vertices_(), neighbours_(), edges_() {}
+    ListGraph() : vertex_num_(0), vertices_(), neighbours_(), edges_(), edges_wrapper_(&edges_) {}
     virtual ~ListGraph() = default;
 
     virtual int add_vertex(const Vertex<V> &vertex) override {
@@ -194,8 +194,8 @@ public:
         return 0;
     }
 
-    virtual typename Graph<V, E>::EdgesWrapper *edges() override {
-        return new ListEdgesWrapper(&edges_);
+    virtual typename Graph<V, E>::EdgesWrapper &edges() override {
+        return edges_wrapper_;
     }
 
 private:
@@ -203,6 +203,7 @@ private:
     std::map<int, Vertex<V>> vertices_;
     std::map<int, std::set<int>> neighbours_;
     Edges edges_;
+    ListEdgesWrapper edges_wrapper_;
 };
 
 }  // namespace simple_graph

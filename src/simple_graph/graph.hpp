@@ -151,7 +151,7 @@ public:
     virtual const Edge<E> &edge(int idx1, int idx2) const = 0;
     virtual int rm_edge(const Edge<E> &edge) = 0;
 
-    virtual EdgesWrapper *edges() = 0;
+    virtual EdgesWrapper &edges() = 0;
 };
 
 }  // namespace simple_graph
