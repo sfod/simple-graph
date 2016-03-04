@@ -9,7 +9,7 @@ namespace simple_graph {
 
 template <bool Dir, typename V, typename E>
 class ListGraph : public Graph<V, E> {
-    typedef std::map<int, std::map<int, Edge<E>>> Edges;
+    typedef std::map<size_t, std::map<size_t, Edge<E>>> Edges;
 
 private:
     class ListEdgesWrapper : public Graph<V, E>::EdgesWrapper {
@@ -28,8 +28,8 @@ private:
 
             virtual IteratorImplBase<Edge<E>> &operator++() override {
                 if (current_ != NULL) {
-                    int idx1 = current_->idx1();
-                    int idx2 = current_->idx2();
+                    size_t idx1 = current_->idx1();
+                    size_t idx2 = current_->idx2();
                     auto it = edges_->at(idx1).upper_bound(idx2);
                     if (it != edges_->at(idx1).end()) {
                         current_ = &it->second;
@@ -87,7 +87,7 @@ public:
             return -1;
         }
         vertices_.insert(std::make_pair(vertex.idx(), vertex));
-        neighbours_[vertex.idx()] = std::set<int>();
+        neighbours_[vertex.idx()] = std::set<size_t>();
         return 0;
     }
 
@@ -101,7 +101,7 @@ public:
         if (vertices_.count(vertex.idx()) != 0) {
             return -1;
         }
-        neighbours_[vertex.idx()] = std::set<int>();
+        neighbours_[vertex.idx()] = std::set<size_t>();
         vertices_.emplace(vertex.idx(), std::move(vertex));
         return 0;
     }
@@ -124,15 +124,15 @@ public:
         }
     }
 
-    virtual const std::set<int> &adjacent_vertices(int idx) const override {
+    virtual const std::set<size_t> &adjacent_vertices(size_t idx) const override {
         return neighbours_.at(idx);
     }
 
-    virtual const Vertex<V> &vertex(int idx) const override {
+    virtual const Vertex<V> &vertex(size_t idx) const override {
         return vertices_.at(idx);
     }
 
-    virtual int vertex_num() const override { return vertex_num_; };
+    virtual size_t vertex_num() const override { return vertex_num_; };
 
     virtual int add_edge(const Edge<E> &edge) override {
         if (std::max(edge.idx1(), edge.idx2()) >= vertex_num_) {
@@ -155,13 +155,13 @@ public:
         return 0;
     }
 
-    virtual const Edge<E> &edge(int idx1, int idx2) const
+    virtual const Edge<E> &edge(size_t idx1, size_t idx2) const override
     {
         if (Dir) {
             return edges_.at(idx1).at(idx2);
         }
         else {
-            std::pair<int, int> p = std::minmax(idx1, idx2);
+            auto p = std::minmax(idx1, idx2);
             return edges_.at(p.first).at(p.second);
         }
     }
@@ -185,7 +185,7 @@ public:
             }
         }
         else {
-            std::pair<int, int> p = std::minmax(edge.idx1(), edge.idx2());
+            auto p = std::minmax(edge.idx1(), edge.idx2());
             edges_[p.first].erase(p.second);
             if (edges_[p.first].size() == 0) {
                 edges_.erase(p.first);
@@ -199,9 +199,9 @@ public:
     }
 
 private:
-    int vertex_num_;
-    std::map<int, Vertex<V>> vertices_;
-    std::map<int, std::set<int>> neighbours_;
+    size_t vertex_num_;
+    std::map<size_t, Vertex<V>> vertices_;
+    std::map<size_t, std::set<size_t>> neighbours_;
     Edges edges_;
     ListEdgesWrapper edges_wrapper_;
 };

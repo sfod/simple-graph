@@ -6,28 +6,32 @@
 
 namespace simple_graph {
 
-int min_idx(const std::set<int> &opened, const std::vector<float> &f_score)
+size_t min_idx(const std::set<size_t> &opened, const std::vector<float> &f_score)
 {
-    int min_idx = -1;
+    size_t min_idx = 0;
+
     float min = std::numeric_limits<float>::max();
+    bool inited = false;
     for (auto idx : opened) {
-        if ((f_score[idx] < min) || (min_idx == -1)) {
+        if ((f_score[idx] < min) || !inited) {
             min_idx = idx;
             min = f_score[idx];
+            inited = true;
         }
     }
+
     return min_idx;
 }
 
 template<typename V, typename E>
-bool astar(const Graph<V, E> &g, int start_idx, int goal_idx,
-        std::function<float(int, int)> &heuristic, std::vector<int> *path)
+bool astar(const Graph<V, E> &g, size_t start_idx, size_t goal_idx,
+        std::function<float(size_t, size_t)> &heuristic, std::vector<size_t> *path)
 {
-    int vnum = g.vertex_num();
+    size_t vnum = g.vertex_num();
 
-    std::set<int> closed;
-    std::set<int> opened;
-    std::vector<int> came_from(vnum, -1);
+    std::set<size_t> closed;
+    std::set<size_t> opened;
+    std::vector<size_t> came_from(vnum, 0);
     std::vector<float> g_score(vnum, std::numeric_limits<float>::max());
     std::vector<float> f_score(vnum, std::numeric_limits<float>::max());
 
@@ -38,7 +42,7 @@ bool astar(const Graph<V, E> &g, int start_idx, int goal_idx,
 
     bool vertex_found = false;
     while (!vertex_found && !opened.empty()) {
-        int current = min_idx(opened, f_score);
+        size_t current = min_idx(opened, f_score);
         if (current == goal_idx) {
             vertex_found = true;
             break;
@@ -46,7 +50,7 @@ bool astar(const Graph<V, E> &g, int start_idx, int goal_idx,
         opened.erase(current);
         closed.insert(current);
 
-        std::set<int> neighbours = g.adjacent_vertices(current);
+        std::set<size_t> neighbours = g.adjacent_vertices(current);
         for (auto neighbour : neighbours) {
             if (closed.count(neighbour) > 0) {
                 continue;
@@ -68,11 +72,12 @@ bool astar(const Graph<V, E> &g, int start_idx, int goal_idx,
 
     // FIXME optimize
     if (vertex_found) {
-        int idx = goal_idx;
+        size_t idx = goal_idx;
         do {
             path->push_back(idx);
             idx = came_from[idx];
-        } while (idx != -1);
+        } while (idx != start_idx);
+        path->push_back(idx);
         std::reverse(path->begin(), path->end());
     }
 

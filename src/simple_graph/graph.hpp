@@ -14,7 +14,7 @@ int assigns = 0;
 template<typename T>
 class Vertex {
 public:
-    Vertex() : idx_(-1), data_() {
+    Vertex() : idx_(0), data_() {
         ++creations;
     }
     Vertex(const Vertex<T> &v) {
@@ -29,13 +29,13 @@ public:
         idx_ = v.idx_;
         std::swap(data_, v.data_);
     }
-    explicit Vertex(int idx) : idx_(idx), data_() {
+    explicit Vertex(size_t idx) : idx_(idx), data_() {
         ++creations;
     }
-    Vertex(int idx, const T &data) : idx_(idx), data_(data) {}
+    Vertex(size_t idx, const T &data) : idx_(idx), data_(data) {}
     virtual ~Vertex() = default;
 
-    int idx() const { return idx_; }
+    size_t idx() const { return idx_; }
     T data() const { return data_; }
 
     bool operator<(const Vertex<T> &vertex) const {
@@ -62,27 +62,27 @@ public:
         return *this;
     }
 
-
 private:
-    int idx_;
+    size_t idx_;
     T data_;
 };
 
+// TODO limit possible types of T
 template<typename T>
 class Edge {
 public:
-    Edge() : idx1_(-1), idx2_(-1), weight_() {}
-    Edge(int idx1, int idx2) : idx1_(idx1), idx2_(idx2), weight_(1) {}
-    Edge(int idx1, int idx2, const T &weight) : idx1_(idx1), idx2_(idx2), weight_(weight) {}
+    Edge() : idx1_(0), idx2_(0), weight_() {}
+    Edge(size_t idx1, size_t idx2) : idx1_(idx1), idx2_(idx2), weight_(1) {}
+    Edge(size_t idx1, size_t idx2, const T &weight) : idx1_(idx1), idx2_(idx2), weight_(weight) {}
 
     virtual ~Edge() = default;
-    int idx1() const { return idx1_; }
-    int idx2() const { return idx2_; }
+    size_t idx1() const { return idx1_; }
+    size_t idx2() const { return idx2_; }
     const T &weight() const { return weight_; }
 
 private:
-    int idx1_;
-    int idx2_;
+    size_t idx1_;
+    size_t idx2_;
     T weight_;
 };
 
@@ -142,13 +142,13 @@ public:
     virtual int set_vertex(const Vertex<V> &vertex) = 0;
     virtual void rm_vertex(const Vertex<V> &vertex) = 0;
     // TODO measure performance
-    virtual const std::set<int> &adjacent_vertices(int idx) const = 0;
+    virtual const std::set<size_t> &adjacent_vertices(size_t idx) const = 0;
 
-    virtual const Vertex<V> &vertex(int idx) const = 0;
-    virtual int vertex_num() const = 0;
+    virtual const Vertex<V> &vertex(size_t idx) const = 0;
+    virtual size_t vertex_num() const = 0;
 
     virtual int add_edge(const Edge<E> &edge) = 0;
-    virtual const Edge<E> &edge(int idx1, int idx2) const = 0;
+    virtual const Edge<E> &edge(size_t idx1, size_t idx2) const = 0;
     virtual int rm_edge(const Edge<E> &edge) = 0;
 
     virtual EdgesWrapper &edges() = 0;

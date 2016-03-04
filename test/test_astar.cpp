@@ -9,7 +9,7 @@ protected:
     simple_graph::ListGraph<false, std::pair<float, float>, float> g;
 };
 
-static float dist(const simple_graph::ListGraph<false, std::pair<float, float>, float> &g, int c, int r)
+static float dist(const simple_graph::ListGraph<false, std::pair<float, float>, float> &g, size_t c, size_t r)
 {
     const auto &cdata = g.vertex(c).data();
     const auto &rdata = g.vertex(r).data();
@@ -40,12 +40,13 @@ TEST_F(ListGraphUndirectedTest, test_astar)
     g.add_edge(simple_graph::Edge<float>(5, 6, dist(g, 5, 6)));
     g.add_edge(simple_graph::Edge<float>(6, 7, dist(g, 6, 7)));
 
-    std::vector<int> path;
-    std::function<float(int, int)> heuristic = [=](int c, int r) {
+    std::vector<size_t> path;
+    std::function<float(size_t, size_t)> heuristic = [=](size_t c, size_t r) {
         return dist(g, c, r);
     };
     EXPECT_EQ(true, astar(g, 0, 7, heuristic, &path));
     EXPECT_EQ(6, path.size());
+    EXPECT_EQ(0, path[0]);
     EXPECT_EQ(1, path[1]);
     EXPECT_EQ(4, path[4]);
 }
@@ -72,8 +73,8 @@ TEST_F(ListGraphUndirectedTest, test_astar_neg)
     g.add_edge(simple_graph::Edge<float>(5, 6, dist(g, 5, 6)));
     g.add_edge(simple_graph::Edge<float>(6, 7, dist(g, 6, 7)));
 
-    std::vector<int> path;
-    std::function<float(int, int)> heuristic = [=](int c, int r) {
+    std::vector<size_t> path;
+    std::function<float(size_t, size_t)> heuristic = [=](size_t c, size_t r) {
         return dist(g, c, r);
     };
     EXPECT_EQ(true, astar(g, 0, 7, heuristic, &path));
