@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 project(simple_graph CXX)
 
+option(SIMPLE_GRAPH_ENABLE_BENCHMARK "Enable benchmarking" OFF)
+
 include(CMakeDependentOption)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -pedantic")
@@ -12,11 +14,6 @@ if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
 else()
     message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
-endif()
-
-# TODO use cmake_dependent_option
-if (CMAKE_BUILD_TYPE STREQUAL "Release")
-    set(ENABLE_BENCHMARK TRUE CACHE BOOL "Enable benchmarking" FORCE)
 endif()
 
 if (ENABLE_BENCHMARK)
