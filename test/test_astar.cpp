@@ -18,7 +18,7 @@ static float dist(const simple_graph::ListGraph<false, std::pair<float, float>, 
     return std::sqrt(std::pow(xdiff, 2) + std::pow(ydiff, 2));
 }
 
-TEST_F(ListGraphUndirectedTest, test_astar)
+TEST_F(ListGraphUndirectedTest, test_astar_long)
 {
     g.set_vertex(simple_graph::Vertex<std::pair<float, float>>(0, std::make_pair(0.0f, 0.0f)));
     g.set_vertex(simple_graph::Vertex<std::pair<float, float>>(1, std::make_pair(1.0f, 1.0f)));
@@ -51,7 +51,7 @@ TEST_F(ListGraphUndirectedTest, test_astar)
     EXPECT_EQ(4, path[4]);
 }
 
-TEST_F(ListGraphUndirectedTest, test_astar_neg)
+TEST_F(ListGraphUndirectedTest, test_astar_short)
 {
     g.set_vertex(simple_graph::Vertex<std::pair<float, float>>(0, std::make_pair(0.0f, 0.0f)));
     g.set_vertex(simple_graph::Vertex<std::pair<float, float>>(1, std::make_pair(1.0f, 1.0f)));
