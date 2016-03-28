@@ -67,9 +67,11 @@ private:
     T data_;
 };
 
-// TODO limit possible types of T
 template<typename T>
 class Edge {
+    static_assert(std::is_integral<T>::value || std::is_floating_point<T>::value,
+            "Integer of floating point required.");
+
 public:
     Edge() : idx1_(0), idx2_(0), weight_() {}
     Edge(size_t idx1, size_t idx2) : idx1_(idx1), idx2_(idx2), weight_(1) {}
