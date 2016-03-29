@@ -2,6 +2,7 @@
 #include "benchmark/benchmark.h"
 #include "simple_graph/list_graph.hpp"
 #include "simple_graph/bfs.hpp"
+#include "simple_graph/astar.hpp"
 
 static void bench_creation(benchmark::State &state)
 {
@@ -45,5 +46,26 @@ static void bench_bfs_path_length(benchmark::State &state)
     }
 }
 BENCHMARK(bench_bfs_path_length)->Range(1<<10, 1<<20);
+
+static void bench_astar_path_length(benchmark::State &state)
+{
+    simple_graph::ListGraph<false, int, ssize_t> g;
+    for (int i = 0; i < state.range_x(); ++i) {
+        g.add_vertex(simple_graph::Vertex<int>(i, i));
+    }
+    for (int i = 0; i < state.range_x() - 1; ++i) {
+        g.add_edge(simple_graph::Edge<ssize_t>(i, i + 1, 1));
+    }
+
+    std::function<float(size_t, size_t)> heuristic = [=](size_t c, size_t r) {
+        return r - c;
+    };
+
+    while (state.KeepRunning()) {
+        std::vector<size_t> path;
+        benchmark::DoNotOptimize(simple_graph::astar(g, 0, state.range_x() - 1, heuristic, &path));
+    }
+}
+BENCHMARK(bench_astar_path_length)->Range(1<<10, 1<<20);
 
 BENCHMARK_MAIN()
