@@ -31,7 +31,7 @@ static void bench_bfs_path_length(benchmark::State &state)
 {
     simple_graph::ListGraph<false, int, ssize_t> g;
     for (int i = 0; i < state.range_x(); ++i) {
-        g.set_vertex(simple_graph::Vertex<int>(i));
+        g.add_vertex(simple_graph::Vertex<int>(i, i));
     }
     for (int i = 0; i < state.range_x() - 1; ++i) {
         g.add_edge(simple_graph::Edge<ssize_t>(i, i + 1, 1));
@@ -44,6 +44,6 @@ static void bench_bfs_path_length(benchmark::State &state)
         benchmark::DoNotOptimize(simple_graph::bfs(g, 0, f, &path));
     }
 }
-BENCHMARK(bench_bfs_path_length)->Range(1<<10, 1<<16);
+BENCHMARK(bench_bfs_path_length)->Range(1<<10, 1<<20);
 
 BENCHMARK_MAIN()
