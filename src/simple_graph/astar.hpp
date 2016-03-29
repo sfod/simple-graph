@@ -50,7 +50,7 @@ bool astar(const Graph<V, E> &g, size_t start_idx, size_t goal_idx,
         opened.erase(current);
         closed.insert(current);
 
-        std::set<size_t> neighbours = g.adjacent_vertices(current);
+        const std::set<size_t> &neighbours = g.adjacent_vertices(current);
         for (auto neighbour : neighbours) {
             if (closed.count(neighbour) > 0) {
                 continue;
