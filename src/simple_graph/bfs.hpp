@@ -35,7 +35,7 @@ bool bfs(const Graph<V, E> &g, size_t start_idx, std::function<bool(V)> &pred, s
 
         visited[u] = true;
 
-        std::set<size_t> vertices = g.adjacent_vertices(u);
+        const std::set<size_t> &vertices = g.adjacent_vertices(u);
 
         for (auto v : vertices) {
             if (!visited[v]) {

@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <map>
+#include <unordered_map>
 #include <set>
 #include "graph.hpp"
 
@@ -200,8 +201,8 @@ public:
 
 private:
     size_t vertex_num_;
-    std::map<size_t, Vertex<V>> vertices_;
-    std::map<size_t, std::set<size_t>> neighbours_;
+    std::unordered_map<size_t, Vertex<V>> vertices_;
+    std::unordered_map<size_t, std::set<size_t>> neighbours_;
     Edges edges_;
     ListEdgesWrapper edges_wrapper_;
 };
