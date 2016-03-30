@@ -12,7 +12,7 @@ protected:
 TEST_F(ListGraphUndirectedTest, test_bellman_ford_long)
 {
     for (size_t i = 0; i < 8; ++i) {
-        g.set_vertex(simple_graph::Vertex<int>(i));
+        g.add_vertex(simple_graph::Vertex<int>(i));
     }
     EXPECT_EQ(8, g.vertex_num());
 
@@ -36,7 +36,7 @@ TEST_F(ListGraphUndirectedTest, test_bellman_ford_long)
 TEST_F(ListGraphUndirectedTest, test_bellman_ford_short)
 {
     for (size_t i = 0; i < 8; ++i) {
-        g.set_vertex(simple_graph::Vertex<int>(i));
+        g.add_vertex(simple_graph::Vertex<int>(i));
     }
     EXPECT_EQ(8, g.vertex_num());
 
@@ -61,7 +61,7 @@ TEST_F(ListGraphUndirectedTest, test_bellman_ford_short)
 TEST_F(ListGraphUndirectedTest, test_bellman_ford_negative_weigths)
 {
     for (size_t i = 0; i < 8; ++i) {
-        g.set_vertex(simple_graph::Vertex<int>(i));
+        g.add_vertex(simple_graph::Vertex<int>(i));
     }
     EXPECT_EQ(8, g.vertex_num());
 

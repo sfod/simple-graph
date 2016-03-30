@@ -58,7 +58,7 @@ TEST_F(ListGraphUndirectedTest, test_add_edge)
 TEST_F(ListGraphUndirectedTest, test_bfs_direct_order)
 {
     for (size_t i = 0; i < 4; ++i) {
-        g.set_vertex(simple_graph::Vertex<size_t>(i, i));
+        g.add_vertex(simple_graph::Vertex<size_t>(i, i));
     }
 
     EXPECT_EQ(4, g.vertex_num());
@@ -76,7 +76,7 @@ TEST_F(ListGraphUndirectedTest, test_bfs_direct_order)
 TEST_F(ListGraphUndirectedTest, test_bfs_reverse_order)
 {
     for (int i = 0; i < 4; ++i) {
-        g.set_vertex(simple_graph::Vertex<size_t>(i, i));
+        g.add_vertex(simple_graph::Vertex<size_t>(i, i));
     }
 
     EXPECT_EQ(4, g.vertex_num());

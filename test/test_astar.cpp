@@ -20,14 +20,14 @@ static float dist(const simple_graph::ListGraph<false, std::pair<float, float>, 
 
 TEST_F(ListGraphUndirectedTest, test_astar_long)
 {
-    g.set_vertex(simple_graph::Vertex<std::pair<float, float>>(0, std::make_pair(0.0f, 0.0f)));
-    g.set_vertex(simple_graph::Vertex<std::pair<float, float>>(1, std::make_pair(1.0f, 1.0f)));
-    g.set_vertex(simple_graph::Vertex<std::pair<float, float>>(2, std::make_pair(2.0f, 2.0f)));
-    g.set_vertex(simple_graph::Vertex<std::pair<float, float>>(3, std::make_pair(5.0f, 5.0f)));
-    g.set_vertex(simple_graph::Vertex<std::pair<float, float>>(4, std::make_pair(7.5f, 7.5f)));
-    g.set_vertex(simple_graph::Vertex<std::pair<float, float>>(5, std::make_pair(3.0f, 1.0f)));
-    g.set_vertex(simple_graph::Vertex<std::pair<float, float>>(6, std::make_pair(10.0f, 1.0f)));
-    g.set_vertex(simple_graph::Vertex<std::pair<float, float>>(7, std::make_pair(10.0f, 10.0f)));
+    g.add_vertex(simple_graph::Vertex<std::pair<float, float>>(0, std::make_pair(0.0f, 0.0f)));
+    g.add_vertex(simple_graph::Vertex<std::pair<float, float>>(1, std::make_pair(1.0f, 1.0f)));
+    g.add_vertex(simple_graph::Vertex<std::pair<float, float>>(2, std::make_pair(2.0f, 2.0f)));
+    g.add_vertex(simple_graph::Vertex<std::pair<float, float>>(3, std::make_pair(5.0f, 5.0f)));
+    g.add_vertex(simple_graph::Vertex<std::pair<float, float>>(4, std::make_pair(7.5f, 7.5f)));
+    g.add_vertex(simple_graph::Vertex<std::pair<float, float>>(5, std::make_pair(3.0f, 1.0f)));
+    g.add_vertex(simple_graph::Vertex<std::pair<float, float>>(6, std::make_pair(10.0f, 1.0f)));
+    g.add_vertex(simple_graph::Vertex<std::pair<float, float>>(7, std::make_pair(10.0f, 10.0f)));
 
     EXPECT_EQ(8, g.vertex_num());
 
@@ -53,14 +53,14 @@ TEST_F(ListGraphUndirectedTest, test_astar_long)
 
 TEST_F(ListGraphUndirectedTest, test_astar_short)
 {
-    g.set_vertex(simple_graph::Vertex<std::pair<float, float>>(0, std::make_pair(0.0f, 0.0f)));
-    g.set_vertex(simple_graph::Vertex<std::pair<float, float>>(1, std::make_pair(1.0f, 1.0f)));
-    g.set_vertex(simple_graph::Vertex<std::pair<float, float>>(2, std::make_pair(2.0f, 2.0f)));
-    g.set_vertex(simple_graph::Vertex<std::pair<float, float>>(3, std::make_pair(5.0f, 5.0f)));
-    g.set_vertex(simple_graph::Vertex<std::pair<float, float>>(4, std::make_pair(15.0f, 15.0f)));
-    g.set_vertex(simple_graph::Vertex<std::pair<float, float>>(5, std::make_pair(3.0f, 1.0f)));
-    g.set_vertex(simple_graph::Vertex<std::pair<float, float>>(6, std::make_pair(10.0f, 1.0f)));
-    g.set_vertex(simple_graph::Vertex<std::pair<float, float>>(7, std::make_pair(10.0f, 10.0f)));
+    g.add_vertex(simple_graph::Vertex<std::pair<float, float>>(0, std::make_pair(0.0f, 0.0f)));
+    g.add_vertex(simple_graph::Vertex<std::pair<float, float>>(1, std::make_pair(1.0f, 1.0f)));
+    g.add_vertex(simple_graph::Vertex<std::pair<float, float>>(2, std::make_pair(2.0f, 2.0f)));
+    g.add_vertex(simple_graph::Vertex<std::pair<float, float>>(3, std::make_pair(5.0f, 5.0f)));
+    g.add_vertex(simple_graph::Vertex<std::pair<float, float>>(4, std::make_pair(15.0f, 15.0f)));
+    g.add_vertex(simple_graph::Vertex<std::pair<float, float>>(5, std::make_pair(3.0f, 1.0f)));
+    g.add_vertex(simple_graph::Vertex<std::pair<float, float>>(6, std::make_pair(10.0f, 1.0f)));
+    g.add_vertex(simple_graph::Vertex<std::pair<float, float>>(7, std::make_pair(10.0f, 10.0f)));
 
     EXPECT_EQ(8, g.vertex_num());
 
