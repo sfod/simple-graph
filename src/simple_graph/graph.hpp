@@ -6,16 +6,11 @@
 
 namespace simple_graph {
 
-int creations = 0;
-int copies = 0;
-int moves = 0;
-int assigns = 0;
-
 template<typename T>
 class Vertex {
 public:
     Vertex() : idx_(0), data_() {
-        ++creations;
+        ++default_creations;
     }
     Vertex(const Vertex<T> &v) {
         ++copies;
@@ -32,7 +27,9 @@ public:
     explicit Vertex(size_t idx) : idx_(idx), data_() {
         ++creations;
     }
-    Vertex(size_t idx, const T &data) : idx_(idx), data_(data) {}
+    Vertex(size_t idx, const T &data) : idx_(idx), data_(data) {
+        ++creations;
+    }
     virtual ~Vertex() = default;
 
     size_t idx() const { return idx_; }
@@ -62,10 +59,30 @@ public:
         return *this;
     }
 
+public:
+    static int default_creations;
+    static int creations;
+    static int copies;
+    static int moves;
+    static int assigns;
+
+    static std::string stat() {
+        return "creations: " + std::to_string(default_creations) + " + " + std::to_string(creations)
+                + "; copies: " + std::to_string(copies)
+                + "; moves: " + std::to_string(moves)
+                + "; assigns: " + std::to_string(assigns);
+    }
+
 private:
     size_t idx_;
     T data_;
 };
+
+template<typename T> int Vertex<T>::default_creations = 0;
+template<typename T> int Vertex<T>::creations = 0;
+template<typename T> int Vertex<T>::copies = 0;
+template<typename T> int Vertex<T>::moves = 0;
+template<typename T> int Vertex<T>::assigns = 0;
 
 template<typename T>
 class Edge {
