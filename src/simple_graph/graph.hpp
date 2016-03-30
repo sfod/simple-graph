@@ -90,9 +90,47 @@ class Edge {
             "Integer of floating point required.");
 
 public:
-    Edge() : idx1_(0), idx2_(0), weight_() {}
-    Edge(size_t idx1, size_t idx2) : idx1_(idx1), idx2_(idx2), weight_(1) {}
-    Edge(size_t idx1, size_t idx2, const T &weight) : idx1_(idx1), idx2_(idx2), weight_(weight) {}
+    Edge() : idx1_(0), idx2_(0), weight_() {
+        ++default_creations;
+    }
+    Edge(const Edge<T> &edge) : idx1_(edge.idx1_), idx2_(edge.idx2_), weight_(edge.weight_) {
+        ++copies;
+    }
+    Edge(Edge<T> &&edge) noexcept(noexcept(
+                std::is_nothrow_move_constructible<T>::value
+                    && std::is_nothrow_move_assignable<T>::value)) : idx1_(edge.idx1_), idx2_(edge.idx2_) {
+        ++moves;
+        std::swap(weight_, edge.weight_);
+    }
+
+    Edge(size_t idx1, size_t idx2) : idx1_(idx1), idx2_(idx2), weight_(1) {
+        ++creations;
+    }
+    Edge(size_t idx1, size_t idx2, const T &weight) : idx1_(idx1), idx2_(idx2), weight_(weight) {
+        ++creations;
+    }
+
+    Edge &operator=(const Edge<T> &edge) {
+        ++assigns;
+        if (this != &edge) {
+            idx1_ = edge.idx1_;
+            idx2_ = edge.idx2_;
+            weight_ = edge.weight_;
+        }
+        return *this;
+    }
+
+    Edge &operator=(Edge<T> &&edge) noexcept(noexcept(
+                std::is_nothrow_move_constructible<T>::value
+                    && std::is_nothrow_move_assignable<T>::value)) {
+        ++moves;
+        if (this != &edge) {
+            idx1_ = edge.idx1_;
+            idx2_ = edge.idx2_;
+            std::swap(weight_, edge.weight_);
+        }
+        return *this;
+    }
 
     virtual ~Edge() = default;
     size_t idx1() const { return idx1_; }
@@ -167,6 +205,7 @@ public:
     virtual size_t vertex_num() const = 0;
 
     virtual int add_edge(const Edge<E> &edge) = 0;
+    virtual int add_edge(Edge<E> &&edge) = 0;
     virtual const Edge<E> &edge(size_t idx1, size_t idx2) const = 0;
     virtual int rm_edge(const Edge<E> &edge) = 0;
 

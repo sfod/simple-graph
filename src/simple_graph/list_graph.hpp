@@ -156,6 +156,27 @@ public:
         return 0;
     }
 
+    virtual int add_edge(Edge<E> &&edge) override {
+        if (std::max(edge.idx1(), edge.idx2()) >= vertex_num_) {
+            return -1;
+        }
+        neighbours_[edge.idx1()].insert(edge.idx2());
+        if (!Dir) {
+            neighbours_[edge.idx2()].insert(edge.idx1());
+        }
+
+        if (Dir) {
+            edges_[edge.idx1()].emplace(edge.idx2(), std::move(edge));
+        }
+        // store undirected edge as min_idx->max_idx
+        else {
+            std::pair<int, int> p = std::minmax(edge.idx1(), edge.idx2());
+            edges_[p.first].emplace(p.second, std::move(edge));
+        }
+
+        return 0;
+    }
+
     virtual const Edge<E> &edge(size_t idx1, size_t idx2) const override
     {
         if (Dir) {
