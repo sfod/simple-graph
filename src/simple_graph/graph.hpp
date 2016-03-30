@@ -137,12 +137,30 @@ public:
     size_t idx2() const { return idx2_; }
     const T &weight() const { return weight_; }
 
+public:
+    static int default_creations;
+    static int creations;
+    static int copies;
+    static int moves;
+    static int assigns;
+
+    static std::string stat() {
+        return "creations: " + std::to_string(default_creations) + " + " + std::to_string(creations)
+                + "; copies: " + std::to_string(copies)
+                + "; moves: " + std::to_string(moves)
+                + "; assigns: " + std::to_string(assigns);
+    }
 private:
     size_t idx1_;
     size_t idx2_;
     T weight_;
 };
 
+template<typename T> int Edge<T>::default_creations = 0;
+template<typename T> int Edge<T>::creations = 0;
+template<typename T> int Edge<T>::copies = 0;
+template<typename T> int Edge<T>::moves = 0;
+template<typename T> int Edge<T>::assigns = 0;
 
 template<typename T>
 class IteratorImplBase {
