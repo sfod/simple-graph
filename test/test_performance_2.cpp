@@ -24,8 +24,6 @@ int main()
         }
     }
 
-    std::cout << "creations: " << simple_graph::creations << std::endl;
-    std::cout << "copies: " << simple_graph::copies << std::endl;
-    std::cout << "moves: " << simple_graph::moves << std::endl;
-    std::cout << "assigns: " << simple_graph::assigns << std::endl;
+    std::cout << "vertex stat: " << simple_graph::Vertex<int>::stat() << std::endl;
+    std::cout << "edge stat: " << simple_graph::Vertex<int>::stat() << std::endl;
 }
