@@ -14,7 +14,7 @@ TEST_F(ListGraphUndirectedTest, test_bellman_ford_long)
     for (size_t i = 0; i < 8; ++i) {
         g.add_vertex(simple_graph::Vertex<int>(i));
     }
-    EXPECT_EQ(8, g.vertex_num());
+    ASSERT_EQ(8, g.vertex_num());
 
     g.add_edge(simple_graph::Edge<ssize_t>(0, 1, 1));
     g.add_edge(simple_graph::Edge<ssize_t>(1, 2, 2));
@@ -38,7 +38,7 @@ TEST_F(ListGraphUndirectedTest, test_bellman_ford_short)
     for (size_t i = 0; i < 8; ++i) {
         g.add_vertex(simple_graph::Vertex<int>(i));
     }
-    EXPECT_EQ(8, g.vertex_num());
+    ASSERT_EQ(8, g.vertex_num());
 
     g.add_edge(simple_graph::Edge<ssize_t>(0, 1, 1));
     g.add_edge(simple_graph::Edge<ssize_t>(1, 2, 2));
@@ -58,12 +58,27 @@ TEST_F(ListGraphUndirectedTest, test_bellman_ford_short)
     EXPECT_EQ(7, path[3]);
 }
 
+TEST_F(ListGraphUndirectedTest, test_bellman_ford_no_path)
+{
+    for (size_t i = 0; i < 4; ++i) {
+        g.add_vertex(simple_graph::Vertex<int>(i));
+    }
+    ASSERT_EQ(4, g.vertex_num());
+
+    g.add_edge(simple_graph::Edge<ssize_t>(0, 1, 1));
+    g.add_edge(simple_graph::Edge<ssize_t>(2, 3, 3));
+
+    std::vector<size_t> path;
+    EXPECT_EQ(false, simple_graph::bellman_ford(g, 0, 3, &path));
+    EXPECT_EQ(0, path.size());
+}
+
 TEST_F(ListGraphUndirectedTest, test_bellman_ford_negative_weigths)
 {
     for (size_t i = 0; i < 8; ++i) {
         g.add_vertex(simple_graph::Vertex<int>(i));
     }
-    EXPECT_EQ(8, g.vertex_num());
+    ASSERT_EQ(8, g.vertex_num());
 
     g.add_edge(simple_graph::Edge<ssize_t>(0, 1, -1));
     g.add_edge(simple_graph::Edge<ssize_t>(1, 2, -2));
@@ -80,6 +95,24 @@ TEST_F(ListGraphUndirectedTest, test_bellman_ford_negative_weigths)
     EXPECT_EQ(0, path[0]);
     EXPECT_EQ(1, path[1]);
     EXPECT_EQ(4, path[4]);
+}
+
+TEST_F(ListGraphUndirectedTest, test_bellman_ford_negative_cycles)
+{
+    for (size_t i = 0; i < 5; ++i) {
+        g.add_vertex(simple_graph::Vertex<int>(i));
+    }
+    ASSERT_EQ(5, g.vertex_num());
+
+    g.add_edge(simple_graph::Edge<ssize_t>(0, 1, -1));
+    g.add_edge(simple_graph::Edge<ssize_t>(1, 2, -1));
+    g.add_edge(simple_graph::Edge<ssize_t>(2, 0, -1));
+    g.add_edge(simple_graph::Edge<ssize_t>(2, 3, 2));
+    g.add_edge(simple_graph::Edge<ssize_t>(3, 4, 2));
+
+    std::vector<size_t> path;
+    EXPECT_EQ(false, simple_graph::bellman_ford(g, 0, 4, &path));
+    EXPECT_EQ(0, path.size());
 }
 
 }  // namespace
