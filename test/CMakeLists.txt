@@ -15,8 +15,13 @@ target_link_libraries(test_bellman_ford ${GTEST_LIBRARIES} pthread)
 if (ENABLE_BENCHMARK)
     include_directories(../libs/benchmark/include)
     link_directories(${CMAKE_BINARY_DIR}/libs/benchmark/src/)
+
     add_executable(test_performance test_performance.cpp)
     target_link_libraries(test_performance pthread benchmark)
+
     add_executable(test_performance2 test_performance_2.cpp)
     target_link_libraries(test_performance2)
+
+    add_executable(bench_performance_bellman_ford bench_performance_bellman_ford.cpp)
+    target_link_libraries(bench_performance_bellman_ford)
 endif()
