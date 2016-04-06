@@ -86,6 +86,26 @@ TEST_F(ListGraphUndirectedTest, test_astar_short)
     EXPECT_EQ(6, path[2]);
 }
 
+TEST_F(ListGraphUndirectedTest, test_astar_no_path)
+{
+    g.add_vertex(simple_graph::Vertex<std::pair<float, float>>(0, std::make_pair(0.0f, 0.0f)));
+    g.add_vertex(simple_graph::Vertex<std::pair<float, float>>(1, std::make_pair(1.0f, 1.0f)));
+    g.add_vertex(simple_graph::Vertex<std::pair<float, float>>(2, std::make_pair(2.0f, 2.0f)));
+    g.add_vertex(simple_graph::Vertex<std::pair<float, float>>(3, std::make_pair(5.0f, 5.0f)));
+
+    ASSERT_EQ(4, g.vertex_num());
+
+    g.add_edge(simple_graph::Edge<float>(0, 1, dist(g, 0, 1)));
+    g.add_edge(simple_graph::Edge<float>(2, 3, dist(g, 2, 3)));
+
+    std::vector<vertex_index_t> path;
+    std::function<float(vertex_index_t, vertex_index_t)> heuristic = [=](vertex_index_t c, vertex_index_t r) {
+        return dist(g, c, r);
+    };
+    EXPECT_EQ(false, astar(g, 0, 3, heuristic, &path));
+    EXPECT_EQ(0, path.size());
+}
+
 }  // namespace
 
 int main(int argc, char **argv)
