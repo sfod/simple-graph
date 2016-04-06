@@ -22,6 +22,6 @@ if (ENABLE_BENCHMARK)
     add_executable(test_performance2 test_performance_2.cpp)
     target_link_libraries(test_performance2)
 
-    add_executable(bench_performance_bellman_ford bench_performance_bellman_ford.cpp)
-    target_link_libraries(bench_performance_bellman_ford)
+    add_executable(bench_bellman_ford bench_bellman_ford.cpp)
+    target_link_libraries(bench_bellman_ford pthread benchmark)
 endif()
