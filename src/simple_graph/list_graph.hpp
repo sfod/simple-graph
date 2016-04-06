@@ -10,7 +10,7 @@ namespace simple_graph {
 
 template <bool Dir, typename V, typename E>
 class ListGraph : public Graph<V, E> {
-    typedef std::map<size_t, std::map<size_t, Edge<E>>> Edges;
+    typedef std::map<vertex_index_t, std::map<vertex_index_t, Edge<E>>> Edges;
 
 private:
     class ListEdgesWrapper : public Graph<V, E>::EdgesWrapper {
@@ -29,8 +29,8 @@ private:
 
             virtual IteratorImplBase<Edge<E>> &operator++() override {
                 if (current_ != NULL) {
-                    size_t idx1 = current_->idx1();
-                    size_t idx2 = current_->idx2();
+                    vertex_index_t idx1 = current_->idx1();
+                    vertex_index_t idx2 = current_->idx2();
                     auto it = edges_->at(idx1).upper_bound(idx2);
                     if (it != edges_->at(idx1).end()) {
                         current_ = &it->second;
@@ -81,14 +81,14 @@ public:
         if (vertex.idx() < 0) {
             return -1;
         }
-        if (vertex.idx() >= vertex_num_) {
-            vertex_num_ = vertex.idx() + 1;
+        if (vertex.idx() >= static_cast<size_t>(vertex_num_)) {
+            vertex_num_ = static_cast<size_t>(vertex.idx()) + 1;
         }
         if (vertices_.count(vertex.idx()) != 0) {
             return -1;
         }
         vertices_.insert(std::make_pair(vertex.idx(), vertex));
-        neighbours_[vertex.idx()] = std::set<size_t>();
+        neighbours_[vertex.idx()] = std::set<vertex_index_t>();
         return 0;
     }
 
@@ -96,27 +96,33 @@ public:
         if (vertex.idx() < 0) {
             return -1;
         }
-        if (vertex.idx() >= vertex_num_) {
-            vertex_num_ = vertex.idx() + 1;
+        if (vertex.idx() >= static_cast<size_t>(vertex_num_)) {
+            vertex_num_ = static_cast<size_t>(vertex.idx()) + 1;
         }
         if (vertices_.count(vertex.idx()) != 0) {
             return -1;
         }
-        neighbours_[vertex.idx()] = std::set<size_t>();
+        neighbours_[vertex.idx()] = std::set<vertex_index_t>();
         vertices_.emplace(vertex.idx(), std::move(vertex));
         return 0;
     }
 
 
     virtual int set_vertex(const Vertex<V> &vertex) override {
-        if (vertex.idx() >= vertex_num_) {
-            vertex_num_ = vertex.idx() + 1;
+        if (vertex.idx() < 0) {
+            return -1;
+        }
+        if (vertex.idx() >= static_cast<size_t>(vertex_num_)) {
+            vertex_num_ = static_cast<size_t>(vertex.idx()) + 1;
         }
         vertices_[vertex.idx()] = vertex;
         return 0;
     }
 
     void rm_vertex(const Vertex<V> &vertex) override {
+        if (vertex.idx() < 0) {
+            return;
+        }
         if (vertices_.count(vertex.idx()) > 0) {
             vertices_.erase(vertex.idx());
         }
@@ -125,11 +131,11 @@ public:
         }
     }
 
-    virtual const std::set<size_t> &adjacent_vertices(size_t idx) const override {
+    virtual const std::set<vertex_index_t> &adjacent_vertices(vertex_index_t idx) const override {
         return neighbours_.at(idx);
     }
 
-    virtual const Vertex<V> &vertex(size_t idx) const override {
+    virtual const Vertex<V> &vertex(vertex_index_t idx) const override {
         return vertices_.at(idx);
     }
 
@@ -177,7 +183,7 @@ public:
         return 0;
     }
 
-    virtual const Edge<E> &edge(size_t idx1, size_t idx2) const override
+    virtual const Edge<E> &edge(vertex_index_t idx1, vertex_index_t idx2) const override
     {
         if (Dir) {
             return edges_.at(idx1).at(idx2);
@@ -222,8 +228,8 @@ public:
 
 private:
     size_t vertex_num_;
-    std::unordered_map<size_t, Vertex<V>> vertices_;
-    std::unordered_map<size_t, std::set<size_t>> neighbours_;
+    std::unordered_map<vertex_index_t, Vertex<V>> vertices_;
+    std::unordered_map<vertex_index_t, std::set<vertex_index_t>> neighbours_;
     Edges edges_;
     ListEdgesWrapper edges_wrapper_;
 };

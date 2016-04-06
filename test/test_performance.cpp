@@ -4,6 +4,8 @@
 #include "simple_graph/bfs.hpp"
 #include "simple_graph/astar.hpp"
 
+using simple_graph::vertex_index_t;
+
 static void bench_creation(benchmark::State &state)
 {
     simple_graph::ListGraph<false, int, int> g;
@@ -19,7 +21,7 @@ static void bench_creation(benchmark::State &state)
         state.ResumeTiming();
 
         for (int i = 0; i < state.range_x(); ++i) {
-            g.add_vertex(simple_graph::Vertex<int>(static_cast<size_t>(i)));
+            g.add_vertex(simple_graph::Vertex<int>(i));
         }
         for (auto &d : data) {
             g.add_edge(simple_graph::Edge<int>(d.first, d.second));
@@ -41,7 +43,7 @@ static void bench_bfs_path_length(benchmark::State &state)
     std::function<bool(int)> f = [&](int c) { return c == state.range_x() - 1; };
 
     while (state.KeepRunning()) {
-        std::vector<size_t> path;
+        std::vector<vertex_index_t> path;
         benchmark::DoNotOptimize(simple_graph::bfs(g, 0, f, &path));
     }
 }
@@ -57,12 +59,12 @@ static void bench_astar_path_length(benchmark::State &state)
         g.add_edge(simple_graph::Edge<ssize_t>(i, i + 1, 1));
     }
 
-    std::function<float(size_t, size_t)> heuristic = [=](size_t c, size_t r) {
+    std::function<float(vertex_index_t, vertex_index_t)> heuristic = [=](vertex_index_t c, vertex_index_t r) {
         return r - c;
     };
 
     while (state.KeepRunning()) {
-        std::vector<size_t> path;
+        std::vector<vertex_index_t> path;
         benchmark::DoNotOptimize(simple_graph::astar(g, 0, state.range_x() - 1, heuristic, &path));
     }
 }

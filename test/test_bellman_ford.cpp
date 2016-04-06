@@ -4,6 +4,8 @@
 
 namespace {
 
+using simple_graph::vertex_index_t;
+
 class ListGraphUndirectedTest : public ::testing::Test {
 protected:
     simple_graph::ListGraph<false, int, ssize_t> g;
@@ -11,7 +13,7 @@ protected:
 
 TEST_F(ListGraphUndirectedTest, test_bellman_ford_long)
 {
-    for (size_t i = 0; i < 8; ++i) {
+    for (vertex_index_t i = 0; i < 8; ++i) {
         g.add_vertex(simple_graph::Vertex<int>(i));
     }
     ASSERT_EQ(8, g.vertex_num());
@@ -25,7 +27,7 @@ TEST_F(ListGraphUndirectedTest, test_bellman_ford_long)
     g.add_edge(simple_graph::Edge<ssize_t>(5, 6, 20));
     g.add_edge(simple_graph::Edge<ssize_t>(6, 7, 20));
 
-    std::vector<size_t> path;
+    std::vector<vertex_index_t> path;
     EXPECT_EQ(true, simple_graph::bellman_ford(g, 0, 7, &path));
     EXPECT_EQ(6, path.size());
     EXPECT_EQ(0, path[0]);
@@ -49,7 +51,7 @@ TEST_F(ListGraphUndirectedTest, test_bellman_ford_short)
     g.add_edge(simple_graph::Edge<ssize_t>(5, 6, 1));
     g.add_edge(simple_graph::Edge<ssize_t>(6, 7, 1));
 
-    std::vector<size_t> path;
+    std::vector<vertex_index_t> path;
     EXPECT_EQ(true, simple_graph::bellman_ford(g, 0, 7, &path));
     EXPECT_EQ(4, path.size());
     EXPECT_EQ(0, path[0]);
@@ -68,7 +70,7 @@ TEST_F(ListGraphUndirectedTest, test_bellman_ford_no_path)
     g.add_edge(simple_graph::Edge<ssize_t>(0, 1, 1));
     g.add_edge(simple_graph::Edge<ssize_t>(2, 3, 3));
 
-    std::vector<size_t> path;
+    std::vector<vertex_index_t> path;
     EXPECT_EQ(false, simple_graph::bellman_ford(g, 0, 3, &path));
     EXPECT_EQ(0, path.size());
 }
@@ -89,7 +91,7 @@ TEST_F(ListGraphUndirectedTest, test_bellman_ford_negative_weigths)
     g.add_edge(simple_graph::Edge<ssize_t>(5, 6, -1));
     g.add_edge(simple_graph::Edge<ssize_t>(6, 7, -1));
 
-    std::vector<size_t> path;
+    std::vector<vertex_index_t> path;
     ASSERT_EQ(true, simple_graph::bellman_ford(g, 0, 7, &path));
     ASSERT_EQ(6, path.size());
     EXPECT_EQ(0, path[0]);
@@ -110,7 +112,7 @@ TEST_F(ListGraphUndirectedTest, test_bellman_ford_negative_cycles)
     g.add_edge(simple_graph::Edge<ssize_t>(2, 3, 2));
     g.add_edge(simple_graph::Edge<ssize_t>(3, 4, 2));
 
-    std::vector<size_t> path;
+    std::vector<vertex_index_t> path;
     EXPECT_EQ(false, simple_graph::bellman_ford(g, 0, 4, &path));
     EXPECT_EQ(0, path.size());
 }

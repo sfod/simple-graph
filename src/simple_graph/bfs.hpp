@@ -8,7 +8,8 @@
 namespace simple_graph {
 
 template<typename V, typename E>
-bool bfs(const Graph<V, E> &g, size_t start_idx, std::function<bool(V)> &pred, std::vector<size_t> *path)
+bool bfs(const Graph<V, E> &g, vertex_index_t start_idx, std::function<bool(V)> &pred,
+        std::vector<vertex_index_t> *path)
 {
     size_t vnum = g.vertex_num();
     if (start_idx > vnum) {
@@ -16,18 +17,18 @@ bool bfs(const Graph<V, E> &g, size_t start_idx, std::function<bool(V)> &pred, s
     }
 
     std::vector<bool> visited(vnum, false);
-    std::vector<size_t> prev(vnum, 0);
+    std::vector<vertex_index_t> prev(vnum, 0);
     std::vector<size_t> dist(vnum, vnum + 1);
-    std::queue<size_t> queue;
+    std::queue<vertex_index_t> queue;
 
     bool vertex_found = false;
 
     queue.push(start_idx);
     dist[start_idx] = 0;
-    size_t end_idx = 0;
+    vertex_index_t end_idx = 0;
 
     while (!vertex_found && !queue.empty()) {
-        size_t u = queue.front();
+        vertex_index_t u = queue.front();
         queue.pop();
         if (visited[u]) {
             continue;
@@ -35,7 +36,7 @@ bool bfs(const Graph<V, E> &g, size_t start_idx, std::function<bool(V)> &pred, s
 
         visited[u] = true;
 
-        const std::set<size_t> &vertices = g.adjacent_vertices(u);
+        const std::set<vertex_index_t> &vertices = g.adjacent_vertices(u);
 
         for (auto v : vertices) {
             if (!visited[v]) {
@@ -57,7 +58,7 @@ bool bfs(const Graph<V, E> &g, size_t start_idx, std::function<bool(V)> &pred, s
 
     // FIXME optimize
     if (vertex_found) {
-        size_t v = end_idx;
+        vertex_index_t v = end_idx;
         do {
             path->push_back(v);
             v = prev[v];

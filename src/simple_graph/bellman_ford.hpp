@@ -6,10 +6,11 @@
 namespace simple_graph {
 
 template<typename V, typename E>
-bool bellman_ford(const Graph<V, E> &g, size_t start_idx, size_t goal_idx, std::vector<size_t> *path)
+bool bellman_ford(const Graph<V, E> &g, vertex_index_t start_idx, vertex_index_t goal_idx,
+        std::vector<vertex_index_t> *path)
 {
     std::vector<E> distance(g.vertex_num(), std::numeric_limits<E>::max());
-    std::vector<size_t> predecessor(g.vertex_num(), 0);
+    std::vector<vertex_index_t> predecessor(g.vertex_num(), 0);
 
     distance[start_idx] = 0;
 
@@ -38,7 +39,7 @@ bool bellman_ford(const Graph<V, E> &g, size_t start_idx, size_t goal_idx, std::
         return false;
     }
 
-    size_t idx = goal_idx;
+    vertex_index_t idx = goal_idx;
     while (idx != start_idx) {
         path->push_back(idx);
         idx = predecessor[idx];

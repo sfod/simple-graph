@@ -4,6 +4,8 @@
 
 namespace {
 
+using simple_graph::vertex_index_t;
+
 class ListGraphUndirectedTest : public ::testing::Test {
 protected:
     simple_graph::ListGraph<false, size_t, size_t> g;
@@ -67,7 +69,7 @@ TEST_F(ListGraphUndirectedTest, test_bfs_direct_order)
     g.add_edge(simple_graph::Edge<size_t>(1, 2));
     g.add_edge(simple_graph::Edge<size_t>(2, 3));
 
-    std::vector<size_t> path;
+    std::vector<vertex_index_t> path;
     size_t p = 3;
     std::function<bool(size_t)> f = [&](size_t c) { return c == p; };
     EXPECT_EQ(true, bfs(g, 0, f, &path));
@@ -75,7 +77,7 @@ TEST_F(ListGraphUndirectedTest, test_bfs_direct_order)
 
 TEST_F(ListGraphUndirectedTest, test_bfs_reverse_order)
 {
-    for (int i = 0; i < 4; ++i) {
+    for (size_t i = 0; i < 4; ++i) {
         g.add_vertex(simple_graph::Vertex<size_t>(i, i));
     }
 
@@ -85,7 +87,7 @@ TEST_F(ListGraphUndirectedTest, test_bfs_reverse_order)
     g.add_edge(simple_graph::Edge<size_t>(1, 2));
     g.add_edge(simple_graph::Edge<size_t>(2, 3));
 
-    std::vector<size_t> path;
+    std::vector<vertex_index_t> path;
     size_t p = 0;
     std::function<bool(size_t)> f = [&](size_t c) { return c == p; };
     EXPECT_EQ(true, bfs(g, 3, f, &path));

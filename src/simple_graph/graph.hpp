@@ -6,10 +6,12 @@
 
 namespace simple_graph {
 
+typedef ssize_t vertex_index_t;
+
 template<typename T>
 class Vertex {
 public:
-    Vertex() : idx_(0), data_() {
+    Vertex() : idx_(-1), data_() {
         ++default_creations;
     }
     Vertex(const Vertex<T> &v) {
@@ -24,15 +26,15 @@ public:
         idx_ = v.idx_;
         std::swap(data_, v.data_);
     }
-    explicit Vertex(size_t idx) : idx_(idx), data_() {
+    explicit Vertex(vertex_index_t idx) : idx_(idx), data_() {
         ++creations;
     }
-    Vertex(size_t idx, const T &data) : idx_(idx), data_(data) {
+    Vertex(vertex_index_t idx, const T &data) : idx_(idx), data_(data) {
         ++creations;
     }
     virtual ~Vertex() = default;
 
-    size_t idx() const { return idx_; }
+    vertex_index_t idx() const { return idx_; }
     T data() const { return data_; }
 
     bool operator<(const Vertex<T> &vertex) const {
@@ -74,7 +76,7 @@ public:
     }
 
 private:
-    size_t idx_;
+    vertex_index_t idx_;
     T data_;
 };
 
@@ -90,7 +92,7 @@ class Edge {
             "Integer of floating point required.");
 
 public:
-    Edge() : idx1_(0), idx2_(0), weight_() {
+    Edge() : idx1_(-1), idx2_(-1), weight_() {
         ++default_creations;
     }
     Edge(const Edge<T> &edge) : idx1_(edge.idx1_), idx2_(edge.idx2_), weight_(edge.weight_) {
@@ -103,10 +105,10 @@ public:
         std::swap(weight_, edge.weight_);
     }
 
-    Edge(size_t idx1, size_t idx2) : idx1_(idx1), idx2_(idx2), weight_(1) {
+    Edge(vertex_index_t idx1, vertex_index_t idx2) : idx1_(idx1), idx2_(idx2), weight_(1) {
         ++creations;
     }
-    Edge(size_t idx1, size_t idx2, const T &weight) : idx1_(idx1), idx2_(idx2), weight_(weight) {
+    Edge(vertex_index_t idx1, vertex_index_t idx2, const T &weight) : idx1_(idx1), idx2_(idx2), weight_(weight) {
         ++creations;
     }
 
@@ -133,8 +135,8 @@ public:
     }
 
     virtual ~Edge() = default;
-    size_t idx1() const { return idx1_; }
-    size_t idx2() const { return idx2_; }
+    vertex_index_t idx1() const { return idx1_; }
+    vertex_index_t idx2() const { return idx2_; }
     const T &weight() const { return weight_; }
 
 public:
@@ -151,8 +153,8 @@ public:
                 + "; assigns: " + std::to_string(assigns);
     }
 private:
-    size_t idx1_;
-    size_t idx2_;
+    vertex_index_t idx1_;
+    vertex_index_t idx2_;
     T weight_;
 };
 
@@ -217,14 +219,14 @@ public:
     virtual int set_vertex(const Vertex<V> &vertex) = 0;
     virtual void rm_vertex(const Vertex<V> &vertex) = 0;
     // TODO measure performance
-    virtual const std::set<size_t> &adjacent_vertices(size_t idx) const = 0;
+    virtual const std::set<vertex_index_t> &adjacent_vertices(vertex_index_t idx) const = 0;
 
-    virtual const Vertex<V> &vertex(size_t idx) const = 0;
+    virtual const Vertex<V> &vertex(vertex_index_t idx) const = 0;
     virtual size_t vertex_num() const = 0;
 
     virtual int add_edge(const Edge<E> &edge) = 0;
     virtual int add_edge(Edge<E> &&edge) = 0;
-    virtual const Edge<E> &edge(size_t idx1, size_t idx2) const = 0;
+    virtual const Edge<E> &edge(vertex_index_t idx1, vertex_index_t idx2) const = 0;
     virtual int rm_edge(const Edge<E> &edge) = 0;
 
     virtual EdgesWrapper &edges() = 0;

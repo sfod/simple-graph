@@ -6,9 +6,9 @@
 
 namespace simple_graph {
 
-size_t min_idx(const std::set<size_t> &opened, const std::vector<float> &f_score)
+vertex_index_t min_idx(const std::set<vertex_index_t> &opened, const std::vector<float> &f_score)
 {
-    size_t min_idx = 0;
+    vertex_index_t min_idx = 0;
 
     float min = std::numeric_limits<float>::max();
     bool inited = false;
@@ -24,14 +24,14 @@ size_t min_idx(const std::set<size_t> &opened, const std::vector<float> &f_score
 }
 
 template<typename V, typename E>
-bool astar(const Graph<V, E> &g, size_t start_idx, size_t goal_idx,
-        std::function<float(size_t, size_t)> &heuristic, std::vector<size_t> *path)
+bool astar(const Graph<V, E> &g, vertex_index_t start_idx, vertex_index_t goal_idx,
+        std::function<float(vertex_index_t, vertex_index_t)> &heuristic, std::vector<vertex_index_t> *path)
 {
     size_t vnum = g.vertex_num();
 
-    std::set<size_t> closed;
-    std::set<size_t> opened;
-    std::vector<size_t> came_from(vnum, 0);
+    std::set<vertex_index_t> closed;
+    std::set<vertex_index_t> opened;
+    std::vector<vertex_index_t> came_from(vnum, 0);
     std::vector<float> g_score(vnum, std::numeric_limits<float>::max());
     std::vector<float> f_score(vnum, std::numeric_limits<float>::max());
 
@@ -42,7 +42,7 @@ bool astar(const Graph<V, E> &g, size_t start_idx, size_t goal_idx,
 
     bool vertex_found = false;
     while (!vertex_found && !opened.empty()) {
-        size_t current = min_idx(opened, f_score);
+        vertex_index_t current = min_idx(opened, f_score);
         if (current == goal_idx) {
             vertex_found = true;
             break;
@@ -50,7 +50,7 @@ bool astar(const Graph<V, E> &g, size_t start_idx, size_t goal_idx,
         opened.erase(current);
         closed.insert(current);
 
-        const std::set<size_t> &neighbours = g.adjacent_vertices(current);
+        const std::set<vertex_index_t> &neighbours = g.adjacent_vertices(current);
         for (auto neighbour : neighbours) {
             if (closed.count(neighbour) > 0) {
                 continue;
@@ -72,7 +72,7 @@ bool astar(const Graph<V, E> &g, size_t start_idx, size_t goal_idx,
 
     // FIXME optimize
     if (vertex_found) {
-        size_t idx = goal_idx;
+        vertex_index_t idx = goal_idx;
         do {
             path->push_back(idx);
             idx = came_from[idx];
