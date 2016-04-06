@@ -44,17 +44,90 @@ TEST_F(ListGraphUndirectedTest, test_add_edge)
     g.add_edge(simple_graph::Edge<size_t>(1, 2, 12));
     g.add_edge(simple_graph::Edge<size_t>(2, 3, 13));
 
-    simple_graph::Edge<size_t> e = g.edge(1, 2);
-    EXPECT_EQ(12, e.weight());
+    EXPECT_EQ(12, g.edge(1, 2).weight());
 
-    int expected_edges[3][3] = {{0, 1, 11}, {1, 2, 12}, {2, 3, 13}};
+    std::map<std::pair<vertex_index_t, vertex_index_t>, size_t> expected_edges = {
+            {{0, 1}, 11},
+            {{1, 2}, 12},
+            {{2, 3}, 13},
+            {{1, 0}, 11},
+            {{2, 1}, 12},
+            {{3, 2}, 13}
+    };
+
+    std::map<std::pair<vertex_index_t, vertex_index_t>, int> visited_edges = {
+            {{0, 1}, 0},
+            {{1, 2}, 0},
+            {{2, 3}, 0},
+            {{1, 0}, 0},
+            {{2, 1}, 0},
+            {{3, 2}, 0}
+    };
+
     int i = 0;
-    for (auto ep : g.edges()) {
-        EXPECT_EQ(expected_edges[i][0], ep.idx1());
-        EXPECT_EQ(expected_edges[i][1], ep.idx2());
-        EXPECT_EQ(expected_edges[i][2], ep.weight());
+    for (const auto &edge : g.edges()) {
+        const auto &e = std::make_pair(edge.idx1(), edge.idx2());
+        EXPECT_EQ(expected_edges[e], edge.weight());
+        EXPECT_EQ(1, visited_edges.count(e));
+        visited_edges[e]++;
         ++i;
     }
+
+    for (const auto &e : visited_edges) {
+        int visited_num = e.second;
+        EXPECT_EQ(1, visited_num) << "edge " << e.first.first << ":" << e.first.second;
+    }
+
+    EXPECT_EQ(6, i);
+}
+
+TEST_F(ListGraphUndirectedTest, test_add_edge_descending)
+{
+    for (size_t i = 0; i < 4; ++i) {
+        g.set_vertex(simple_graph::Vertex<size_t>(i, i));
+    }
+
+    EXPECT_EQ(4, g.vertex_num());
+
+    g.add_edge(simple_graph::Edge<size_t>(3, 2, 13));
+    g.add_edge(simple_graph::Edge<size_t>(2, 1, 12));
+    g.add_edge(simple_graph::Edge<size_t>(1, 0, 11));
+
+    EXPECT_EQ(12, g.edge(1, 2).weight());
+
+    std::map<std::pair<vertex_index_t, vertex_index_t>, size_t> expected_edges = {
+            {{0, 1}, 11},
+            {{1, 2}, 12},
+            {{2, 3}, 13},
+            {{1, 0}, 11},
+            {{2, 1}, 12},
+            {{3, 2}, 13}
+    };
+
+    std::map<std::pair<vertex_index_t, vertex_index_t>, int> visited_edges = {
+            {{0, 1}, 0},
+            {{1, 2}, 0},
+            {{2, 3}, 0},
+            {{1, 0}, 0},
+            {{2, 1}, 0},
+            {{3, 2}, 0}
+    };
+
+    int i = 0;
+    for (const auto &edge : g.edges()) {
+        const auto &e = std::make_pair(edge.idx1(), edge.idx2());
+        EXPECT_EQ(expected_edges[e], edge.weight());
+        EXPECT_EQ(1, visited_edges.count(e));
+        visited_edges[e]++;
+        ++i;
+    }
+
+    for (const auto &e : visited_edges) {
+        int visited_num = e.second;
+        EXPECT_EQ(1, visited_num) << "edge " << e.first.first << ":" << e.first.second;
+    }
+
+    EXPECT_EQ(6, i);
 }
 
 TEST_F(ListGraphUndirectedTest, test_bfs_direct_order)
