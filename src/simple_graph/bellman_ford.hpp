@@ -32,11 +32,11 @@ bool bellman_ford(const Graph<V, E> &g, vertex_index_t start_idx, vertex_index_t
     Graph<V, E> *fg = const_cast<Graph<V, E>*>(&g);
     for (size_t i = 0; i < g.vertex_num(); ++i) {
         bool changed = false;
-        for (auto e : fg->edges()) {
-            if (check_distance(distance[e.idx1()], e.weight())
-                    && (distance[e.idx1()] + e.weight() < distance[e.idx2()])) {
-                distance[e.idx2()] = distance[e.idx1()] + e.weight();
-                predecessor[e.idx2()] = e.idx1();
+        for (const auto &edge : fg->edges()) {
+            if (check_distance(distance[edge.idx1()], edge.weight())
+                    && (distance[edge.idx1()] + edge.weight() < distance[edge.idx2()])) {
+                distance[edge.idx2()] = distance[edge.idx1()] + edge.weight();
+                predecessor[edge.idx2()] = edge.idx1();
                 changed = true;
             }
         }
@@ -45,9 +45,9 @@ bool bellman_ford(const Graph<V, E> &g, vertex_index_t start_idx, vertex_index_t
         }
     }
 
-    for (auto e : fg->edges()) {
-        if (check_distance(distance[e.idx1()], e.weight())
-                && (distance[e.idx1()] + e.weight() < distance[e.idx2()])) {
+    for (const auto &edge : fg->edges()) {
+        if (check_distance(distance[edge.idx1()], edge.weight())
+                && (distance[edge.idx1()] + edge.weight() < distance[edge.idx2()])) {
             return false;
         }
     }
