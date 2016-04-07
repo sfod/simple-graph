@@ -1,8 +1,8 @@
 #include <random>
 #include "benchmark/benchmark.h"
 #include "simple_graph/list_graph.hpp"
-#include "simple_graph/bfs.hpp"
-#include "simple_graph/astar.hpp"
+#include "simple_graph/algorithm/bfs.hpp"
+#include "simple_graph/algorithm/astar.hpp"
 
 using simple_graph::vertex_index_t;
 

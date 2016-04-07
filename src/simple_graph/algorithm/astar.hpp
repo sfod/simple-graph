@@ -1,6 +1,6 @@
 #pragma once
 
-#include "graph.hpp"
+#include "simple_graph/graph.hpp"
 #include <functional>
 #include <set>
 

@@ -2,7 +2,7 @@
 
 #include <cassert>
 #include <vector>
-#include "graph.hpp"
+#include "simple_graph/graph.hpp"
 
 namespace simple_graph {
 

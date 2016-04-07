@@ -1,7 +1,7 @@
 #include <iostream>
 #include "benchmark/benchmark.h"
 #include "simple_graph/list_graph.hpp"
-#include "simple_graph/bellman_ford.hpp"
+#include "simple_graph/algorithm/bellman_ford.hpp"
 
 using simple_graph::vertex_index_t;
 

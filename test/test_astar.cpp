@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include "simple_graph/list_graph.hpp"
-#include "simple_graph/astar.hpp"
+#include "simple_graph/algorithm/astar.hpp"
 
 namespace {
 
