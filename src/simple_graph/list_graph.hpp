@@ -29,7 +29,14 @@ private:
 
             virtual IteratorImplBase<Edge<E>> &operator++() override {
                 if (current_ != NULL) {
-                    std::pair<int, int> p = std::minmax(current_->idx1(), current_->idx2());
+                    std::pair<vertex_index_t, vertex_index_t> p;
+                    if (Dir) {
+                        p = std::make_pair(current_->idx1(), current_->idx2());
+                    }
+                    else {
+                        p = std::minmax(current_->idx1(), current_->idx2());
+                    }
+
                     auto it = edges_->at(p.first).upper_bound(p.second);
                     if (it != edges_->at(p.first).end()) {
                         current_ = &it->second;
