@@ -62,6 +62,7 @@ private:
             Edges *edges_;
             Edge<E> *current_;
         };
+
     public:
         explicit ListEdgesWrapper(Edges *edges) : edges_(edges) {}
 
@@ -112,7 +113,6 @@ public:
         vertices_.emplace(vertex.idx(), std::move(vertex));
         return 0;
     }
-
 
     virtual int set_vertex(const Vertex<V> &vertex) override {
         if (vertex.idx() < 0) {
@@ -189,8 +189,7 @@ public:
         return 0;
     }
 
-    virtual const Edge<E> &edge(vertex_index_t idx1, vertex_index_t idx2) const override
-    {
+    virtual const Edge<E> &edge(vertex_index_t idx1, vertex_index_t idx2) const override {
         if (Dir) {
             return edges_.at(idx1).at(idx2);
         }
