@@ -9,11 +9,11 @@
 namespace simple_graph {
 
 template <bool Dir, typename V, typename E>
-class ListGraph : public Graph<V, E> {
+class ListGraph : public Graph<Dir, V, E> {
     typedef std::map<vertex_index_t, std::map<vertex_index_t, Edge<E>>> Edges;
 
 private:
-    class ListEdgesWrapper : public Graph<V, E>::EdgesWrapper {
+    class ListEdgesWrapper : public Graph<Dir, V, E>::EdgesWrapper {
     private:
         class EdgeIterator : public IteratorImplBase<Edge<E>> {
         public:
@@ -221,7 +221,7 @@ public:
         return 0;
     }
 
-    virtual typename Graph<V, E>::EdgesWrapper &edges() override {
+    virtual typename Graph<Dir, V, E>::EdgesWrapper &edges() override {
         return edges_wrapper_;
     }
 

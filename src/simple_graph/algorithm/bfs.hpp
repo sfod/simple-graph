@@ -7,8 +7,8 @@
 
 namespace simple_graph {
 
-template<typename V, typename E>
-bool bfs(const Graph<V, E> &g, vertex_index_t start_idx, std::function<bool(V)> &pred,
+template<bool Dir, typename V, typename E>
+bool bfs(const Graph<Dir, V, E> &g, vertex_index_t start_idx, std::function<bool(V)> &pred,
         std::vector<vertex_index_t> *path)
 {
     size_t vnum = g.vertex_num();

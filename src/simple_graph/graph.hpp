@@ -201,7 +201,7 @@ private:
 };
 
 
-template<typename V, typename E>
+template<bool Dir, typename V, typename E>
 class Graph {
 protected:
     class EdgesWrapper {

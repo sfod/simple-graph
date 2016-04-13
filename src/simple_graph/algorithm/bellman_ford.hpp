@@ -15,8 +15,8 @@ bool check_distance(const E &d, const E &w)
     return true;
 }
 
-template<typename V, typename E>
-bool bellman_ford(const Graph<V, E> &g, vertex_index_t start_idx, vertex_index_t goal_idx,
+template<bool Dir, typename V, typename E>
+bool bellman_ford(const Graph<Dir, V, E> &g, vertex_index_t start_idx, vertex_index_t goal_idx,
         std::vector<vertex_index_t> *path)
 {
     // TODO add utility function to check passed vertex indices
@@ -29,7 +29,7 @@ bool bellman_ford(const Graph<V, E> &g, vertex_index_t start_idx, vertex_index_t
 
     distance[start_idx] = 0;
 
-    Graph<V, E> *fg = const_cast<Graph<V, E>*>(&g);
+    Graph<Dir, V, E> *fg = const_cast<Graph<Dir, V, E>*>(&g);
     for (size_t i = 0; i < g.vertex_num(); ++i) {
         bool changed = false;
         for (const auto &edge : fg->edges()) {
