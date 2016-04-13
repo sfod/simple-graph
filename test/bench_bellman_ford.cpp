@@ -20,7 +20,7 @@ static void bench_bellman_ford(benchmark::State &state)
         benchmark::DoNotOptimize(simple_graph::bellman_ford(g, 0, state.range_x() - 1, &path));
     }
 }
-BENCHMARK(bench_bellman_ford)->Arg(1<<15);
+BENCHMARK(bench_bellman_ford)->Range(1<<10, 1<<16);
 
 static void bench_bellman_ford_reversed(benchmark::State &state)
 {
@@ -37,6 +37,6 @@ static void bench_bellman_ford_reversed(benchmark::State &state)
         benchmark::DoNotOptimize(simple_graph::bellman_ford(g, state.range_x() - 1, 0, &path));
     }
 }
-BENCHMARK(bench_bellman_ford_reversed)->Range(1<<8, 1<<10);
+BENCHMARK(bench_bellman_ford_reversed)->Range(1<<10, 1<<16);
 
 BENCHMARK_MAIN()
