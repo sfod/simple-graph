@@ -61,7 +61,7 @@ bool bellman_ford(const Graph<Dir, V, E> &g, vertex_index_t start_idx, vertex_in
     for (size_t i = 0; i < g.vertex_num(); ++i) {
         bool changed = false;
         for (const auto &edge : asc_edges) {
-            std::pair<const vertex_index_t &, const vertex_index_t &> e = std::minmax(edge.idx1(), edge.idx2());
+            std::pair<vertex_index_t, vertex_index_t> e = std::minmax(edge.idx1(), edge.idx2());
             if (check_distance(distance[e.first], edge.weight())
                     && (distance[e.first] + edge.weight() < distance[e.second])) {
                 distance[e.second] = distance[e.first] + edge.weight();
@@ -70,7 +70,7 @@ bool bellman_ford(const Graph<Dir, V, E> &g, vertex_index_t start_idx, vertex_in
             }
         }
         for (const auto &edge : desc_edges) {
-            std::pair<const vertex_index_t &, const vertex_index_t &> e = std::minmax(edge.idx1(), edge.idx2());
+            std::pair<vertex_index_t, vertex_index_t> e = std::minmax(edge.idx1(), edge.idx2());
             if (check_distance(distance[e.second], edge.weight())
                     && (distance[e.second] + edge.weight() < distance[e.first])) {
                 distance[e.first] = distance[e.second] + edge.weight();
