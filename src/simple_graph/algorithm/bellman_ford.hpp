@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include <set>
 #include <vector>
 #include "simple_graph/graph.hpp"
 
@@ -31,51 +32,72 @@ bool bellman_ford(const Graph<Dir, V, E> &g, vertex_index_t start_idx, vertex_in
 
     Graph<Dir, V, E> *fg = const_cast<Graph<Dir, V, E>*>(&g);
 
-    std::vector<Edge<E>> asc_edges;
-    std::vector<Edge<E>> desc_edges;
+    auto asc_comp = [](const Edge<E> &a, const Edge<E> &b) {
+        std::pair<vertex_index_t, vertex_index_t> ap = std::minmax(a.idx1(), a.idx2());
+        std::pair<vertex_index_t, vertex_index_t> bp = std::minmax(b.idx1(), b.idx2());
+        if (ap.first != bp.first) {
+            return ap.first < bp.first;
+        }
+        else {
+            return ap.second < bp.second;
+        }
+    };
+    auto desc_comp = [](const Edge<E> &a, const Edge<E> &b) {
+        std::pair<vertex_index_t, vertex_index_t> ap = std::minmax(a.idx1(), a.idx2());
+        std::pair<vertex_index_t, vertex_index_t> bp = std::minmax(b.idx1(), b.idx2());
+        if (ap.second != bp.second) {
+            return ap.second > bp.second;
+        }
+        else {
+            return ap.first > bp.first;
+        }
+    };
+
+    std::set<Edge<E>, decltype(asc_comp)> asc_edges(asc_comp);
+    std::set<Edge<E>, decltype(desc_comp)> desc_edges(desc_comp);
+
     for (const auto &edge : fg->edges()) {
         if (Dir) {
             if (edge.idx1() < edge.idx2()) {
-                asc_edges.push_back(edge);
+                asc_edges.insert(edge);
             }
             else {
-                desc_edges.push_back(edge);
+                desc_edges.insert(edge);
             }
         }
         else {
-            asc_edges.push_back(edge);
-            desc_edges.push_back(edge);
+            asc_edges.insert(edge);
+            desc_edges.insert(edge);
         }
     }
-    std::sort(asc_edges.begin(), asc_edges.end(), [](const Edge<E> &a, const Edge<E> &b) {
-        vertex_index_t a_idx = std::min(a.idx1(), a.idx2());
-        vertex_index_t b_idx = std::min(b.idx1(), b.idx2());
-        return a_idx < b_idx;
-    });
-    std::sort(desc_edges.begin(), desc_edges.end(), [](const Edge<E> &a, const Edge<E> &b) {
-        vertex_index_t a_idx = std::max(a.idx1(), a.idx2());
-        vertex_index_t b_idx = std::max(b.idx1(), b.idx2());
-        return b_idx < a_idx;
-    });
 
     for (size_t i = 0; i < g.vertex_num(); ++i) {
         bool changed = false;
         for (const auto &edge : asc_edges) {
+            // FIXME segfault if use pair of references
             std::pair<vertex_index_t, vertex_index_t> e = std::minmax(edge.idx1(), edge.idx2());
-            if (check_distance(distance[e.first], edge.weight())
-                    && (distance[e.first] + edge.weight() < distance[e.second])) {
-                distance[e.second] = distance[e.first] + edge.weight();
-                predecessor[e.second] = e.first;
-                changed = true;
+            if (check_distance(distance[e.first], edge.weight())) {
+                if (distance[e.first] + edge.weight() < distance[e.second]) {
+                    distance[e.second] = distance[e.first] + edge.weight();
+                    predecessor[e.second] = e.first;
+                    changed = true;
+                }
+                else {
+                    // TODO remove element
+                }
             }
         }
         for (const auto &edge : desc_edges) {
             std::pair<vertex_index_t, vertex_index_t> e = std::minmax(edge.idx1(), edge.idx2());
-            if (check_distance(distance[e.second], edge.weight())
-                    && (distance[e.second] + edge.weight() < distance[e.first])) {
-                distance[e.first] = distance[e.second] + edge.weight();
-                predecessor[e.first] = e.second;
-                changed = true;
+            if (check_distance(distance[e.second], edge.weight())) {
+                if (distance[e.second] + edge.weight() < distance[e.first]) {
+                    distance[e.first] = distance[e.second] + edge.weight();
+                    predecessor[e.first] = e.second;
+                    changed = true;
+                }
+                else {
+                    // TODO remove element
+                }
             }
         }
         if (!changed) {
