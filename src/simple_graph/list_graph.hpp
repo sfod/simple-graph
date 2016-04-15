@@ -67,12 +67,12 @@ private:
         explicit ListEdgesWrapper(Edges *edges) : edges_(edges) {}
 
         virtual iterator<Edge<E>> begin() override {
-            iterator<Edge<E>> iter(new EdgeIterator(edges_, &edges_->begin()->second.begin()->second));
+            iterator<Edge<E>> iter(std::make_shared<EdgeIterator>(EdgeIterator(edges_, &edges_->begin()->second.begin()->second)));
             return iter;
         }
 
         virtual iterator<Edge<E>> end() override {
-            iterator<Edge<E>> iter(new EdgeIterator(edges_, NULL));
+            iterator<Edge<E>> iter(std::make_shared<EdgeIterator>(EdgeIterator(edges_, NULL)));
             return iter;
         }
 

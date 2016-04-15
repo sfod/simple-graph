@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <set>
 
 // TODO use move semantics
@@ -177,7 +178,7 @@ public:
 template<typename T>
 class iterator {
 public:
-    iterator(IteratorImplBase<T> *b) : base_impl(b) {}
+    iterator(std::shared_ptr<IteratorImplBase<T>> b) : base_impl(b) {}
 
     bool operator==(const iterator<T> &it) const {
         return base_impl->operator==(*it.base_impl);
@@ -197,7 +198,7 @@ public:
     }
 
 private:
-    IteratorImplBase<T> *base_impl;
+    std::shared_ptr<IteratorImplBase<T>> base_impl;
 };
 
 
