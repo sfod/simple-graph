@@ -73,7 +73,10 @@ bool bellman_ford(const Graph<Dir, V, E> &g, vertex_index_t start_idx, vertex_in
 
     for (size_t i = 0; i < g.vertex_num(); ++i) {
         bool changed = false;
-        for (const auto &edge : asc_edges) {
+        auto it = asc_edges.begin();
+        while (it != asc_edges.end()) {
+            bool rm_it = false;
+            const auto &edge = *it;
             std::pair<vertex_index_t, vertex_index_t> e = std::minmax(edge.idx1(), edge.idx2());
             if (check_distance(distance[e.first], edge.weight())) {
                 if (distance[e.first] + edge.weight() < distance[e.second]) {
@@ -82,11 +85,21 @@ bool bellman_ford(const Graph<Dir, V, E> &g, vertex_index_t start_idx, vertex_in
                     changed = true;
                 }
                 else {
-                    // TODO remove element
+                    rm_it = true;
                 }
             }
+
+            if (rm_it) {
+                it = asc_edges.erase(it);
+            }
+            else {
+                ++it;
+            }
         }
-        for (const auto &edge : desc_edges) {
+        it = desc_edges.begin();
+        while (it != desc_edges.end()) {
+            bool rm_it = false;
+            const auto &edge = *it;
             std::pair<vertex_index_t, vertex_index_t> e = std::minmax(edge.idx1(), edge.idx2());
             if (check_distance(distance[e.second], edge.weight())) {
                 if (distance[e.second] + edge.weight() < distance[e.first]) {
@@ -95,8 +108,15 @@ bool bellman_ford(const Graph<Dir, V, E> &g, vertex_index_t start_idx, vertex_in
                     changed = true;
                 }
                 else {
-                    // TODO remove element
+                    rm_it = true;
                 }
+            }
+
+            if (rm_it) {
+                it = desc_edges.erase(it);
+            }
+            else {
+                ++it;
             }
         }
         if (!changed) {
