@@ -56,7 +56,6 @@ bool bfs(const Graph<Dir, V, E> &g, vertex_index_t start_idx, std::function<bool
         }
     }
 
-    // FIXME optimize
     if (vertex_found) {
         vertex_index_t v = end_idx;
         do {

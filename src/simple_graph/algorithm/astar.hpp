@@ -70,7 +70,6 @@ bool astar(const Graph<Dir, V, E> &g, vertex_index_t start_idx, vertex_index_t g
         }
     }
 
-    // FIXME optimize
     if (vertex_found) {
         vertex_index_t idx = goal_idx;
         do {

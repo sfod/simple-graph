@@ -74,7 +74,6 @@ bool bellman_ford(const Graph<Dir, V, E> &g, vertex_index_t start_idx, vertex_in
     for (size_t i = 0; i < g.vertex_num(); ++i) {
         bool changed = false;
         for (const auto &edge : asc_edges) {
-            // FIXME segfault if use pair of references
             std::pair<vertex_index_t, vertex_index_t> e = std::minmax(edge.idx1(), edge.idx2());
             if (check_distance(distance[e.first], edge.weight())) {
                 if (distance[e.first] + edge.weight() < distance[e.second]) {
