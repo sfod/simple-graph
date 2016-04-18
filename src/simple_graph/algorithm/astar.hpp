@@ -1,8 +1,8 @@
 #pragma once
 
-#include "simple_graph/graph.hpp"
 #include <functional>
 #include <set>
+#include "simple_graph/graph.hpp"
 
 namespace simple_graph {
 
