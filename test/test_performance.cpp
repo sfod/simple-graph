@@ -2,6 +2,7 @@
 #include "benchmark/benchmark.h"
 #include "simple_graph/list_graph.hpp"
 #include "simple_graph/algorithm/bfs.hpp"
+#include "simple_graph/algorithm/dfs.hpp"
 #include "simple_graph/algorithm/astar.hpp"
 
 using simple_graph::vertex_index_t;
@@ -48,6 +49,25 @@ static void bench_bfs_path_length(benchmark::State &state)
     }
 }
 BENCHMARK(bench_bfs_path_length)->Range(1<<10, 1<<20);
+
+static void bench_dfs_path_length(benchmark::State &state)
+{
+    simple_graph::ListGraph<false, int, ssize_t> g;
+    for (int i = 0; i < state.range_x(); ++i) {
+        g.add_vertex(simple_graph::Vertex<int>(i, i));
+    }
+    for (int i = 0; i < state.range_x() - 1; ++i) {
+        g.add_edge(simple_graph::Edge<ssize_t>(i, i + 1, 1));
+    }
+
+    std::function<bool(int)> f = [&](int c) { return c == state.range_x() - 1; };
+
+    while (state.KeepRunning()) {
+        std::vector<vertex_index_t> path;
+        benchmark::DoNotOptimize(simple_graph::dfs(g, 0, f, &path));
+    }
+}
+BENCHMARK(bench_dfs_path_length)->Range(1<<10, 1<<20);
 
 static void bench_astar_path_length(benchmark::State &state)
 {
