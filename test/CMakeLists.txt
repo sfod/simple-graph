@@ -9,6 +9,9 @@ target_link_libraries(test_list_graph ${GTEST_LIBRARIES} pthread)
 add_executable(test_bfs test_bfs.cpp)
 target_link_libraries(test_bfs ${GTEST_LIBRARIES} pthread)
 
+add_executable(test_dfs test_dfs.cpp)
+target_link_libraries(test_dfs ${GTEST_LIBRARIES} pthread)
+
 add_executable(test_astar test_astar.cpp)
 target_link_libraries(test_astar ${GTEST_LIBRARIES} pthread)
 
