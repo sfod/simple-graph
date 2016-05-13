@@ -1,6 +1,8 @@
 #pragma once
 
 #include <algorithm>
+#include <cassert>
+#include <stdexcept>
 #include <map>
 #include <unordered_map>
 #include <set>
@@ -84,57 +86,42 @@ public:
     ListGraph() : vertex_num_(0), vertices_(), neighbours_(), edges_(), edges_wrapper_(&edges_) {}
     virtual ~ListGraph() = default;
 
-    virtual int add_vertex(const Vertex<V> &vertex) override {
+    virtual void add_vertex(const Vertex<V> &vertex) override {
         if (vertex.idx() < 0) {
-            return -1;
+            throw std::out_of_range("Negative vertex index");
         }
-        if (vertex.idx() >= static_cast<size_t>(vertex_num_)) {
-            vertex_num_ = static_cast<size_t>(vertex.idx()) + 1;
-        }
-        if (vertices_.count(vertex.idx()) != 0) {
-            return -1;
-        }
-        vertices_.insert(std::make_pair(vertex.idx(), vertex));
-        neighbours_[vertex.idx()] = std::set<vertex_index_t>();
-        return 0;
-    }
-
-    virtual int add_vertex(Vertex<V> &&vertex) override {
-        if (vertex.idx() < 0) {
-            return -1;
-        }
-        if (vertex.idx() >= static_cast<size_t>(vertex_num_)) {
-            vertex_num_ = static_cast<size_t>(vertex.idx()) + 1;
-        }
-        if (vertices_.count(vertex.idx()) != 0) {
-            return -1;
-        }
-        neighbours_[vertex.idx()] = std::set<vertex_index_t>();
-        vertices_.emplace(vertex.idx(), std::move(vertex));
-        return 0;
-    }
-
-    virtual int set_vertex(const Vertex<V> &vertex) override {
-        if (vertex.idx() < 0) {
-            return -1;
-        }
-        if (vertex.idx() >= static_cast<size_t>(vertex_num_)) {
-            vertex_num_ = static_cast<size_t>(vertex.idx()) + 1;
+        if (vertices_.count(vertex.idx()) == 0) {
+            ++vertex_num_;
         }
         vertices_[vertex.idx()] = vertex;
-        return 0;
+        neighbours_[vertex.idx()] = std::set<vertex_index_t>();
     }
 
-    void rm_vertex(const Vertex<V> &vertex) override {
+    virtual void add_vertex(Vertex<V> &&vertex) override {
         if (vertex.idx() < 0) {
-            return;
+            throw std::out_of_range("Negative vertex index");
         }
-        if (vertices_.count(vertex.idx()) > 0) {
-            vertices_.erase(vertex.idx());
+        if (vertices_.count(vertex.idx()) == 0) {
+            ++vertex_num_;
         }
-        for (auto v : neighbours_[vertex.idx()]) {
-            rm_edge(Edge<E>(v, vertex.idx()));
+        // vertices_.insert(std::make_pair(vertex.idx(), std::move(vertex)));
+        vertices_[vertex.idx()] = std::move(vertex);
+        neighbours_[vertex.idx()] = std::set<vertex_index_t>();
+    }
+
+    void rm_vertex(vertex_index_t idx) override {
+        if (idx < 0) {
+            throw std::out_of_range("Negative vertex index");
         }
+        if (vertices_.count(idx) == 0) {
+            throw std::out_of_range("Vertex index is not presented");
+        }
+        vertices_.erase(idx);
+        for (auto v : neighbours_[idx]) {
+            rm_edge(Edge<E>(v, idx));
+        }
+        assert(vertex_num_ > 0);
+        --vertex_num_;
     }
 
     virtual const std::set<vertex_index_t> &adjacent_vertices(vertex_index_t idx) const override {
@@ -147,9 +134,9 @@ public:
 
     virtual size_t vertex_num() const override { return vertex_num_; };
 
-    virtual int add_edge(const Edge<E> &edge) override {
-        if (std::max(edge.idx1(), edge.idx2()) >= vertex_num_) {
-            return -1;
+    virtual void add_edge(const Edge<E> &edge) override {
+        if ((vertices_.count(edge.idx1()) == 0) || (vertices_.count(edge.idx2()) == 0)) {
+            throw std::out_of_range("Vertex index is not presented");
         }
         neighbours_[edge.idx1()].insert(edge.idx2());
         if (!Dir) {
@@ -164,13 +151,11 @@ public:
             std::pair<int, int> p = std::minmax(edge.idx1(), edge.idx2());
             edges_[p.first][p.second] = edge;
         }
-
-        return 0;
     }
 
-    virtual int add_edge(Edge<E> &&edge) override {
-        if (std::max(edge.idx1(), edge.idx2()) >= vertex_num_) {
-            return -1;
+    virtual void add_edge(Edge<E> &&edge) override {
+        if ((vertices_.count(edge.idx1()) == 0) || (vertices_.count(edge.idx2()) == 0)) {
+            throw std::out_of_range("Vertex index is not presented");
         }
         neighbours_[edge.idx1()].insert(edge.idx2());
         if (!Dir) {
@@ -185,8 +170,6 @@ public:
             std::pair<int, int> p = std::minmax(edge.idx1(), edge.idx2());
             edges_[p.first].emplace(p.second, std::move(edge));
         }
-
-        return 0;
     }
 
     virtual const Edge<E> &edge(vertex_index_t idx1, vertex_index_t idx2) const override {
@@ -199,12 +182,12 @@ public:
         }
     }
 
-    virtual int rm_edge(const Edge<E> &edge) override {
-        if (std::max(edge.idx1(), edge.idx2()) >= vertex_num_) {
-            return -1;
+    virtual void rm_edge(const Edge<E> &edge) override {
+        if ((vertices_.count(edge.idx1()) == 0) || (vertices_.count(edge.idx2()) == 0)) {
+            throw std::out_of_range("Vertex index is not presented");
         }
         if (neighbours_.count(edge.idx1()) == 0) {
-            return -1;
+            throw std::out_of_range("Vertex index is not presented");
         }
         neighbours_[edge.idx1()].erase(edge.idx2());
         if (!Dir) {
@@ -224,7 +207,6 @@ public:
                 edges_.erase(p.first);
             }
         }
-        return 0;
     }
 
     virtual typename Graph<Dir, V, E>::EdgesWrapper &edges() override {
