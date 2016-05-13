@@ -25,5 +25,5 @@ int main()
     }
 
     std::cout << "vertex stat: " << simple_graph::Vertex<int>::stat() << std::endl;
-    std::cout << "edge stat: " << simple_graph::Vertex<int>::stat() << std::endl;
+    std::cout << "edge stat: " << simple_graph::Edge<int>::stat() << std::endl;
 }
