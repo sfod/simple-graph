@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include "simple_graph/list_graph.hpp"
 
 int main()
