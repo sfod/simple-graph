@@ -86,26 +86,14 @@ public:
     ListGraph() : vertex_num_(0), vertices_(), neighbours_(), edges_(), edges_wrapper_(&edges_) {}
     virtual ~ListGraph() = default;
 
-    virtual void add_vertex(const Vertex<V> &vertex) override {
+    virtual void add_vertex(Vertex<V> vertex) override {
         if (vertex.idx() < 0) {
             throw std::out_of_range("Negative vertex index");
         }
         if (vertices_.count(vertex.idx()) == 0) {
             ++vertex_num_;
         }
-        vertices_[vertex.idx()] = vertex;
-        neighbours_[vertex.idx()] = std::set<vertex_index_t>();
-    }
-
-    virtual void add_vertex(Vertex<V> &&vertex) override {
-        if (vertex.idx() < 0) {
-            throw std::out_of_range("Negative vertex index");
-        }
-        if (vertices_.count(vertex.idx()) == 0) {
-            ++vertex_num_;
-        }
-        // vertices_.insert(std::make_pair(vertex.idx(), std::move(vertex)));
-        vertices_[vertex.idx()] = std::move(vertex);
+        vertices_.emplace(vertex.idx(), std::move(vertex));
         neighbours_[vertex.idx()] = std::set<vertex_index_t>();
     }
 
@@ -134,26 +122,7 @@ public:
 
     virtual size_t vertex_num() const override { return vertex_num_; };
 
-    virtual void add_edge(const Edge<E> &edge) override {
-        if ((vertices_.count(edge.idx1()) == 0) || (vertices_.count(edge.idx2()) == 0)) {
-            throw std::out_of_range("Vertex index is not presented");
-        }
-        neighbours_[edge.idx1()].insert(edge.idx2());
-        if (!Dir) {
-            neighbours_[edge.idx2()].insert(edge.idx1());
-        }
-
-        if (Dir) {
-            edges_[edge.idx1()][edge.idx2()] = edge;
-        }
-        // store undirected edge as min_idx->max_idx
-        else {
-            std::pair<int, int> p = std::minmax(edge.idx1(), edge.idx2());
-            edges_[p.first][p.second] = edge;
-        }
-    }
-
-    virtual void add_edge(Edge<E> &&edge) override {
+    virtual void add_edge(Edge<E> edge) override {
         if ((vertices_.count(edge.idx1()) == 0) || (vertices_.count(edge.idx2()) == 0)) {
             throw std::out_of_range("Vertex index is not presented");
         }

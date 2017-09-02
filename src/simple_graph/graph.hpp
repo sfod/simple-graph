@@ -215,8 +215,7 @@ public:
     // TODO add constructor from std::initializer_list
     virtual ~Graph() = default;
 
-    virtual void add_vertex(const Vertex<V> &vertex) = 0;
-    virtual void add_vertex(Vertex<V> &&vertex) = 0;
+    virtual void add_vertex(Vertex<V> vertex) = 0;
     virtual void rm_vertex(vertex_index_t idx) = 0;
     // TODO measure performance
     virtual const std::set<vertex_index_t> &adjacent_vertices(vertex_index_t idx) const = 0;
@@ -224,8 +223,7 @@ public:
     virtual const Vertex<V> &vertex(vertex_index_t idx) const = 0;
     virtual size_t vertex_num() const = 0;
 
-    virtual void add_edge(const Edge<E> &edge) = 0;
-    virtual void add_edge(Edge<E> &&edge) = 0;
+    virtual void add_edge(Edge<E> edge) = 0;
     virtual const Edge<E> &edge(vertex_index_t idx1, vertex_index_t idx2) const = 0;
     virtual void rm_edge(const Edge<E> &edge) = 0;
 
