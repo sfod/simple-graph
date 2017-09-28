@@ -83,7 +83,7 @@ private:
     };
 
 public:
-    ListGraph() : vertex_num_(0), vertices_(), neighbours_(), edges_(), edges_wrapper_(&edges_) {}
+    ListGraph() : vertex_num_(0), vertices_(), neighbours_(), filtered_edges_(), edges_(), edges_wrapper_(&edges_) {}
     virtual ~ListGraph() = default;
 
     virtual void add_vertex(Vertex<V> vertex) override {
@@ -178,6 +178,18 @@ public:
         }
     }
 
+    bool filter_edge(const Edge<E> &edge) override {
+        if (std::max(edge.idx1(), edge.idx2()) >= vertex_num_) {
+            return false;
+        }
+        filtered_edges_[edge.idx1()].insert(edge.idx2());
+        if (!Dir) {
+            filtered_edges_[edge.idx2()].insert(edge.idx1());
+        }
+
+        return true;
+    }
+
     virtual typename Graph<Dir, V, E>::EdgesWrapper &edges() override {
         return edges_wrapper_;
     }
@@ -186,6 +198,7 @@ private:
     size_t vertex_num_;
     std::unordered_map<vertex_index_t, Vertex<V>> vertices_;
     std::unordered_map<vertex_index_t, std::set<vertex_index_t>> neighbours_;
+    std::unordered_map<vertex_index_t, std::set<vertex_index_t>> filtered_edges_;
     Edges edges_;
     ListEdgesWrapper edges_wrapper_;
 };
