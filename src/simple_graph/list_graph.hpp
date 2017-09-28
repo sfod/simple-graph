@@ -104,19 +104,19 @@ public:
         if (vertices_.count(idx) == 0) {
             throw std::out_of_range("Vertex index is not presented");
         }
-        vertices_.erase(idx);
         for (auto v : neighbours_[idx]) {
             rm_edge(Edge<E>(v, idx));
         }
+        vertices_.erase(idx);
         assert(vertex_num_ > 0);
         --vertex_num_;
     }
 
-    virtual const std::set<vertex_index_t> &adjacent_vertices(vertex_index_t idx) const override {
+    const std::set<vertex_index_t> &adjacent_vertices(vertex_index_t idx) const override {
         return neighbours_.at(idx);
     }
 
-    virtual const Vertex<V> &vertex(vertex_index_t idx) const override {
+    const Vertex<V> &vertex(vertex_index_t idx) const override {
         return vertices_.at(idx);
     }
 
@@ -136,12 +136,12 @@ public:
         }
         // store undirected edge as min_idx->max_idx
         else {
-            std::pair<int, int> p = std::minmax(edge.idx1(), edge.idx2());
+            auto p = std::minmax(edge.idx1(), edge.idx2());
             edges_[p.first].emplace(p.second, std::move(edge));
         }
     }
 
-    virtual const Edge<E> &edge(vertex_index_t idx1, vertex_index_t idx2) const override {
+    const Edge<E> &edge(vertex_index_t idx1, vertex_index_t idx2) const override {
         if (Dir) {
             return edges_.at(idx1).at(idx2);
         }
@@ -151,6 +151,11 @@ public:
         }
     }
 
+    /**
+     * @brief Remove specified edge from the graph
+     * @param edge - edge to remove
+     * @return
+     */
     virtual void rm_edge(const Edge<E> &edge) override {
         if ((vertices_.count(edge.idx1()) == 0) || (vertices_.count(edge.idx2()) == 0)) {
             throw std::out_of_range("Vertex index is not presented");
@@ -190,7 +195,7 @@ public:
         return true;
     }
 
-    virtual typename Graph<Dir, V, E>::EdgesWrapper &edges() override {
+    typename Graph<Dir, V, E>::EdgesWrapper &edges() override {
         return edges_wrapper_;
     }
 

@@ -7,12 +7,12 @@
 
 namespace simple_graph {
 
-typedef ssize_t vertex_index_t;
+typedef size_t vertex_index_t;
 
 template<typename T>
 class Vertex {
 public:
-    Vertex() : idx_(-1), data_() {
+    Vertex() : idx_(static_cast<vertex_index_t >(-1)), data_() {
         ++default_creations;
     }
     Vertex(const Vertex<T> &v) {
@@ -62,6 +62,7 @@ public:
         return *this;
     }
 
+/// counters to track down objects manipulations
 public:
     static int default_creations;
     static int creations;
@@ -90,7 +91,7 @@ template<typename T> int Vertex<T>::assigns = 0;
 template<typename T>
 class Edge {
     static_assert(std::is_integral<T>::value || std::is_floating_point<T>::value,
-            "Integer of floating point required.");
+            "Integer or floating-point number required.");
 
 public:
     Edge() : idx1_(-1), idx2_(-1), weight_() {
@@ -140,6 +141,7 @@ public:
     vertex_index_t idx2() const { return idx2_; }
     const T &weight() const { return weight_; }
 
+/// counters to track down objects manipulations
 public:
     static int default_creations;
     static int creations;
