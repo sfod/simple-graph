@@ -92,9 +92,6 @@ public:
     virtual ~ListGraph() = default;
 
     virtual void add_vertex(Vertex<V> vertex) override {
-        if (vertex.idx() < 0) {
-            throw std::out_of_range("Negative vertex index");
-        }
         if (vertices_.count(vertex.idx()) == 0) {
             ++vertex_num_;
         }
@@ -103,9 +100,6 @@ public:
     }
 
     void rm_vertex(vertex_index_t idx) override {
-        if (idx < 0) {
-            throw std::out_of_range("Negative vertex index");
-        }
         if (vertices_.count(idx) == 0) {
             throw std::out_of_range("Vertex index is not presented");
         }
