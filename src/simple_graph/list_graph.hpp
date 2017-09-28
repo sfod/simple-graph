@@ -111,6 +111,10 @@ public:
         }
         for (auto v : neighbours_[idx]) {
             rm_edge(Edge<E>(v, idx));
+            // if graph is directed we must specify exact order of vertices in the edge to delete it
+            if (Dir) {
+                rm_edge(Edge<E>(idx, v));
+            }
         }
         vertices_.erase(idx);
         assert(vertex_num_ > 0);
