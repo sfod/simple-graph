@@ -151,6 +151,11 @@ public:
         }
     }
 
+    /**
+     * @brief Remove specified edge from the graph
+     * @param edge - edge to remove
+     * @return
+     */
     virtual void rm_edge(const Edge<E> &edge) override {
         if ((vertices_.count(edge.idx1()) == 0) || (vertices_.count(edge.idx2()) == 0)) {
             throw std::out_of_range("Vertex index is not presented");
