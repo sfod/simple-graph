@@ -25,7 +25,8 @@ vertex_index_t min_idx(const std::set<vertex_index_t> &opened, const std::vector
 
 template<bool Dir, typename V, typename E>
 bool astar(const Graph<Dir, V, E> &g, vertex_index_t start_idx, vertex_index_t goal_idx,
-        std::function<float(vertex_index_t, vertex_index_t)> &heuristic, std::vector<vertex_index_t> *path)
+        const std::function<float(simple_graph::vertex_index_t, simple_graph::vertex_index_t)> &heuristic,
+        std::vector<vertex_index_t> *path)
 {
     size_t vnum = g.vertex_num();
 
@@ -51,7 +52,7 @@ bool astar(const Graph<Dir, V, E> &g, vertex_index_t start_idx, vertex_index_t g
         closed.insert(current);
 
         const std::set<vertex_index_t> &neighbours = g.adjacent_vertices(current);
-        for (auto neighbour : neighbours) {
+        for (const auto &neighbour : neighbours) {
             if (closed.count(neighbour) > 0) {
                 continue;
             }
