@@ -112,11 +112,11 @@ public:
         --vertex_num_;
     }
 
-    virtual const std::set<vertex_index_t> &adjacent_vertices(vertex_index_t idx) const override {
+    const std::set<vertex_index_t> &adjacent_vertices(vertex_index_t idx) const override {
         return neighbours_.at(idx);
     }
 
-    virtual const Vertex<V> &vertex(vertex_index_t idx) const override {
+    const Vertex<V> &vertex(vertex_index_t idx) const override {
         return vertices_.at(idx);
     }
 
@@ -136,12 +136,12 @@ public:
         }
         // store undirected edge as min_idx->max_idx
         else {
-            std::pair<int, int> p = std::minmax(edge.idx1(), edge.idx2());
+            auto p = std::minmax(edge.idx1(), edge.idx2());
             edges_[p.first].emplace(p.second, std::move(edge));
         }
     }
 
-    virtual const Edge<E> &edge(vertex_index_t idx1, vertex_index_t idx2) const override {
+    const Edge<E> &edge(vertex_index_t idx1, vertex_index_t idx2) const override {
         if (Dir) {
             return edges_.at(idx1).at(idx2);
         }
@@ -183,7 +183,7 @@ public:
         }
     }
 
-    virtual typename Graph<Dir, V, E>::EdgesWrapper &edges() override {
+    typename Graph<Dir, V, E>::EdgesWrapper &edges() override {
         return edges_wrapper_;
     }
 
