@@ -91,7 +91,7 @@ public:
     ListGraph() : vertex_num_(0), vertices_(), neighbours_(), edges_(), edges_wrapper_(&edges_) {}
     virtual ~ListGraph() = default;
 
-    virtual void add_vertex(Vertex<V> vertex) override {
+    void add_vertex(Vertex<V> vertex) override {
         if (vertices_.count(vertex.idx()) == 0) {
             ++vertex_num_;
         }
@@ -123,9 +123,9 @@ public:
         return vertices_.at(idx);
     }
 
-    virtual size_t vertex_num() const override { return vertex_num_; };
+    size_t vertex_num() const override { return vertex_num_; };
 
-    virtual void add_edge(Edge<E> edge) override {
+    void add_edge(Edge<E> edge) override {
         if ((vertices_.count(edge.idx1()) == 0) || (vertices_.count(edge.idx2()) == 0)) {
             throw std::out_of_range("Vertex index is not presented");
         }
@@ -159,7 +159,7 @@ public:
      * @param edge - edge to remove
      * @return
      */
-    virtual void rm_edge(const Edge<E> &edge) override {
+    void rm_edge(const Edge<E> &edge) override {
         if ((vertices_.count(edge.idx1()) == 0) || (vertices_.count(edge.idx2()) == 0)) {
             throw std::out_of_range("Vertex index is not presented");
         }
