@@ -31,20 +31,25 @@ private:
 
             virtual IteratorImplBase<Edge<E>> &operator++() override {
                 if (current_ != NULL) {
-                    std::pair<vertex_index_t, vertex_index_t> p;
+                    vertex_index_t idx1;
+                    vertex_index_t idx2;
+
                     if (Dir) {
-                        p = std::make_pair(current_->idx1(), current_->idx2());
+                        idx1 = current_->idx1();
+                        idx2 = current_->idx2();
                     }
                     else {
-                        p = std::minmax(current_->idx1(), current_->idx2());
+                        auto p = std::minmax(current_->idx1(), current_->idx2());
+                        idx1 = p.first;
+                        idx2 = p.second;
                     }
 
-                    auto it = edges_->at(p.first).upper_bound(p.second);
-                    if (it != edges_->at(p.first).end()) {
+                    auto it = edges_->at(idx1).upper_bound(idx2);
+                    if (it != edges_->at(idx1).end()) {
                         current_ = &it->second;
                     }
                     else {
-                        auto it1 = edges_->upper_bound(p.first);
+                        auto it1 = edges_->upper_bound(idx1);
                         if (it1 != edges_->end()) {
                             current_ = &it1->second.begin()->second;
                         }
@@ -86,10 +91,7 @@ public:
     ListGraph() : vertex_num_(0), vertices_(), neighbours_(), filtered_edges_(), edges_(), edges_wrapper_(&edges_) {}
     virtual ~ListGraph() = default;
 
-    virtual void add_vertex(Vertex<V> vertex) override {
-        if (vertex.idx() < 0) {
-            throw std::out_of_range("Negative vertex index");
-        }
+    void add_vertex(Vertex<V> vertex) override {
         if (vertices_.count(vertex.idx()) == 0) {
             ++vertex_num_;
         }
@@ -98,14 +100,15 @@ public:
     }
 
     void rm_vertex(vertex_index_t idx) override {
-        if (idx < 0) {
-            throw std::out_of_range("Negative vertex index");
-        }
         if (vertices_.count(idx) == 0) {
             throw std::out_of_range("Vertex index is not presented");
         }
         for (auto v : neighbours_[idx]) {
             rm_edge(Edge<E>(v, idx));
+            // if graph is directed we must specify exact order of vertices in the edge to delete it
+            if (Dir) {
+                rm_edge(Edge<E>(idx, v));
+            }
         }
         vertices_.erase(idx);
         assert(vertex_num_ > 0);
@@ -120,9 +123,9 @@ public:
         return vertices_.at(idx);
     }
 
-    virtual size_t vertex_num() const override { return vertex_num_; };
+    size_t vertex_num() const override { return vertex_num_; };
 
-    virtual void add_edge(Edge<E> edge) override {
+    void add_edge(Edge<E> edge) override {
         if ((vertices_.count(edge.idx1()) == 0) || (vertices_.count(edge.idx2()) == 0)) {
             throw std::out_of_range("Vertex index is not presented");
         }
@@ -156,7 +159,7 @@ public:
      * @param edge - edge to remove
      * @return
      */
-    virtual void rm_edge(const Edge<E> &edge) override {
+    void rm_edge(const Edge<E> &edge) override {
         if ((vertices_.count(edge.idx1()) == 0) || (vertices_.count(edge.idx2()) == 0)) {
             throw std::out_of_range("Vertex index is not presented");
         }
