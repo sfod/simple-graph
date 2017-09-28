@@ -7,12 +7,12 @@
 
 namespace simple_graph {
 
-typedef ssize_t vertex_index_t;
+typedef size_t vertex_index_t;
 
 template<typename T>
 class Vertex {
 public:
-    Vertex() : idx_(-1), data_() {
+    Vertex() : idx_(static_cast<vertex_index_t >(-1)), data_() {
         ++default_creations;
     }
     Vertex(const Vertex<T> &v) {

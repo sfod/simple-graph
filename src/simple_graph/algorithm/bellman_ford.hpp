@@ -99,7 +99,7 @@ bool bellman_ford(const Graph<Dir, V, E> &g, vertex_index_t start_idx, vertex_in
     while (idx != start_idx) {
         path->push_back(idx);
         idx = predecessor[idx];
-        assert(idx != -1);
+        assert(idx != static_cast<vertex_index_t>(-1));
     }
     path->push_back(idx);
     std::reverse(path->begin(), path->end());
