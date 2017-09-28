@@ -104,10 +104,10 @@ public:
         if (vertices_.count(idx) == 0) {
             throw std::out_of_range("Vertex index is not presented");
         }
-        vertices_.erase(idx);
         for (auto v : neighbours_[idx]) {
             rm_edge(Edge<E>(v, idx));
         }
+        vertices_.erase(idx);
         assert(vertex_num_ > 0);
         --vertex_num_;
     }
