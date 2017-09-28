@@ -230,6 +230,7 @@ public:
     virtual void rm_edge(const Edge<E> &edge) = 0;
 
     virtual bool filter_edge(const Edge<E> &edge) = 0;
+    virtual bool filter_edges(const std::vector<Edge<E>> &edges) = 0;
 
     virtual EdgesWrapper &edges() = 0;
 };

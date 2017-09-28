@@ -220,6 +220,23 @@ public:
         return rc;
     }
 
+    /**
+     * @brief Temporarily removes specified edges from the graph.
+     * @param edges - edges to filter out
+     * @return true if all edges filtered out, false otherwise
+     */
+    virtual bool filter_edges(const std::vector<Edge<E>> &edges) {
+        bool rc = true;
+
+        for (const auto &edge : edges) {
+            if (!filter_edge(edge)) {
+                rc = false;
+            }
+        }
+
+        return rc;
+    }
+
     typename Graph<Dir, V, E>::EdgesWrapper &edges() override {
         return edges_wrapper_;
     }
