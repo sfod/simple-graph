@@ -134,14 +134,12 @@ public:
             neighbours_[edge.idx2()].insert(edge.idx1());
         }
 
-        if (Dir) {
-            edges_[edge.idx1()].emplace(edge.idx2(), std::move(edge));
-        }
         // store undirected edge as min_idx->max_idx
-        else {
-            auto p = std::minmax(edge.idx1(), edge.idx2());
-            edges_[p.first].emplace(p.second, std::move(edge));
+        if (!Dir && (edge.idx1() > edge.idx2())) {
+            edge.swap_vertices();
         }
+
+        edges_[edge.idx1()].emplace(edge.idx2(), std::move(edge));
     }
 
     const Edge<E> &edge(vertex_index_t idx1, vertex_index_t idx2) const override {

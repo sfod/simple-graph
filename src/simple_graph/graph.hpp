@@ -141,6 +141,8 @@ public:
     vertex_index_t idx2() const { return idx2_; }
     const T &weight() const { return weight_; }
 
+    void swap_vertices() { std::swap(idx1_, idx2_); }
+
 /// counters to track down objects manipulations
 public:
     static int default_creations;

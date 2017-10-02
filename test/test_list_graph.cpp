@@ -129,15 +129,15 @@ TEST_F(ListGraphUndirectedTest, test_add_edge_descending)
     EXPECT_EQ(12, undirected_graph.edge(4, 6).weight());
 
     std::map<std::pair<vertex_index_t, vertex_index_t>, size_t> expected_edges = {
-            {{4, 2}, 11},
-            {{6, 4}, 12},
-            {{23, 6}, 13}
+            {{2, 4}, 11},
+            {{4, 6}, 12},
+            {{6, 23}, 13}
     };
 
     std::map<std::pair<vertex_index_t, vertex_index_t>, int> visited_edges = {
-            {{4, 2}, 0},
-            {{6, 4}, 0},
-            {{23, 6}, 0}
+            {{2, 4}, 0},
+            {{4, 6}, 0},
+            {{6, 23}, 0}
     };
 
     int i = 0;
