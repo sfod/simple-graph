@@ -3,8 +3,11 @@ include_directories(../src/)
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
-add_executable(test_list_graph test_list_graph.cpp)
+add_executable(test_list_graph test_undirected_list_graph.cpp)
 target_link_libraries(test_list_graph ${GTEST_LIBRARIES} pthread)
+
+add_executable(test_directed_list_graph test_directed_list_graph.cpp)
+target_link_libraries(test_directed_list_graph ${GTEST_LIBRARIES} pthread)
 
 add_executable(test_bfs test_bfs.cpp)
 target_link_libraries(test_bfs ${GTEST_LIBRARIES} pthread)
