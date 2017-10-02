@@ -88,7 +88,7 @@ private:
     };
 
 public:
-    ListGraph() : vertex_num_(0), vertices_(), neighbours_(), edges_(), edges_wrapper_(&edges_) {}
+    ListGraph() : vertex_num_(0), vertices_(), neighbours_(), filtered_edges_(), edges_(), edges_wrapper_(&edges_) {}
     virtual ~ListGraph() = default;
 
     void add_vertex(Vertex<V> vertex) override {
@@ -186,6 +186,60 @@ public:
         }
     }
 
+    /**
+     * @brief Temporarily remove specified edge from the graph.
+     * @param edge - edge to filter out
+     * @return false if edge is invalid or is not present in the graph, true otherwise
+     * @note If edge is valid, it is added to filtered edges regardless of it is present or not in the graph.
+     */
+    bool filter_edge(const Edge<E> &edge) override {
+        bool rc = true;
+
+        if (std::max(edge.idx1(), edge.idx2()) >= vertex_num_) {
+            return false;
+        }
+
+        vertex_index_t idx1;
+        vertex_index_t idx2;
+
+        if (Dir) {
+            idx1 = edge.idx1();
+            idx2 = edge.idx2();
+        }
+        // edges are stored as min_idx->max_idx in undirected graph
+        else {
+            auto p = std::minmax(edge.idx1(), edge.idx2());
+            idx1 = p.first;
+            idx2 = p.second;
+        }
+
+        filtered_edges_[idx1].insert(idx2);
+
+        // check if edge was actually filtered out
+        if (!edges_.count(idx1) || !edges_.at(idx1).count(idx2)) {
+            rc = false;
+        }
+
+        return rc;
+    }
+
+    /**
+     * @brief Temporarily removes specified edges from the graph.
+     * @param edges - edges to filter out
+     * @return true if all edges filtered out, false otherwise
+     */
+    virtual bool filter_edges(const std::vector<Edge<E>> &edges) {
+        bool rc = true;
+
+        for (const auto &edge : edges) {
+            if (!filter_edge(edge)) {
+                rc = false;
+            }
+        }
+
+        return rc;
+    }
+
     typename Graph<Dir, V, E>::EdgesWrapper &edges() override {
         return edges_wrapper_;
     }
@@ -194,6 +248,7 @@ private:
     size_t vertex_num_;
     std::unordered_map<vertex_index_t, Vertex<V>> vertices_;
     std::unordered_map<vertex_index_t, std::set<vertex_index_t>> neighbours_;
+    std::unordered_map<vertex_index_t, std::set<vertex_index_t>> filtered_edges_;
     Edges edges_;
     ListEdgesWrapper edges_wrapper_;
 };

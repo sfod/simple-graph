@@ -229,6 +229,9 @@ public:
     virtual const Edge<E> &edge(vertex_index_t idx1, vertex_index_t idx2) const = 0;
     virtual void rm_edge(const Edge<E> &edge) = 0;
 
+    virtual bool filter_edge(const Edge<E> &edge) = 0;
+    virtual bool filter_edges(const std::vector<Edge<E>> &edges) = 0;
+
     virtual EdgesWrapper &edges() = 0;
 };
 
