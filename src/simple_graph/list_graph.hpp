@@ -92,6 +92,10 @@ public:
     virtual ~ListGraph() = default;
 
     void add_vertex(Vertex<V> vertex) override {
+        if (vertex.idx() == static_cast<vertex_index_t >(-1)) {
+            throw std::out_of_range("Vertex with invalid index");
+        }
+
         if (vertices_.count(vertex.idx()) == 0) {
             ++vertex_num_;
         }
