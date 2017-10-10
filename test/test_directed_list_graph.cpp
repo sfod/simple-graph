@@ -136,7 +136,6 @@ TEST_F(ListGraphDirectedTest, test_add_edge)
         int visited_num = e.second;
         EXPECT_EQ(1, visited_num) << "edge " << e.first.first << ":" << e.first.second;
     }
-
 }
 
 TEST_F(ListGraphDirectedTest, test_add_edge_descending)
@@ -176,6 +175,67 @@ TEST_F(ListGraphDirectedTest, test_add_edge_descending)
     }
 
     EXPECT_EQ(3, i);
+}
+
+TEST_F(ListGraphDirectedTest, test_rm_edge)
+{
+    ASSERT_EQ(4, directed_graph.vertex_num());
+
+    directed_graph.add_edge(simple_graph::Edge<int>(2, 4, 11));
+    directed_graph.add_edge(simple_graph::Edge<int>(4, 6, 12));
+    directed_graph.add_edge(simple_graph::Edge<int>(6, 23, 13));
+
+    // adjacent vertices before any removes
+    auto neighbours = directed_graph.adjacent_vertices(4);
+    EXPECT_EQ(1, neighbours.size());
+
+    neighbours = directed_graph.adjacent_vertices(6);
+    EXPECT_EQ(1, neighbours.size());
+
+    directed_graph.rm_edge(simple_graph::Edge<int>(4, 6));
+
+    // adjacent vertices before after the first remove
+    neighbours = directed_graph.adjacent_vertices(4);
+    EXPECT_EQ(0, neighbours.size());
+
+    neighbours = directed_graph.adjacent_vertices(6);
+    EXPECT_EQ(1, neighbours.size());
+
+    EXPECT_EQ(4, directed_graph.vertex_num());
+
+    directed_graph.rm_edge(simple_graph::Edge<int>(6, 23));
+
+    EXPECT_EQ(4, directed_graph.vertex_num());
+
+    neighbours = directed_graph.adjacent_vertices(4);
+    EXPECT_EQ(0, neighbours.size());
+
+    neighbours = directed_graph.adjacent_vertices(6);
+    EXPECT_EQ(0, neighbours.size());
+
+
+    std::map<std::pair<vertex_index_t, vertex_index_t>, int> expected_edges = {
+            {{2, 4}, 11}
+    };
+    std::map<std::pair<vertex_index_t, vertex_index_t>, int> visited_edges = {
+            {{2, 4}, 0}
+    };
+
+    int visited_edges_num = 0;
+    for (const auto &edge : directed_graph.edges()) {
+        const auto &e = std::make_pair(edge.idx1(), edge.idx2());
+        EXPECT_EQ(expected_edges[e], edge.weight());
+        EXPECT_EQ(1, visited_edges.count(e));
+        visited_edges[e]++;
+        ++visited_edges_num;
+    }
+
+    EXPECT_EQ(1, visited_edges_num);
+
+    for (const auto &e : visited_edges) {
+        int visited_num = e.second;
+        EXPECT_EQ(1, visited_num) << "edge " << e.first.first << ":" << e.first.second;
+    }
 }
 
 }  // namespace
