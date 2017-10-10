@@ -107,13 +107,18 @@ public:
         if (vertices_.count(idx) == 0) {
             throw std::out_of_range("Vertex index is not presented");
         }
-        for (auto v : neighbours_[idx]) {
-            rm_edge(Edge<E>(v, idx));
-            // if graph is directed we must specify exact order of vertices in the edge to delete it
-            if (Dir) {
-                rm_edge(Edge<E>(idx, v));
+
+        for (const auto &v : vertices_) {
+            // remove edges 'idx -> some_vertex'
+            if ((edges_.count(idx) > 0) && (edges_.at(idx).count(v.first) > 0)) {
+                rm_edge(edges_.at(idx).at(v.first));
+            }
+            // remove edges 'some_vertex -> idx'
+            if ((edges_.count(v.first) > 0) && (edges_.at(v.first).count(idx) > 0)) {
+                rm_edge(edges_.at(v.first).at(idx));
             }
         }
+
         vertices_.erase(idx);
         assert(vertex_num_ > 0);
         --vertex_num_;

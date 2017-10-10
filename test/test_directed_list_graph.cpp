@@ -55,6 +55,10 @@ TEST_F(ListGraphDirectedTest, test_add_vertex)
 
 TEST_F(ListGraphDirectedTest, test_rm_vertex)
 {
+    directed_graph.add_edge(simple_graph::Edge<int>(2, 4, 11));
+    directed_graph.add_edge(simple_graph::Edge<int>(4, 6, 12));
+    directed_graph.add_edge(simple_graph::Edge<int>(6, 23, 13));
+
     ASSERT_EQ(4, directed_graph.vertex_num());
 
     EXPECT_THROW(directed_graph.rm_vertex(-1), std::out_of_range);
@@ -63,7 +67,22 @@ TEST_F(ListGraphDirectedTest, test_rm_vertex)
 
     directed_graph.rm_vertex(2);
     ASSERT_EQ(3, directed_graph.vertex_num());
+
+    int visited_edges_num = 0;
+    for (const auto &edge : directed_graph.edges()) {
+        (void) edge;
+        ++visited_edges_num;
+    }
+    EXPECT_EQ(2, visited_edges_num);
+
     EXPECT_THROW(directed_graph.vertex(2), std::out_of_range);
+
+    auto neighbours = directed_graph.adjacent_vertices(4);
+    EXPECT_EQ(1, neighbours.size());
+    directed_graph.rm_vertex(6);
+    ASSERT_EQ(2, directed_graph.vertex_num());
+    neighbours = directed_graph.adjacent_vertices(4);
+    EXPECT_EQ(0, neighbours.size());
 
     ASSERT_EQ(0, directed_graph_empty.vertex_num());
     EXPECT_THROW(directed_graph_empty.rm_vertex(0), std::out_of_range);
