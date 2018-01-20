@@ -55,7 +55,7 @@ bool astar(const Graph<Dir, V, E> &g, vertex_index_t start_idx, vertex_index_t g
         opened.erase(current);
         closed.insert(current);
 
-        const std::set<vertex_index_t> &neighbours = g.adjacent_vertices(current);
+        const std::set<vertex_index_t> &neighbours = g.outbounds(current);
         for (const auto &neighbour : neighbours) {
             if (closed.count(neighbour) > 0) {
                 continue;

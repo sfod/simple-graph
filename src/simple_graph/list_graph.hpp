@@ -88,7 +88,7 @@ private:
     };
 
 public:
-    ListGraph() : vertex_num_(0), vertices_(), neighbours_(), filtered_edges_(), edges_(), edges_wrapper_(&edges_) {}
+    ListGraph() : vertex_num_(0), vertices_(), inbounds_(), outbounds_(), filtered_edges_(), edges_(), edges_wrapper_(&edges_) {}
     virtual ~ListGraph() = default;
 
     void add_vertex(Vertex<V> vertex) override {
@@ -100,7 +100,8 @@ public:
             ++vertex_num_;
         }
         vertices_.emplace(vertex.idx(), std::move(vertex));
-        neighbours_[vertex.idx()] = std::set<vertex_index_t>();
+        inbounds_[vertex.idx()] = std::set<vertex_index_t>();
+        outbounds_[vertex.idx()] = std::set<vertex_index_t>();
     }
 
     void rm_vertex(vertex_index_t idx) override {
@@ -108,6 +109,7 @@ public:
             throw std::out_of_range("Vertex index is not presented");
         }
 
+        // TODO use inbounds_ and outbounds_
         for (const auto &v : vertices_) {
             // remove edges 'idx -> some_vertex'
             if ((edges_.count(idx) > 0) && (edges_.at(idx).count(v.first) > 0)) {
@@ -124,8 +126,12 @@ public:
         --vertex_num_;
     }
 
-    const std::set<vertex_index_t> &adjacent_vertices(vertex_index_t idx) const override {
-        return neighbours_.at(idx);
+    const std::set<vertex_index_t> &inbounds(vertex_index_t idx) const override {
+        return inbounds_.at(idx);
+    }
+
+    const std::set<vertex_index_t> &outbounds(vertex_index_t idx) const override {
+        return outbounds_.at(idx);
     }
 
     const Vertex<V> &vertex(vertex_index_t idx) const override {
@@ -138,9 +144,11 @@ public:
         if ((vertices_.count(edge.idx1()) == 0) || (vertices_.count(edge.idx2()) == 0)) {
             throw std::out_of_range("Vertex index is not presented");
         }
-        neighbours_[edge.idx1()].insert(edge.idx2());
+        inbounds_[edge.idx2()].insert(edge.idx1());
+        outbounds_[edge.idx1()].insert(edge.idx2());
         if (!Dir) {
-            neighbours_[edge.idx2()].insert(edge.idx1());
+            inbounds_[edge.idx1()].insert(edge.idx2());
+            outbounds_[edge.idx2()].insert(edge.idx1());
         }
 
         // store undirected edge as min_idx->max_idx
@@ -161,35 +169,44 @@ public:
         }
     }
 
+    bool edge_exists(Edge<E> edge) const override {
+        if (!Dir && (edge.idx1() > edge.idx2())) {
+            edge.swap_vertices();
+        }
+        return (edges_.count(edge.idx1()) > 0) && (edges_.at(edge.idx1()).count(edge.idx2()) > 0);
+    }
+
     /**
      * @brief Remove specified edge from the graph
      * @param edge - edge to remove
      * @return
      */
-    void rm_edge(const Edge<E> &edge) override {
+    void rm_edge(Edge<E> edge) override {
         if ((vertices_.count(edge.idx1()) == 0) || (vertices_.count(edge.idx2()) == 0)) {
             throw std::out_of_range("Vertex index is not presented");
         }
-        if (neighbours_.count(edge.idx1()) == 0) {
-            throw std::out_of_range("Vertex index is not presented");
-        }
-        neighbours_[edge.idx1()].erase(edge.idx2());
-        if (!Dir) {
-            neighbours_[edge.idx2()].erase(edge.idx1());
+
+        if (!Dir && (edge.idx1() > edge.idx2())) {
+            edge.swap_vertices();
         }
 
-        if (Dir) {
-            edges_[edge.idx1()].erase(edge.idx2());
-            if (edges_[edge.idx1()].size() == 0) {
-                edges_.erase(edge.idx1());
-            }
+        if ((edges_.count(edge.idx1()) == 0) || (edges_.at(edge.idx1()).count(edge.idx2()) == 0)) {
+            return;
         }
-        else {
-            auto p = std::minmax(edge.idx1(), edge.idx2());
-            edges_[p.first].erase(p.second);
-            if (edges_[p.first].size() == 0) {
-                edges_.erase(p.first);
-            }
+
+        outbounds_[edge.idx1()].erase(edge.idx2());
+        if (!Dir) {
+            outbounds_[edge.idx2()].erase(edge.idx1());
+        }
+
+        inbounds_[edge.idx2()].erase(edge.idx1());
+        if (!Dir) {
+            inbounds_[edge.idx1()].erase(edge.idx2());
+        }
+
+        edges_[edge.idx1()].erase(edge.idx2());
+        if (edges_[edge.idx1()].size() == 0) {
+            edges_.erase(edge.idx1());
         }
     }
 
@@ -254,7 +271,8 @@ public:
 private:
     size_t vertex_num_;
     std::unordered_map<vertex_index_t, Vertex<V>> vertices_;
-    std::unordered_map<vertex_index_t, std::set<vertex_index_t>> neighbours_;
+    std::unordered_map<vertex_index_t, std::set<vertex_index_t>> inbounds_;
+    std::unordered_map<vertex_index_t, std::set<vertex_index_t>> outbounds_;
     std::unordered_map<vertex_index_t, std::set<vertex_index_t>> filtered_edges_;
     Edges edges_;
     ListEdgesWrapper edges_wrapper_;

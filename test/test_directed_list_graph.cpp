@@ -77,11 +77,11 @@ TEST_F(ListGraphDirectedTest, test_rm_vertex)
 
     EXPECT_THROW(directed_graph.vertex(2), std::out_of_range);
 
-    auto neighbours = directed_graph.adjacent_vertices(4);
+    auto neighbours = directed_graph.outbounds(4);
     EXPECT_EQ(1, neighbours.size());
     directed_graph.rm_vertex(6);
     ASSERT_EQ(2, directed_graph.vertex_num());
-    neighbours = directed_graph.adjacent_vertices(4);
+    neighbours = directed_graph.outbounds(4);
     EXPECT_EQ(0, neighbours.size());
 
     ASSERT_EQ(0, directed_graph_empty.vertex_num());
@@ -89,15 +89,15 @@ TEST_F(ListGraphDirectedTest, test_rm_vertex)
     EXPECT_EQ(0, directed_graph_empty.vertex_num());
 }
 
-TEST_F(ListGraphDirectedTest, test_get_adjacent_vertices)
+TEST_F(ListGraphDirectedTest, test_get_outbounds)
 {
     ASSERT_EQ(4, directed_graph.vertex_num());
-    EXPECT_THROW(directed_graph.adjacent_vertices(1), std::out_of_range);
-    const auto &adj = directed_graph.adjacent_vertices(2);
+    EXPECT_THROW(directed_graph.outbounds(1), std::out_of_range);
+    const auto &adj = directed_graph.outbounds(2);
     EXPECT_EQ(0, adj.size());
 
     ASSERT_EQ(0, directed_graph_empty.vertex_num());
-    EXPECT_THROW(directed_graph_empty.adjacent_vertices(1), std::out_of_range);
+    EXPECT_THROW(directed_graph_empty.outbounds(1), std::out_of_range);
 }
 
 TEST_F(ListGraphDirectedTest, test_add_edge)
@@ -185,20 +185,20 @@ TEST_F(ListGraphDirectedTest, test_rm_edge)
     directed_graph.add_edge(simple_graph::Edge<int>(4, 6, 12));
     directed_graph.add_edge(simple_graph::Edge<int>(6, 23, 13));
 
-    // adjacent vertices before any removes
-    auto neighbours = directed_graph.adjacent_vertices(4);
+    // outbounds vertices before any removes
+    auto neighbours = directed_graph.outbounds(4);
     EXPECT_EQ(1, neighbours.size());
 
-    neighbours = directed_graph.adjacent_vertices(6);
+    neighbours = directed_graph.outbounds(6);
     EXPECT_EQ(1, neighbours.size());
 
     directed_graph.rm_edge(simple_graph::Edge<int>(4, 6));
 
-    // adjacent vertices before after the first remove
-    neighbours = directed_graph.adjacent_vertices(4);
+    // outbounds vertices before after the first remove
+    neighbours = directed_graph.outbounds(4);
     EXPECT_EQ(0, neighbours.size());
 
-    neighbours = directed_graph.adjacent_vertices(6);
+    neighbours = directed_graph.outbounds(6);
     EXPECT_EQ(1, neighbours.size());
 
     EXPECT_EQ(4, directed_graph.vertex_num());
@@ -207,10 +207,10 @@ TEST_F(ListGraphDirectedTest, test_rm_edge)
 
     EXPECT_EQ(4, directed_graph.vertex_num());
 
-    neighbours = directed_graph.adjacent_vertices(4);
+    neighbours = directed_graph.outbounds(4);
     EXPECT_EQ(0, neighbours.size());
 
-    neighbours = directed_graph.adjacent_vertices(6);
+    neighbours = directed_graph.outbounds(6);
     EXPECT_EQ(0, neighbours.size());
 
 

@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <set>
+#include <vector>
 
 // TODO use move semantics
 
@@ -205,7 +206,12 @@ private:
     std::shared_ptr<IteratorImplBase<T>> base_impl;
 };
 
-
+/**
+ * Graph interface
+ * @tparam Dir
+ * @tparam V
+ * @tparam E
+ */
 template<bool Dir, typename V, typename E>
 class Graph {
 protected:
@@ -222,14 +228,16 @@ public:
     virtual void add_vertex(Vertex<V> vertex) = 0;
     virtual void rm_vertex(vertex_index_t idx) = 0;
     // TODO measure performance
-    virtual const std::set<vertex_index_t> &adjacent_vertices(vertex_index_t idx) const = 0;
+    virtual const std::set<vertex_index_t> &inbounds(vertex_index_t idx) const = 0;
+    virtual const std::set<vertex_index_t> &outbounds(vertex_index_t idx) const = 0;
 
     virtual const Vertex<V> &vertex(vertex_index_t idx) const = 0;
     virtual size_t vertex_num() const = 0;
 
     virtual void add_edge(Edge<E> edge) = 0;
     virtual const Edge<E> &edge(vertex_index_t idx1, vertex_index_t idx2) const = 0;
-    virtual void rm_edge(const Edge<E> &edge) = 0;
+    virtual bool edge_exists(Edge<E> edge) const = 0;
+    virtual void rm_edge(Edge<E> edge) = 0;
 
     virtual bool filter_edge(const Edge<E> &edge) = 0;
     virtual bool filter_edges(const std::vector<Edge<E>> &edges) = 0;

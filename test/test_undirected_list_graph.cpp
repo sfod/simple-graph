@@ -70,15 +70,15 @@ TEST_F(ListGraphUndirectedTest, test_rm_vertex)
     EXPECT_EQ(0, undirected_graph_empty.vertex_num());
 }
 
-TEST_F(ListGraphUndirectedTest, test_get_adjacent_vertices)
+TEST_F(ListGraphUndirectedTest, test_get_outbounds)
 {
     ASSERT_EQ(4, undirected_graph.vertex_num());
-    EXPECT_THROW(undirected_graph.adjacent_vertices(1), std::out_of_range);
-    const auto &adj = undirected_graph.adjacent_vertices(2);
+    EXPECT_THROW(undirected_graph.outbounds(1), std::out_of_range);
+    const auto &adj = undirected_graph.outbounds(2);
     EXPECT_EQ(0, adj.size());
 
     ASSERT_EQ(0, undirected_graph_empty.vertex_num());
-    EXPECT_THROW(undirected_graph_empty.adjacent_vertices(1), std::out_of_range);
+    EXPECT_THROW(undirected_graph_empty.outbounds(1), std::out_of_range);
 }
 
 TEST_F(ListGraphUndirectedTest, test_add_edge)
