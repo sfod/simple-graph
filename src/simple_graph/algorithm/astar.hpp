@@ -30,6 +30,10 @@ bool astar(const Graph<Dir, V, E> &g, vertex_index_t start_idx, vertex_index_t g
 {
     size_t vnum = g.vertex_num();
 
+    if ((start_idx > vnum) || (goal_idx > vnum)) {
+        return false;
+    }
+
     std::set<vertex_index_t> closed;
     std::set<vertex_index_t> opened;
     std::vector<vertex_index_t> came_from(vnum, 0);
