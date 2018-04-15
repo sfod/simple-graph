@@ -77,11 +77,11 @@ TEST_F(ListGraphDirectedTest, test_rm_vertex)
 
     EXPECT_THROW(directed_graph.vertex(2), std::out_of_range);
 
-    auto neighbours = directed_graph.outbounds(4);
+    auto neighbours = directed_graph.outbounds(4, 0);
     EXPECT_EQ(1, neighbours.size());
     directed_graph.rm_vertex(6);
     ASSERT_EQ(2, directed_graph.vertex_num());
-    neighbours = directed_graph.outbounds(4);
+    neighbours = directed_graph.outbounds(4, 0);
     EXPECT_EQ(0, neighbours.size());
 
     ASSERT_EQ(0, directed_graph_empty.vertex_num());
@@ -92,12 +92,12 @@ TEST_F(ListGraphDirectedTest, test_rm_vertex)
 TEST_F(ListGraphDirectedTest, test_get_outbounds)
 {
     ASSERT_EQ(4, directed_graph.vertex_num());
-    EXPECT_THROW(directed_graph.outbounds(1), std::out_of_range);
-    const auto &adj = directed_graph.outbounds(2);
-    EXPECT_EQ(0, adj.size());
+    const auto &outbounds = directed_graph.outbounds(2, 0);
+    EXPECT_EQ(0, outbounds.size());
 
     ASSERT_EQ(0, directed_graph_empty.vertex_num());
-    EXPECT_THROW(directed_graph_empty.outbounds(1), std::out_of_range);
+    const auto &adj = directed_graph_empty.outbounds(1, 0);
+    EXPECT_EQ(0, adj.size());
 }
 
 TEST_F(ListGraphDirectedTest, test_add_edge)
@@ -186,19 +186,19 @@ TEST_F(ListGraphDirectedTest, test_rm_edge)
     directed_graph.add_edge(simple_graph::Edge<int>(6, 23, 13));
 
     // outbounds vertices before any removes
-    auto neighbours = directed_graph.outbounds(4);
+    auto neighbours = directed_graph.outbounds(4, 0);
     EXPECT_EQ(1, neighbours.size());
 
-    neighbours = directed_graph.outbounds(6);
+    neighbours = directed_graph.outbounds(6, 0);
     EXPECT_EQ(1, neighbours.size());
 
     directed_graph.rm_edge(simple_graph::Edge<int>(4, 6));
 
     // outbounds vertices before after the first remove
-    neighbours = directed_graph.outbounds(4);
+    neighbours = directed_graph.outbounds(4, 0);
     EXPECT_EQ(0, neighbours.size());
 
-    neighbours = directed_graph.outbounds(6);
+    neighbours = directed_graph.outbounds(6, 0);
     EXPECT_EQ(1, neighbours.size());
 
     EXPECT_EQ(4, directed_graph.vertex_num());
@@ -207,11 +207,72 @@ TEST_F(ListGraphDirectedTest, test_rm_edge)
 
     EXPECT_EQ(4, directed_graph.vertex_num());
 
-    neighbours = directed_graph.outbounds(4);
+    neighbours = directed_graph.outbounds(4, 0);
     EXPECT_EQ(0, neighbours.size());
 
-    neighbours = directed_graph.outbounds(6);
+    neighbours = directed_graph.outbounds(6, 0);
     EXPECT_EQ(0, neighbours.size());
+
+
+    std::map<std::pair<vertex_index_t, vertex_index_t>, int> expected_edges = {
+            {{2, 4}, 11}
+    };
+    std::map<std::pair<vertex_index_t, vertex_index_t>, int> visited_edges = {
+            {{2, 4}, 0}
+    };
+
+    int visited_edges_num = 0;
+    for (const auto &edge : directed_graph.edges()) {
+        const auto &e = std::make_pair(edge.idx1(), edge.idx2());
+        EXPECT_EQ(expected_edges[e], edge.weight());
+        EXPECT_EQ(1, visited_edges.count(e));
+        visited_edges[e]++;
+        ++visited_edges_num;
+    }
+
+    EXPECT_EQ(1, visited_edges_num);
+
+    for (const auto &e : visited_edges) {
+        int visited_num = e.second;
+        EXPECT_EQ(1, visited_num) << "edge " << e.first.first << ":" << e.first.second;
+    }
+}
+
+TEST_F(ListGraphDirectedTest, test_filter_edge)
+{
+    ASSERT_EQ(4, directed_graph.vertex_num());
+
+    directed_graph.add_edge(simple_graph::Edge<int>(2, 4, 11));
+    directed_graph.add_edge(simple_graph::Edge<int>(4, 6, 12));
+    directed_graph.add_edge(simple_graph::Edge<int>(6, 23, 13));
+
+    // outbound vertices before any removes
+    auto outbounds = directed_graph.outbounds(4, 0);
+    EXPECT_EQ(1, outbounds.size());
+
+    outbounds = directed_graph.outbounds(6, 0);
+    EXPECT_EQ(1, outbounds.size());
+
+    ASSERT_TRUE(directed_graph.filter_edge(simple_graph::Edge<int>(4, 6)));
+
+    // outbound vertices after the first remove
+    outbounds = directed_graph.outbounds(4, 0);
+    EXPECT_EQ(0, outbounds.size());
+
+    outbounds = directed_graph.outbounds(6, 0);
+    EXPECT_EQ(1, outbounds.size());
+
+    EXPECT_EQ(4, directed_graph.vertex_num());
+
+    directed_graph.filter_edge(simple_graph::Edge<int>(6, 23));
+
+    EXPECT_EQ(4, directed_graph.vertex_num());
+
+    outbounds = directed_graph.outbounds(4, 0);
+    EXPECT_EQ(0, outbounds.size());
+
+    outbounds = directed_graph.outbounds(6, 0);
+    EXPECT_EQ(0, outbounds.size());
 
 
     std::map<std::pair<vertex_index_t, vertex_index_t>, int> expected_edges = {

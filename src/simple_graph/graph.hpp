@@ -207,7 +207,7 @@ private:
 };
 
 /**
- * Graph interface
+ * Graph interface.
  * @tparam Dir
  * @tparam V
  * @tparam E
@@ -228,8 +228,8 @@ public:
     virtual void add_vertex(Vertex<V> vertex) = 0;
     virtual void rm_vertex(vertex_index_t idx) = 0;
     // TODO measure performance
-    virtual const std::set<vertex_index_t> &inbounds(vertex_index_t idx) const = 0;
-    virtual const std::set<vertex_index_t> &outbounds(vertex_index_t idx) const = 0;
+    virtual std::set<vertex_index_t> inbounds(vertex_index_t idx) const = 0;
+    virtual std::set<vertex_index_t> outbounds(vertex_index_t idx, int mode) const = 0;
 
     virtual const Vertex<V> &vertex(vertex_index_t idx) const = 0;
     virtual size_t vertex_num() const = 0;
@@ -239,8 +239,11 @@ public:
     virtual bool edge_exists(Edge<E> edge) const = 0;
     virtual void rm_edge(Edge<E> edge) = 0;
 
-    virtual bool filter_edge(const Edge<E> &edge) = 0;
+    virtual bool filter_edge(Edge<E> edge) = 0;
     virtual bool filter_edges(const std::vector<Edge<E>> &edges) = 0;
+    virtual bool restore_edge(Edge<E> edge) = 0;
+    virtual bool restore_edges(const std::vector<Edge<E>> &edges) = 0;
+    virtual void restore_edges() = 0;
 
     virtual EdgesWrapper &edges() = 0;
 };

@@ -36,7 +36,7 @@ bool dfs(const Graph<Dir, V, E> &g, vertex_index_t start_idx, std::function<bool
 
         visited[u] = true;
 
-        const std::set<vertex_index_t> &vertices = g.outbounds(u);
+        const std::set<vertex_index_t> &vertices = g.outbounds(u, 1);
 
         for (auto v : vertices) {
             if (!visited[v]) {

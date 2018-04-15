@@ -12,83 +12,136 @@ namespace simple_graph {
 
 template <bool Dir, typename V, typename E>
 class ListGraph : public Graph<Dir, V, E> {
-    typedef std::map<vertex_index_t, std::map<vertex_index_t, Edge<E>>> Edges;
+    using Edges = std::map<vertex_index_t, std::map<vertex_index_t, Edge<E>>>;
+    using FilteredEdges = std::unordered_map<vertex_index_t, std::set<vertex_index_t>>;
 
 private:
+    /**
+     * Service class to implement iterator.
+     */
     class ListEdgesWrapper : public Graph<Dir, V, E>::EdgesWrapper {
     private:
+        /**
+         * Iterator implementation for edges.
+         */
         class EdgeIterator : public IteratorImplBase<Edge<E>> {
         public:
-            EdgeIterator(Edges *edges, Edge<E> *current) : edges_(edges), current_(current) {}
-            virtual bool operator==(const IteratorImplBase<Edge<E>> &it) const override {
-                const EdgeIterator *tmp = dynamic_cast<const EdgeIterator*>(&it);
+            /**
+             * Constructor.
+             *
+             * @param edges Set of all edges in the graph.
+             * @param filtered_edges Set of filtered edges in the graph.
+             * @param current Edge to start iteration with.
+             */
+            EdgeIterator(Edges *edges, FilteredEdges *filtered_edges, Edge<E> *current)
+                : edges_(edges), filtered_edges_(filtered_edges), current_(current)
+            {
+            }
+
+            /**
+             * Check if two iterators are equal to each other.
+             *
+             * @param it Iterator to compare with.
+             * @return True if iterators contain the same edge, false otherwise.
+             */
+            bool operator==(const IteratorImplBase<Edge<E>> &it) const override {
+                const auto *tmp = dynamic_cast<const EdgeIterator*>(&it);
                 return tmp && current_ == tmp->current_;
             }
 
-            virtual bool operator!=(const IteratorImplBase<Edge<E>> &it) const override {
+            /**
+             * Check if two iterators differs from each other.
+             *
+             * @param it Iterator to compare with.
+             * @return True if iterators differ, false otherwise.
+             */
+            bool operator!=(const IteratorImplBase<Edge<E>> &it) const override {
                 return !this->operator==(it);
             }
 
-            virtual IteratorImplBase<Edge<E>> &operator++() override {
-                if (current_ != NULL) {
-                    vertex_index_t idx1;
-                    vertex_index_t idx2;
+            /**
+             * Increment iterator.
+             *
+             * @return Reference to iterator itself.
+             */
+            IteratorImplBase<Edge<E>> &operator++() override {
+                while (true) {
+                    if (current_ != nullptr) {
+                        vertex_index_t idx1;
+                        vertex_index_t idx2;
 
-                    if (Dir) {
-                        idx1 = current_->idx1();
-                        idx2 = current_->idx2();
-                    }
-                    else {
-                        auto p = std::minmax(current_->idx1(), current_->idx2());
-                        idx1 = p.first;
-                        idx2 = p.second;
-                    }
-
-                    auto it = edges_->at(idx1).upper_bound(idx2);
-                    if (it != edges_->at(idx1).end()) {
-                        current_ = &it->second;
-                    }
-                    else {
-                        auto it1 = edges_->upper_bound(idx1);
-                        if (it1 != edges_->end()) {
-                            current_ = &it1->second.begin()->second;
+                        if (Dir) {
+                            idx1 = current_->idx1();
+                            idx2 = current_->idx2();
                         }
                         else {
-                            current_ = NULL;
+                            auto p = std::minmax(current_->idx1(), current_->idx2());
+                            idx1 = p.first;
+                            idx2 = p.second;
+                        }
+
+                        auto it = edges_->at(idx1).upper_bound(idx2);
+                        if (it != edges_->at(idx1).end()) {
+                            current_ = &it->second;
+                        }
+                        else {
+                            auto it1 = edges_->upper_bound(idx1);
+                            if (it1 != edges_->end()) {
+                                current_ = &it1->second.begin()->second;
+                            }
+                            // traversed all edges
+                            else {
+                                current_ = nullptr;
+                            }
                         }
                     }
+
+                    // skip filtered edges
+                    if ((current_ == nullptr) || (filtered_edges_->count(current_->idx1()) == 0)
+                            || (filtered_edges_->at(current_->idx1()).count(current_->idx2()) == 0)) {
+                        break;
+                    }
                 }
+
                 return *this;
             }
 
-            virtual Edge<E> &operator*() override {
+            /**
+             * Get underlying edge.
+             *
+             * @return Current edge.
+             */
+            Edge<E> &operator*() override {
                 return *current_;
             }
 
         private:
             Edges *edges_;
+            FilteredEdges *filtered_edges_;
             Edge<E> *current_;
         };
 
     public:
-        explicit ListEdgesWrapper(Edges *edges) : edges_(edges) {}
+        explicit ListEdgesWrapper(Edges *edges, FilteredEdges *filtered_edges) : edges_(edges), filtered_edges_(filtered_edges) {}
 
-        virtual iterator<Edge<E>> begin() override {
-            iterator<Edge<E>> iter(std::make_shared<EdgeIterator>(EdgeIterator(edges_, &edges_->begin()->second.begin()->second)));
+        iterator<Edge<E>> begin() override {
+            iterator<Edge<E>> iter(std::make_shared<EdgeIterator>(EdgeIterator(edges_, filtered_edges_, &edges_->begin()->second.begin()->second)));
             return iter;
         }
 
-        virtual iterator<Edge<E>> end() override {
-            iterator<Edge<E>> iter(std::make_shared<EdgeIterator>(EdgeIterator(edges_, NULL)));
+        iterator<Edge<E>> end() override {
+            iterator<Edge<E>> iter(std::make_shared<EdgeIterator>(EdgeIterator(edges_, filtered_edges_, NULL)));
             return iter;
         }
 
     private:
         Edges *edges_;
+        FilteredEdges *filtered_edges_;
     };
 
 public:
-    ListGraph() : vertex_num_(0), vertices_(), inbounds_(), outbounds_(), filtered_edges_(), edges_(), edges_wrapper_(&edges_) {}
+    ListGraph() : vertex_num_(0), vertices_(), inbounds_(), outbounds_(), edges_(), filtered_edges_(),
+            edges_wrapper_(&edges_, &filtered_edges_) {}
     virtual ~ListGraph() = default;
 
     void add_vertex(Vertex<V> vertex) override {
@@ -126,12 +179,40 @@ public:
         --vertex_num_;
     }
 
-    const std::set<vertex_index_t> &inbounds(vertex_index_t idx) const override {
-        return inbounds_.at(idx);
+    std::set<vertex_index_t> inbounds(vertex_index_t idx) const override {
+        if (inbounds_.count(idx) == 0) {
+            return {};
+        }
+
+        std::set<vertex_index_t> res;
+        for (const auto &idx2 : inbounds_.at(idx)) {
+            if ((filtered_edges_.count(idx2) == 0) || (filtered_edges_.at(idx2).count(idx) == 0)) {
+                res.insert(idx2);
+            }
+        }
+
+        return res;
     }
 
-    const std::set<vertex_index_t> &outbounds(vertex_index_t idx) const override {
-        return outbounds_.at(idx);
+    std::set<vertex_index_t> outbounds(vertex_index_t idx, int mode) const override {
+        if (outbounds_.count(idx) == 0) {
+            return {};
+        }
+
+        // no filters were applied, return all outbounds
+        if ((mode == 1) || (filtered_edges_.count(idx) == 0)) {
+            return outbounds_.at(idx);
+        }
+
+        // return all outbounds except filtered ones
+        std::set<vertex_index_t> res;
+        for (const auto &idx2 : outbounds_.at(idx)) {
+            if (filtered_edges_.at(idx).count(idx2) == 0) {
+                res.insert(idx2);
+            }
+        }
+
+        return res;
     }
 
     const Vertex<V> &vertex(vertex_index_t idx) const override {
@@ -178,8 +259,7 @@ public:
 
     /**
      * @brief Remove specified edge from the graph
-     * @param edge - edge to remove
-     * @return
+     * @param edge Edge to remove.
      */
     void rm_edge(Edge<E> edge) override {
         if ((vertices_.count(edge.idx1()) == 0) || (vertices_.count(edge.idx2()) == 0)) {
@@ -212,35 +292,25 @@ public:
 
     /**
      * @brief Temporarily remove specified edge from the graph.
-     * @param edge - edge to filter out
-     * @return false if edge is invalid or is not present in the graph, true otherwise
-     * @note If edge is valid, it is added to filtered edges regardless of it is present or not in the graph.
+     * @param edge Edge to filter out.
+     * @return False if edge is invalid or is not present in the graph, true otherwise.
+     * @note If edge is valid, it is added to filtered edges regardless of it's presence in the graph.
      */
-    bool filter_edge(const Edge<E> &edge) override {
+    bool filter_edge(Edge<E> edge) override {
         bool rc = true;
 
-        if (std::max(edge.idx1(), edge.idx2()) >= vertex_num_) {
-            return false;
+        if ((vertices_.count(edge.idx1()) == 0) || (vertices_.count(edge.idx2()) == 0)) {
+            throw std::out_of_range("Vertex index is not presented");
         }
 
-        vertex_index_t idx1;
-        vertex_index_t idx2;
-
-        if (Dir) {
-            idx1 = edge.idx1();
-            idx2 = edge.idx2();
-        }
-        // edges are stored as min_idx->max_idx in undirected graph
-        else {
-            auto p = std::minmax(edge.idx1(), edge.idx2());
-            idx1 = p.first;
-            idx2 = p.second;
+        if (!Dir && (edge.idx1() > edge.idx2())) {
+            edge.swap_vertices();
         }
 
-        filtered_edges_[idx1].insert(idx2);
+        filtered_edges_[edge.idx1()].insert(edge.idx2());
 
         // check if edge was actually filtered out
-        if (!edges_.count(idx1) || !edges_.at(idx1).count(idx2)) {
+        if (!edges_.count(edge.idx1()) || !edges_.at(edge.idx1()).count(edge.idx2())) {
             rc = false;
         }
 
@@ -249,10 +319,10 @@ public:
 
     /**
      * @brief Temporarily removes specified edges from the graph.
-     * @param edges - edges to filter out
-     * @return true if all edges filtered out, false otherwise
+     * @param edges Edges to filter out.
+     * @return True if all edges filtered out, false otherwise.
      */
-    virtual bool filter_edges(const std::vector<Edge<E>> &edges) {
+    bool filter_edges(const std::vector<Edge<E>> &edges) override {
         bool rc = true;
 
         for (const auto &edge : edges) {
@@ -264,6 +334,58 @@ public:
         return rc;
     }
 
+    /**
+     * @brief Restore temporarily removed edge.
+     * @param edge Edge to restore.
+     */
+    bool restore_edge(Edge<E> edge) override {
+        if ((vertices_.count(edge.idx1()) == 0) || (vertices_.count(edge.idx2()) == 0)) {
+            throw std::out_of_range("Vertex index is not presented");
+        }
+
+        if (!Dir && (edge.idx1() > edge.idx2())) {
+            edge.swap_vertices();
+        }
+
+        if ((filtered_edges_.count(edge.idx1()) > 0) && (filtered_edges_.at(edge.idx1()).count(edge.idx2()) > 0)) {
+            filtered_edges_[edge.idx1()].erase(edge.idx2());
+            if (filtered_edges_.at(edge.idx1()).size() == 0) {
+                filtered_edges_.erase(edge.idx1());
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @brief Restore temporarily removed edges.
+     * @param edges
+     */
+    bool restore_edges(const std::vector<Edge<E>> &edges) override {
+        bool rc = true;
+
+        for (const auto &edge : edges) {
+            if (!restore_edge(edge)) {
+                rc = false;
+            }
+        }
+
+        return rc;
+    }
+
+    /**
+     * @brief Restore all temporarily removed edges.
+     * @param edges
+     */
+    void restore_edges() override {
+        filtered_edges_.clear();
+    }
+
+    /**
+     *
+     * @return
+     */
     typename Graph<Dir, V, E>::EdgesWrapper &edges() override {
         return edges_wrapper_;
     }
@@ -273,8 +395,8 @@ private:
     std::unordered_map<vertex_index_t, Vertex<V>> vertices_;
     std::unordered_map<vertex_index_t, std::set<vertex_index_t>> inbounds_;
     std::unordered_map<vertex_index_t, std::set<vertex_index_t>> outbounds_;
-    std::unordered_map<vertex_index_t, std::set<vertex_index_t>> filtered_edges_;
     Edges edges_;
+    FilteredEdges filtered_edges_;
     ListEdgesWrapper edges_wrapper_;
 };
 

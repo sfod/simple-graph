@@ -73,12 +73,11 @@ TEST_F(ListGraphUndirectedTest, test_rm_vertex)
 TEST_F(ListGraphUndirectedTest, test_get_outbounds)
 {
     ASSERT_EQ(4, undirected_graph.vertex_num());
-    EXPECT_THROW(undirected_graph.outbounds(1), std::out_of_range);
-    const auto &adj = undirected_graph.outbounds(2);
-    EXPECT_EQ(0, adj.size());
+    const auto &out = undirected_graph.outbounds(1, 0);
+    EXPECT_EQ(0, out.size());
 
-    ASSERT_EQ(0, undirected_graph_empty.vertex_num());
-    EXPECT_THROW(undirected_graph_empty.outbounds(1), std::out_of_range);
+    const auto &adj = undirected_graph.outbounds(2, 0);
+    EXPECT_EQ(0, adj.size());
 }
 
 TEST_F(ListGraphUndirectedTest, test_add_edge)
