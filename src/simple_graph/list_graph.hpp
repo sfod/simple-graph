@@ -291,6 +291,16 @@ public:
     }
 
     /**
+     * Get number of edges in the graph.
+     *
+     * @return Number of edges.
+     * @note Filtered edges are not taken into consideration.
+     */
+    size_t edge_num() const {
+        return edges_.size();
+    }
+
+    /**
      * @brief Temporarily remove specified edge from the graph.
      * @param edge Edge to filter out.
      * @return False if edge is invalid or is not present in the graph, true otherwise.

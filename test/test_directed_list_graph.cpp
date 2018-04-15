@@ -108,6 +108,8 @@ TEST_F(ListGraphDirectedTest, test_add_edge)
     directed_graph.add_edge(simple_graph::Edge<int>(4, 6, 12));
     directed_graph.add_edge(simple_graph::Edge<int>(6, 23, 13));
 
+    ASSERT_EQ(3, directed_graph.edge_num());
+
     EXPECT_EQ(12, directed_graph.edge(4, 6).weight());
 
     std::map<std::pair<vertex_index_t, vertex_index_t>, int> expected_edges = {

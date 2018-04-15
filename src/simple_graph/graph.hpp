@@ -238,6 +238,7 @@ public:
     virtual const Edge<E> &edge(vertex_index_t idx1, vertex_index_t idx2) const = 0;
     virtual bool edge_exists(Edge<E> edge) const = 0;
     virtual void rm_edge(Edge<E> edge) = 0;
+    virtual size_t edge_num() const = 0;
 
     virtual bool filter_edge(Edge<E> edge) = 0;
     virtual bool filter_edges(const std::vector<Edge<E>> &edges) = 0;
