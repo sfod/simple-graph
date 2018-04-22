@@ -163,6 +163,7 @@ public:
 
     vertex_index_t idx1() const { return idx1_; }
     vertex_index_t idx2() const { return idx2_; }
+    P parameters() const { return params_; }
     const W &weight() const { return weight_; }
 
     void swap_vertices() { std::swap(idx1_, idx2_); }

@@ -104,18 +104,23 @@ TEST_F(ListGraphDirectedTest, test_add_edge)
 {
     ASSERT_EQ(4, directed_graph.vertex_num());
 
-    directed_graph.add_edge(simple_graph::Edge<int, int>(2, 4, 0, 11));
-    directed_graph.add_edge(simple_graph::Edge<int, int>(4, 6, 0, 12));
-    directed_graph.add_edge(simple_graph::Edge<int, int>(6, 23, 0, 13));
+    directed_graph.add_edge(simple_graph::Edge<int, int>(2, 4, 101, 11));
+    directed_graph.add_edge(simple_graph::Edge<int, int>(4, 6, 102, 12));
+    directed_graph.add_edge(simple_graph::Edge<int, int>(6, 23, 103, 13));
 
     ASSERT_EQ(3, directed_graph.edge_num());
 
     EXPECT_EQ(12, directed_graph.edge(4, 6).weight());
 
-    std::map<std::pair<vertex_index_t, vertex_index_t>, int> expected_edges = {
+    std::map<std::pair<vertex_index_t, vertex_index_t>, int> expected_weigths = {
             {{2, 4}, 11},
             {{4, 6}, 12},
             {{6, 23}, 13}
+    };
+    std::map<std::pair<vertex_index_t, vertex_index_t>, int> expected_params = {
+            {{2, 4}, 101},
+            {{4, 6}, 102},
+            {{6, 23}, 103}
     };
     std::map<std::pair<vertex_index_t, vertex_index_t>, int> visited_edges = {
             {{2, 4}, 0},
@@ -126,7 +131,8 @@ TEST_F(ListGraphDirectedTest, test_add_edge)
     int visited_edges_num = 0;
     for (const auto &edge : directed_graph.edges()) {
         const auto &e = std::make_pair(edge.idx1(), edge.idx2());
-        EXPECT_EQ(expected_edges[e], edge.weight());
+        EXPECT_EQ(expected_weigths[e], edge.weight());
+        EXPECT_EQ(expected_params[e], edge.parameters());
         EXPECT_EQ(1, visited_edges.count(e));
         visited_edges[e]++;
         ++visited_edges_num;
