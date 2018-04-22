@@ -9,7 +9,7 @@ using simple_graph::vertex_index_t;
 
 static void bench_creation(benchmark::State &state)
 {
-    simple_graph::ListGraph<false, int, int> g;
+    simple_graph::ListGraph<false, int, int, int> g;
     while (state.KeepRunning()) {
         state.PauseTiming();
         std::random_device rd;
@@ -25,7 +25,7 @@ static void bench_creation(benchmark::State &state)
             g.add_vertex(simple_graph::Vertex<int>(i));
         }
         for (auto &d : data) {
-            g.add_edge(simple_graph::Edge<int>(d.first, d.second));
+            g.add_edge(simple_graph::Edge<int, int>(d.first, d.second, 0));
         }
     }
 }
@@ -33,12 +33,12 @@ BENCHMARK(bench_creation)->RangePair(1<<10, 8<<16, 100, 1<<12);
 
 static void bench_bfs_path_length(benchmark::State &state)
 {
-    simple_graph::ListGraph<false, int, ssize_t> g;
+    simple_graph::ListGraph<false, int, int,  ssize_t> g;
     for (int i = 0; i < state.range_x(); ++i) {
         g.add_vertex(simple_graph::Vertex<int>(i, i));
     }
     for (int i = 0; i < state.range_x() - 1; ++i) {
-        g.add_edge(simple_graph::Edge<ssize_t>(i, i + 1, 1));
+        g.add_edge(simple_graph::Edge<int, ssize_t>(i, i + 1, 0, 1));
     }
 
     std::function<bool(int)> f = [&](int c) { return c == state.range_x() - 1; };
@@ -52,12 +52,12 @@ BENCHMARK(bench_bfs_path_length)->Range(1<<10, 1<<20);
 
 static void bench_dfs_path_length(benchmark::State &state)
 {
-    simple_graph::ListGraph<false, int, ssize_t> g;
+    simple_graph::ListGraph<false, int, int, ssize_t> g;
     for (int i = 0; i < state.range_x(); ++i) {
         g.add_vertex(simple_graph::Vertex<int>(i, i));
     }
     for (int i = 0; i < state.range_x() - 1; ++i) {
-        g.add_edge(simple_graph::Edge<ssize_t>(i, i + 1, 1));
+        g.add_edge(simple_graph::Edge<int, ssize_t>(i, i + 1, 0, 1));
     }
 
     std::function<bool(int)> f = [&](int c) { return c == state.range_x() - 1; };
@@ -71,12 +71,12 @@ BENCHMARK(bench_dfs_path_length)->Range(1<<10, 1<<20);
 
 static void bench_astar_path_length(benchmark::State &state)
 {
-    simple_graph::ListGraph<false, int, ssize_t> g;
+    simple_graph::ListGraph<false, int, int, ssize_t> g;
     for (int i = 0; i < state.range_x(); ++i) {
         g.add_vertex(simple_graph::Vertex<int>(i, i));
     }
     for (int i = 0; i < state.range_x() - 1; ++i) {
-        g.add_edge(simple_graph::Edge<ssize_t>(i, i + 1, 1));
+        g.add_edge(simple_graph::Edge<int, ssize_t>(i, i + 1, 0, 1));
     }
 
     std::function<float(vertex_index_t, vertex_index_t)> heuristic = [=](vertex_index_t c, vertex_index_t r) {

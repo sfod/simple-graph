@@ -23,8 +23,8 @@ vertex_index_t min_idx(const std::set<vertex_index_t> &opened, const std::vector
     return min_idx;
 }
 
-template<bool Dir, typename V, typename E>
-bool astar(const Graph<Dir, V, E> &g, vertex_index_t start_idx, vertex_index_t goal_idx,
+template<bool Dir, typename V, typename E, typename W>
+bool astar(const Graph<Dir, V, E, W> &g, vertex_index_t start_idx, vertex_index_t goal_idx,
         const std::function<float(simple_graph::vertex_index_t, simple_graph::vertex_index_t)> &heuristic,
         std::vector<vertex_index_t> *path)
 {

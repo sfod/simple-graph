@@ -8,7 +8,7 @@ using simple_graph::vertex_index_t;
 
 class ListGraphUndirectedTest : public ::testing::Test {
 protected:
-    simple_graph::ListGraph<false, size_t, size_t> undirected_graph;
+    simple_graph::ListGraph<false, size_t, int, size_t> undirected_graph;
 };
 
 TEST_F(ListGraphUndirectedTest, test_bfs_direct_order)
@@ -18,11 +18,11 @@ TEST_F(ListGraphUndirectedTest, test_bfs_direct_order)
     }
     ASSERT_EQ(6, undirected_graph.vertex_num());
 
-    undirected_graph.add_edge(simple_graph::Edge<size_t>(0, 1));
-    undirected_graph.add_edge(simple_graph::Edge<size_t>(1, 2));
-    undirected_graph.add_edge(simple_graph::Edge<size_t>(2, 3));
-    undirected_graph.add_edge(simple_graph::Edge<size_t>(1, 4));
-    undirected_graph.add_edge(simple_graph::Edge<size_t>(4, 5));
+    undirected_graph.add_edge(simple_graph::Edge<int, size_t>(0, 1, 0));
+    undirected_graph.add_edge(simple_graph::Edge<int, size_t>(1, 2, 0));
+    undirected_graph.add_edge(simple_graph::Edge<int, size_t>(2, 3, 0));
+    undirected_graph.add_edge(simple_graph::Edge<int, size_t>(1, 4, 0));
+    undirected_graph.add_edge(simple_graph::Edge<int, size_t>(4, 5, 0));
 
     std::vector<vertex_index_t> path;
     size_t p = 5;
@@ -43,9 +43,9 @@ TEST_F(ListGraphUndirectedTest, test_bfs_reverse_order)
 
     EXPECT_EQ(4, undirected_graph.vertex_num());
 
-    undirected_graph.add_edge(simple_graph::Edge<size_t>(0, 1));
-    undirected_graph.add_edge(simple_graph::Edge<size_t>(1, 2));
-    undirected_graph.add_edge(simple_graph::Edge<size_t>(2, 3));
+    undirected_graph.add_edge(simple_graph::Edge<int, size_t>(0, 1, 0));
+    undirected_graph.add_edge(simple_graph::Edge<int, size_t>(1, 2, 0));
+    undirected_graph.add_edge(simple_graph::Edge<int, size_t>(2, 3, 0));
 
     std::vector<vertex_index_t> path;
     size_t p = 0;

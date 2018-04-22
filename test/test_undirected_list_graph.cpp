@@ -15,8 +15,8 @@ protected:
         undirected_graph.add_vertex(simple_graph::Vertex<char>(23, 'd'));
     }
 
-    simple_graph::ListGraph<false, char, int> undirected_graph;
-    simple_graph::ListGraph<false, char, int> undirected_graph_empty;
+    simple_graph::ListGraph<false, char, int, int> undirected_graph;
+    simple_graph::ListGraph<false, char, int, int> undirected_graph_empty;
 };
 
 TEST_F(ListGraphUndirectedTest, test_get_vertex)
@@ -84,9 +84,9 @@ TEST_F(ListGraphUndirectedTest, test_add_edge)
 {
     ASSERT_EQ(4, undirected_graph.vertex_num());
 
-    undirected_graph.add_edge(simple_graph::Edge<int>(2, 4, 11));
-    undirected_graph.add_edge(simple_graph::Edge<int>(4, 6, 12));
-    undirected_graph.add_edge(simple_graph::Edge<int>(6, 23, 13));
+    undirected_graph.add_edge(simple_graph::Edge<int, int>(2, 4, 0, 11));
+    undirected_graph.add_edge(simple_graph::Edge<int, int>(4, 6, 0, 12));
+    undirected_graph.add_edge(simple_graph::Edge<int, int>(6, 23, 0, 13));
 
     EXPECT_EQ(12, undirected_graph.edge(4, 6).weight());
 
@@ -121,9 +121,9 @@ TEST_F(ListGraphUndirectedTest, test_add_edge_descending)
 {
     ASSERT_EQ(4, undirected_graph.vertex_num());
 
-    undirected_graph.add_edge(simple_graph::Edge<int>(23, 6, 13));
-    undirected_graph.add_edge(simple_graph::Edge<int>(6, 4, 12));
-    undirected_graph.add_edge(simple_graph::Edge<int>(4, 2, 11));
+    undirected_graph.add_edge(simple_graph::Edge<int, int>(23, 6, 0, 13));
+    undirected_graph.add_edge(simple_graph::Edge<int, int>(6, 4, 0, 12));
+    undirected_graph.add_edge(simple_graph::Edge<int, int>(4, 2, 0, 11));
 
     EXPECT_EQ(12, undirected_graph.edge(4, 6).weight());
 

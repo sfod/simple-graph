@@ -7,17 +7,14 @@
 
 namespace simple_graph {
 
-template<typename E>
-bool check_distance(const E &d, const E &w)
+template<typename W>
+bool check_distance(const W &d, const W &w)
 {
-    if ((d > 0) && (w >0) && (std::numeric_limits<E>::max() - d < w)) {
-        return false;
-    }
-    return true;
+    return !((d > 0) && (w > 0) && (std::numeric_limits<W>::max() - d < w));
 }
 
-template<bool Dir, typename V, typename E>
-bool bellman_ford(const Graph<Dir, V, E> &g, vertex_index_t start_idx, vertex_index_t goal_idx,
+template<bool Dir, typename V, typename E, typename W>
+bool bellman_ford(const Graph<Dir, V, E, W> &g, vertex_index_t start_idx, vertex_index_t goal_idx,
         std::vector<vertex_index_t> *path)
 {
     // TODO add utility function to check passed vertex indices
@@ -25,15 +22,15 @@ bool bellman_ford(const Graph<Dir, V, E> &g, vertex_index_t start_idx, vertex_in
         return false;
     }
 
-    std::vector<E> distance(g.vertex_num(), std::numeric_limits<E>::max());
+    std::vector<W> distance(g.vertex_num(), std::numeric_limits<W>::max());
     std::vector<vertex_index_t> predecessor(g.vertex_num(), -1);
 
     distance[start_idx] = 0;
 
-    Graph<Dir, V, E> *fg = const_cast<Graph<Dir, V, E>*>(&g);
+    auto fg = const_cast<Graph<Dir, V, E, W>*>(&g);
 
-    std::vector<Edge<E>> asc_edges;
-    std::vector<Edge<E>> desc_edges;
+    std::vector<Edge<E, W>> asc_edges;
+    std::vector<Edge<E, W>> desc_edges;
     for (const auto &edge : fg->edges()) {
         if (Dir) {
             if (edge.idx1() < edge.idx2()) {
@@ -48,12 +45,12 @@ bool bellman_ford(const Graph<Dir, V, E> &g, vertex_index_t start_idx, vertex_in
             desc_edges.push_back(edge);
         }
     }
-    std::sort(asc_edges.begin(), asc_edges.end(), [](const Edge<E> &a, const Edge<E> &b) {
+    std::sort(asc_edges.begin(), asc_edges.end(), [](const Edge<E, W> &a, const Edge<E, W> &b) {
         vertex_index_t a_idx = std::min(a.idx1(), a.idx2());
         vertex_index_t b_idx = std::min(b.idx1(), b.idx2());
         return a_idx < b_idx;
     });
-    std::sort(desc_edges.begin(), desc_edges.end(), [](const Edge<E> &a, const Edge<E> &b) {
+    std::sort(desc_edges.begin(), desc_edges.end(), [](const Edge<E, W> &a, const Edge<E, W> &b) {
         vertex_index_t a_idx = std::max(a.idx1(), a.idx2());
         vertex_index_t b_idx = std::max(b.idx1(), b.idx2());
         return b_idx < a_idx;
@@ -91,7 +88,7 @@ bool bellman_ford(const Graph<Dir, V, E> &g, vertex_index_t start_idx, vertex_in
         }
     }
 
-    if (distance[goal_idx] == std::numeric_limits<E>::max()) {
+    if (distance[goal_idx] == std::numeric_limits<W>::max()) {
         return false;
     }
 

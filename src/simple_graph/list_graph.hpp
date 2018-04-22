@@ -10,21 +10,21 @@
 
 namespace simple_graph {
 
-template <bool Dir, typename V, typename E>
-class ListGraph : public Graph<Dir, V, E> {
-    using Edges = std::map<vertex_index_t, std::map<vertex_index_t, Edge<E>>>;
+template <bool Dir, typename V, typename E, typename W>
+class ListGraph : public Graph<Dir, V, E, W> {
+    using Edges = std::map<vertex_index_t, std::map<vertex_index_t, Edge<E, W>>>;
     using FilteredEdges = std::unordered_map<vertex_index_t, std::set<vertex_index_t>>;
 
 private:
     /**
      * Service class to implement iterator.
      */
-    class ListEdgesWrapper : public Graph<Dir, V, E>::EdgesWrapper {
+    class ListEdgesWrapper : public Graph<Dir, V, E, W>::EdgesWrapper {
     private:
         /**
          * Iterator implementation for edges.
          */
-        class EdgeIterator : public IteratorImplBase<Edge<E>> {
+        class EdgeIterator : public IteratorImplBase<Edge<E, W>> {
         public:
             /**
              * Constructor.
@@ -33,7 +33,7 @@ private:
              * @param filtered_edges Set of filtered edges in the graph.
              * @param current Edge to start iteration with.
              */
-            EdgeIterator(Edges *edges, FilteredEdges *filtered_edges, Edge<E> *current)
+            EdgeIterator(Edges *edges, FilteredEdges *filtered_edges, Edge<E, W> *current)
                 : edges_(edges), filtered_edges_(filtered_edges), current_(current)
             {
             }
@@ -44,7 +44,7 @@ private:
              * @param it Iterator to compare with.
              * @return True if iterators contain the same edge, false otherwise.
              */
-            bool operator==(const IteratorImplBase<Edge<E>> &it) const override {
+            bool operator==(const IteratorImplBase<Edge<E, W>> &it) const override {
                 const auto *tmp = dynamic_cast<const EdgeIterator*>(&it);
                 return tmp && current_ == tmp->current_;
             }
@@ -55,7 +55,7 @@ private:
              * @param it Iterator to compare with.
              * @return True if iterators differ, false otherwise.
              */
-            bool operator!=(const IteratorImplBase<Edge<E>> &it) const override {
+            bool operator!=(const IteratorImplBase<Edge<E, W>> &it) const override {
                 return !this->operator==(it);
             }
 
@@ -64,7 +64,7 @@ private:
              *
              * @return Reference to iterator itself.
              */
-            IteratorImplBase<Edge<E>> &operator++() override {
+            IteratorImplBase<Edge<E, W>> &operator++() override {
                 while (true) {
                     if (current_ != nullptr) {
                         vertex_index_t idx1;
@@ -111,26 +111,27 @@ private:
              *
              * @return Current edge.
              */
-            Edge<E> &operator*() override {
+            Edge<E, W> &operator*() override {
                 return *current_;
             }
 
         private:
             Edges *edges_;
             FilteredEdges *filtered_edges_;
-            Edge<E> *current_;
+            Edge<E, W> *current_;
         };
 
     public:
-        explicit ListEdgesWrapper(Edges *edges, FilteredEdges *filtered_edges) : edges_(edges), filtered_edges_(filtered_edges) {}
+        explicit ListEdgesWrapper(Edges *edges, FilteredEdges *filtered_edges)
+            : edges_(edges), filtered_edges_(filtered_edges) {}
 
-        iterator<Edge<E>> begin() override {
-            iterator<Edge<E>> iter(std::make_shared<EdgeIterator>(EdgeIterator(edges_, filtered_edges_, &edges_->begin()->second.begin()->second)));
+        iterator<Edge<E, W>> begin() override {
+            iterator<Edge<E, W>> iter(std::make_shared<EdgeIterator>(EdgeIterator(edges_, filtered_edges_, &edges_->begin()->second.begin()->second)));
             return iter;
         }
 
-        iterator<Edge<E>> end() override {
-            iterator<Edge<E>> iter(std::make_shared<EdgeIterator>(EdgeIterator(edges_, filtered_edges_, NULL)));
+        iterator<Edge<E, W>> end() override {
+            iterator<Edge<E, W>> iter(std::make_shared<EdgeIterator>(EdgeIterator(edges_, filtered_edges_, NULL)));
             return iter;
         }
 
@@ -142,6 +143,7 @@ private:
 public:
     ListGraph() : vertex_num_(0), vertices_(), inbounds_(), outbounds_(), edges_(), filtered_edges_(),
             edges_wrapper_(&edges_, &filtered_edges_) {}
+
     virtual ~ListGraph() = default;
 
     void add_vertex(Vertex<V> vertex) override {
@@ -221,7 +223,7 @@ public:
 
     size_t vertex_num() const override { return vertex_num_; };
 
-    void add_edge(Edge<E> edge) override {
+    void add_edge(Edge<E, W> edge) override {
         if ((vertices_.count(edge.idx1()) == 0) || (vertices_.count(edge.idx2()) == 0)) {
             throw std::out_of_range("Vertex index is not presented");
         }
@@ -240,7 +242,7 @@ public:
         edges_[edge.idx1()].emplace(edge.idx2(), std::move(edge));
     }
 
-    const Edge<E> &edge(vertex_index_t idx1, vertex_index_t idx2) const override {
+    const Edge<E, W> &edge(vertex_index_t idx1, vertex_index_t idx2) const override {
         if (Dir) {
             return edges_.at(idx1).at(idx2);
         }
@@ -250,7 +252,7 @@ public:
         }
     }
 
-    bool edge_exists(Edge<E> edge) const override {
+    bool edge_exists(Edge<E, W> edge) const override {
         if (!Dir && (edge.idx1() > edge.idx2())) {
             edge.swap_vertices();
         }
@@ -261,7 +263,7 @@ public:
      * @brief Remove specified edge from the graph
      * @param edge Edge to remove.
      */
-    void rm_edge(Edge<E> edge) override {
+    void rm_edge(Edge<E, W> edge) override {
         if ((vertices_.count(edge.idx1()) == 0) || (vertices_.count(edge.idx2()) == 0)) {
             throw std::out_of_range("Vertex index is not presented");
         }
@@ -306,7 +308,7 @@ public:
      * @return False if edge is invalid or is not present in the graph, true otherwise.
      * @note If edge is valid, it is added to filtered edges regardless of it's presence in the graph.
      */
-    bool filter_edge(Edge<E> edge) override {
+    bool filter_edge(Edge<E, W> edge) override {
         bool rc = true;
 
         if ((vertices_.count(edge.idx1()) == 0) || (vertices_.count(edge.idx2()) == 0)) {
@@ -332,7 +334,7 @@ public:
      * @param edges Edges to filter out.
      * @return True if all edges filtered out, false otherwise.
      */
-    bool filter_edges(const std::vector<Edge<E>> &edges) override {
+    bool filter_edges(const std::vector<Edge<E, W>> &edges) override {
         bool rc = true;
 
         for (const auto &edge : edges) {
@@ -348,7 +350,7 @@ public:
      * @brief Restore temporarily removed edge.
      * @param edge Edge to restore.
      */
-    bool restore_edge(Edge<E> edge) override {
+    bool restore_edge(Edge<E, W> edge) override {
         if ((vertices_.count(edge.idx1()) == 0) || (vertices_.count(edge.idx2()) == 0)) {
             throw std::out_of_range("Vertex index is not presented");
         }
@@ -372,7 +374,7 @@ public:
      * @brief Restore temporarily removed edges.
      * @param edges
      */
-    bool restore_edges(const std::vector<Edge<E>> &edges) override {
+    bool restore_edges(const std::vector<Edge<E, W>> &edges) override {
         bool rc = true;
 
         for (const auto &edge : edges) {
@@ -396,7 +398,7 @@ public:
      *
      * @return
      */
-    typename Graph<Dir, V, E>::EdgesWrapper &edges() override {
+    typename Graph<Dir, V, E, W>::EdgesWrapper &edges() override {
         return edges_wrapper_;
     }
 

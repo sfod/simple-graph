@@ -8,12 +8,12 @@ using simple_graph::vertex_index_t;
 
 class UndirectedListGraphTest : public ::testing::Test {
 protected:
-    simple_graph::ListGraph<false, int, ssize_t> undirected_graph;
+    simple_graph::ListGraph<false, int, int, ssize_t> undirected_graph;
 };
 
 class DirectedListGraphTest : public ::testing::Test {
 protected:
-    simple_graph::ListGraph<true, int, ssize_t> directed_graph;
+    simple_graph::ListGraph<true, int, int, ssize_t> directed_graph;
 };
 
 
@@ -24,14 +24,14 @@ TEST_F(UndirectedListGraphTest, test_bellman_ford_long)
     }
     ASSERT_EQ(8, undirected_graph.vertex_num());
 
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(0, 1, 1));
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(1, 2, 2));
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(2, 3, 3));
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(3, 4, 4));
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(4, 7, 5));
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(0, 5, 20));
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(5, 6, 20));
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(6, 7, 20));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(0, 1, 0, 1));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(1, 2, 0, 2));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(2, 3, 0, 3));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(3, 4, 0, 4));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(4, 7, 0, 5));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(0, 5, 0, 20));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(5, 6, 0, 20));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(6, 7, 0, 20));
 
     std::vector<vertex_index_t> path;
     ASSERT_EQ(true, simple_graph::bellman_ford(undirected_graph, 0, 7, &path));
@@ -48,14 +48,14 @@ TEST_F(UndirectedListGraphTest, test_bellman_ford_short)
     }
     ASSERT_EQ(8, undirected_graph.vertex_num());
 
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(0, 1, 1));
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(1, 2, 2));
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(2, 3, 3));
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(3, 4, 4));
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(4, 7, 5));
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(0, 5, 1));
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(5, 6, 1));
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(6, 7, 1));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(0, 1, 0, 1));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(1, 2, 0, 2));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(2, 3, 0, 3));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(3, 4, 0, 4));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(4, 7, 0, 5));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(0, 5, 0, 1));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(5, 6, 0, 1));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(6, 7, 0, 1));
 
     std::vector<vertex_index_t> path;
     ASSERT_EQ(true, simple_graph::bellman_ford(undirected_graph, 0, 7, &path));
@@ -73,8 +73,8 @@ TEST_F(UndirectedListGraphTest, test_bellman_ford_no_path)
     }
     ASSERT_EQ(4, undirected_graph.vertex_num());
 
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(0, 1, 1));
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(2, 3, 3));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(0, 1, 0, 1));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(2, 3, 0, 3));
 
     std::vector<vertex_index_t> path;
     EXPECT_EQ(false, simple_graph::bellman_ford(undirected_graph, 0, 3, &path));
@@ -88,14 +88,14 @@ TEST_F(UndirectedListGraphTest, test_bellman_ford_negative_weigths)
     }
     ASSERT_EQ(8, undirected_graph.vertex_num());
 
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(0, 1, -1));
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(1, 2, -2));
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(2, 3, -3));
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(3, 4, -4));
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(4, 7, -5));
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(0, 5, -1));
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(5, 6, -1));
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(6, 7, -1));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(0, 1, 0, -1));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(1, 2, 0, -2));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(2, 3, 0, -3));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(3, 4, 0, -4));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(4, 7, 0, -5));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(0, 5, 0, -1));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(5, 6, 0, -1));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(6, 7, 0, -1));
 
     std::vector<vertex_index_t> path;
     EXPECT_EQ(false, simple_graph::bellman_ford(undirected_graph, 0, 7, &path));
@@ -109,11 +109,11 @@ TEST_F(UndirectedListGraphTest, test_bellman_ford_negative_cycles)
     }
     ASSERT_EQ(5, undirected_graph.vertex_num());
 
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(0, 1, -1));
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(1, 2, -1));
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(2, 0, -1));
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(2, 3, 2));
-    undirected_graph.add_edge(simple_graph::Edge<ssize_t>(3, 4, 2));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(0, 1, 0, -1));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(1, 2, 0, -1));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(2, 0, 0, -1));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(2, 3, 0, 2));
+    undirected_graph.add_edge(simple_graph::Edge<int, ssize_t>(3, 4, 0, 2));
 
     std::vector<vertex_index_t> path;
     EXPECT_EQ(false, simple_graph::bellman_ford(undirected_graph, 0, 4, &path));
@@ -127,14 +127,14 @@ TEST_F(DirectedListGraphTest, test_bellman_ford_long)
     }
     ASSERT_EQ(8, directed_graph.vertex_num());
 
-    directed_graph.add_edge(simple_graph::Edge<ssize_t>(0, 1, 1));
-    directed_graph.add_edge(simple_graph::Edge<ssize_t>(1, 2, 2));
-    directed_graph.add_edge(simple_graph::Edge<ssize_t>(2, 3, 3));
-    directed_graph.add_edge(simple_graph::Edge<ssize_t>(3, 4, 4));
-    directed_graph.add_edge(simple_graph::Edge<ssize_t>(4, 7, 5));
-    directed_graph.add_edge(simple_graph::Edge<ssize_t>(0, 5, 20));
-    directed_graph.add_edge(simple_graph::Edge<ssize_t>(5, 6, 20));
-    directed_graph.add_edge(simple_graph::Edge<ssize_t>(6, 7, 20));
+    directed_graph.add_edge(simple_graph::Edge<int, ssize_t>(0, 1, 0, 1));
+    directed_graph.add_edge(simple_graph::Edge<int, ssize_t>(1, 2, 0, 2));
+    directed_graph.add_edge(simple_graph::Edge<int, ssize_t>(2, 3, 0, 3));
+    directed_graph.add_edge(simple_graph::Edge<int, ssize_t>(3, 4, 0, 4));
+    directed_graph.add_edge(simple_graph::Edge<int, ssize_t>(4, 7, 0, 5));
+    directed_graph.add_edge(simple_graph::Edge<int, ssize_t>(0, 5, 0, 20));
+    directed_graph.add_edge(simple_graph::Edge<int, ssize_t>(5, 6, 0, 20));
+    directed_graph.add_edge(simple_graph::Edge<int, ssize_t>(6, 7, 0, 20));
 
     std::vector<vertex_index_t> path;
     ASSERT_EQ(true, simple_graph::bellman_ford(directed_graph, 0, 7, &path));
@@ -151,14 +151,14 @@ TEST_F(DirectedListGraphTest, test_bellman_ford_reverse)
     }
     ASSERT_EQ(8, directed_graph.vertex_num());
 
-    directed_graph.add_edge(simple_graph::Edge<ssize_t>(1, 0, 1));
-    directed_graph.add_edge(simple_graph::Edge<ssize_t>(2, 1, 2));
-    directed_graph.add_edge(simple_graph::Edge<ssize_t>(3, 2, 3));
-    directed_graph.add_edge(simple_graph::Edge<ssize_t>(4, 3, 4));
-    directed_graph.add_edge(simple_graph::Edge<ssize_t>(7, 4, 5));
-    directed_graph.add_edge(simple_graph::Edge<ssize_t>(5, 0, 20));
-    directed_graph.add_edge(simple_graph::Edge<ssize_t>(6, 5, 20));
-    directed_graph.add_edge(simple_graph::Edge<ssize_t>(7, 6, 20));
+    directed_graph.add_edge(simple_graph::Edge<int, ssize_t>(1, 0, 0, 1));
+    directed_graph.add_edge(simple_graph::Edge<int, ssize_t>(2, 1, 0, 2));
+    directed_graph.add_edge(simple_graph::Edge<int, ssize_t>(3, 2, 0, 3));
+    directed_graph.add_edge(simple_graph::Edge<int, ssize_t>(4, 3, 0, 4));
+    directed_graph.add_edge(simple_graph::Edge<int, ssize_t>(7, 4, 0, 5));
+    directed_graph.add_edge(simple_graph::Edge<int, ssize_t>(5, 0, 0, 20));
+    directed_graph.add_edge(simple_graph::Edge<int, ssize_t>(6, 5, 0, 20));
+    directed_graph.add_edge(simple_graph::Edge<int, ssize_t>(7, 6, 0, 20));
 
     std::vector<vertex_index_t> path;
     ASSERT_EQ(true, simple_graph::bellman_ford(directed_graph, 7, 0, &path));

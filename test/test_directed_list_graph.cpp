@@ -15,8 +15,8 @@ protected:
         directed_graph.add_vertex(simple_graph::Vertex<char>(23, 'd'));
     }
 
-    simple_graph::ListGraph<true, char, int> directed_graph;
-    simple_graph::ListGraph<true, char, int> directed_graph_empty;
+    simple_graph::ListGraph<true, char, int, int> directed_graph;
+    simple_graph::ListGraph<true, char, int, int> directed_graph_empty;
 };
 
 TEST_F(ListGraphDirectedTest, test_get_vertex)
@@ -55,9 +55,9 @@ TEST_F(ListGraphDirectedTest, test_add_vertex)
 
 TEST_F(ListGraphDirectedTest, test_rm_vertex)
 {
-    directed_graph.add_edge(simple_graph::Edge<int>(2, 4, 11));
-    directed_graph.add_edge(simple_graph::Edge<int>(4, 6, 12));
-    directed_graph.add_edge(simple_graph::Edge<int>(6, 23, 13));
+    directed_graph.add_edge(simple_graph::Edge<int, int>(2, 4, 0, 11));
+    directed_graph.add_edge(simple_graph::Edge<int, int>(4, 6, 0, 12));
+    directed_graph.add_edge(simple_graph::Edge<int, int>(6, 23, 0, 13));
 
     ASSERT_EQ(4, directed_graph.vertex_num());
 
@@ -104,9 +104,9 @@ TEST_F(ListGraphDirectedTest, test_add_edge)
 {
     ASSERT_EQ(4, directed_graph.vertex_num());
 
-    directed_graph.add_edge(simple_graph::Edge<int>(2, 4, 11));
-    directed_graph.add_edge(simple_graph::Edge<int>(4, 6, 12));
-    directed_graph.add_edge(simple_graph::Edge<int>(6, 23, 13));
+    directed_graph.add_edge(simple_graph::Edge<int, int>(2, 4, 0, 11));
+    directed_graph.add_edge(simple_graph::Edge<int, int>(4, 6, 0, 12));
+    directed_graph.add_edge(simple_graph::Edge<int, int>(6, 23, 0, 13));
 
     ASSERT_EQ(3, directed_graph.edge_num());
 
@@ -144,9 +144,9 @@ TEST_F(ListGraphDirectedTest, test_add_edge_descending)
 {
     ASSERT_EQ(4, directed_graph.vertex_num());
 
-    directed_graph.add_edge(simple_graph::Edge<int>(23, 6, 13));
-    directed_graph.add_edge(simple_graph::Edge<int>(6, 4, 12));
-    directed_graph.add_edge(simple_graph::Edge<int>(4, 2, 11));
+    directed_graph.add_edge(simple_graph::Edge<int, int>(23, 6, 0, 13));
+    directed_graph.add_edge(simple_graph::Edge<int, int>(6, 4, 0, 12));
+    directed_graph.add_edge(simple_graph::Edge<int, int>(4, 2, 0, 11));
 
     EXPECT_EQ(12, directed_graph.edge(6, 4).weight());
 
@@ -183,9 +183,9 @@ TEST_F(ListGraphDirectedTest, test_rm_edge)
 {
     ASSERT_EQ(4, directed_graph.vertex_num());
 
-    directed_graph.add_edge(simple_graph::Edge<int>(2, 4, 11));
-    directed_graph.add_edge(simple_graph::Edge<int>(4, 6, 12));
-    directed_graph.add_edge(simple_graph::Edge<int>(6, 23, 13));
+    directed_graph.add_edge(simple_graph::Edge<int, int>(2, 4, 0, 11));
+    directed_graph.add_edge(simple_graph::Edge<int, int>(4, 6, 0, 12));
+    directed_graph.add_edge(simple_graph::Edge<int, int>(6, 23, 0, 13));
 
     // outbounds vertices before any removes
     auto neighbours = directed_graph.outbounds(4, 0);
@@ -194,7 +194,7 @@ TEST_F(ListGraphDirectedTest, test_rm_edge)
     neighbours = directed_graph.outbounds(6, 0);
     EXPECT_EQ(1, neighbours.size());
 
-    directed_graph.rm_edge(simple_graph::Edge<int>(4, 6));
+    directed_graph.rm_edge(simple_graph::Edge<int, int>(4, 6, 0));
 
     // outbounds vertices before after the first remove
     neighbours = directed_graph.outbounds(4, 0);
@@ -205,7 +205,7 @@ TEST_F(ListGraphDirectedTest, test_rm_edge)
 
     EXPECT_EQ(4, directed_graph.vertex_num());
 
-    directed_graph.rm_edge(simple_graph::Edge<int>(6, 23));
+    directed_graph.rm_edge(simple_graph::Edge<int, int>(6, 23, 0));
 
     EXPECT_EQ(4, directed_graph.vertex_num());
 
@@ -244,9 +244,9 @@ TEST_F(ListGraphDirectedTest, test_filter_edge)
 {
     ASSERT_EQ(4, directed_graph.vertex_num());
 
-    directed_graph.add_edge(simple_graph::Edge<int>(2, 4, 11));
-    directed_graph.add_edge(simple_graph::Edge<int>(4, 6, 12));
-    directed_graph.add_edge(simple_graph::Edge<int>(6, 23, 13));
+    directed_graph.add_edge(simple_graph::Edge<int, int>(2, 4, 0, 11));
+    directed_graph.add_edge(simple_graph::Edge<int, int>(4, 6, 0, 12));
+    directed_graph.add_edge(simple_graph::Edge<int, int>(6, 23, 0, 13));
 
     // outbound vertices before any removes
     auto outbounds = directed_graph.outbounds(4, 0);
@@ -255,7 +255,7 @@ TEST_F(ListGraphDirectedTest, test_filter_edge)
     outbounds = directed_graph.outbounds(6, 0);
     EXPECT_EQ(1, outbounds.size());
 
-    ASSERT_TRUE(directed_graph.filter_edge(simple_graph::Edge<int>(4, 6)));
+    ASSERT_TRUE(directed_graph.filter_edge(simple_graph::Edge<int, int>(4, 6, 0)));
 
     // outbound vertices after the first remove
     outbounds = directed_graph.outbounds(4, 0);
@@ -266,7 +266,7 @@ TEST_F(ListGraphDirectedTest, test_filter_edge)
 
     EXPECT_EQ(4, directed_graph.vertex_num());
 
-    directed_graph.filter_edge(simple_graph::Edge<int>(6, 23));
+    directed_graph.filter_edge(simple_graph::Edge<int, int>(6, 23, 0));
 
     EXPECT_EQ(4, directed_graph.vertex_num());
 
