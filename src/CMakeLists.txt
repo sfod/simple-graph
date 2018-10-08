@@ -6,5 +6,5 @@ set(SOURCE_FILES
         simple_graph/algorithm/dfs.hpp
         simple_graph/algorithm/bellman_ford.hpp
 )
-add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
+add_library(simple-graph SHARED ${SOURCE_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
