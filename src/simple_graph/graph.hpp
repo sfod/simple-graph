@@ -16,31 +16,19 @@ public:
     Vertex() : idx_(static_cast<vertex_index_t >(-1)), data_() {
         ++default_creations;
     }
+
+    explicit Vertex(vertex_index_t idx) : idx_(idx), data_() {
+        ++creations;
+    }
+
+    Vertex(vertex_index_t idx, const T &data) : idx_(idx), data_(data) {
+        ++creations;
+    }
+
     Vertex(const Vertex<T> &v) {
         ++copies;
         idx_ = v.idx_;
         data_ = v.data_;
-    }
-    Vertex(Vertex<T> &&v) noexcept(noexcept(
-                std::is_nothrow_move_constructible<T>::value
-                    && std::is_nothrow_move_assignable<T>::value)) {
-        ++moves;
-        idx_ = v.idx_;
-        std::swap(data_, v.data_);
-    }
-    explicit Vertex(vertex_index_t idx) : idx_(idx), data_() {
-        ++creations;
-    }
-    Vertex(vertex_index_t idx, const T &data) : idx_(idx), data_(data) {
-        ++creations;
-    }
-    virtual ~Vertex() = default;
-
-    vertex_index_t idx() const { return idx_; }
-    T data() const { return data_; }
-
-    bool operator<(const Vertex<T> &vertex) const {
-        return idx_ < vertex.idx_;
     }
 
     Vertex &operator=(const Vertex<T> &v) {
@@ -52,15 +40,30 @@ public:
         return *this;
     }
 
+    Vertex(Vertex<T> &&v) noexcept(noexcept(
+            std::is_nothrow_move_constructible<T>::value && std::is_nothrow_move_assignable<T>::value)) {
+        ++moves;
+        idx_ = v.idx_;
+        std::swap(data_, v.data_);
+    }
+
     Vertex &operator=(Vertex<T> &&v) noexcept(noexcept(
-                std::is_nothrow_move_constructible<T>::value
-                    && std::is_nothrow_move_assignable<T>::value)) {
+            std::is_nothrow_move_constructible<T>::value && std::is_nothrow_move_assignable<T>::value)) {
         ++moves;
         if (this != &v) {
             idx_ = v.idx_;
             std::swap(data_, v.data_);
         }
         return *this;
+    }
+
+    virtual ~Vertex() = default;
+
+    vertex_index_t idx() const { return idx_; }
+    T data() const { return data_; }
+
+    bool operator<(const Vertex<T> &vertex) const {
+        return idx_ < vertex.idx_;
     }
 
 /// counters to track down objects manipulations
@@ -107,32 +110,23 @@ public:
         ++default_creations;
     }
 
-    Edge(const Edge<P, W> &edge) : idx1_(edge.idx1_), idx2_(edge.idx2_), params_(std::move(edge.params_)), weight_(edge.weight_)
-    {
-        ++copies;
-    }
-
-    Edge(Edge<P, W> &&edge) noexcept(noexcept(
-                std::is_nothrow_move_constructible<W>::value
-                    && std::is_nothrow_move_assignable<W>::value))
-        : idx1_(edge.idx1_), idx2_(edge.idx2_), params_(std::move(edge.params_)), weight_(edge.weight_)
-    {
-        ++moves;
-    }
-
     Edge(vertex_index_t idx1, vertex_index_t idx2, P params)
-        : idx1_(idx1), idx2_(idx2), params_(std::move(params)), weight_(1)
+            : idx1_(idx1), idx2_(idx2), params_(std::move(params)), weight_(1)
     {
         ++creations;
     }
 
     Edge(vertex_index_t idx1, vertex_index_t idx2, P params, W weight)
-        : idx1_(idx1), idx2_(idx2), params_(std::move(params)), weight_(weight)
+            : idx1_(idx1), idx2_(idx2), params_(std::move(params)), weight_(weight)
     {
         ++creations;
     }
 
-    virtual ~Edge() = default;
+    Edge(const Edge<P, W> &edge)
+        : idx1_(edge.idx1_), idx2_(edge.idx2_), params_(std::move(edge.params_)), weight_(edge.weight_)
+    {
+        ++copies;
+    }
 
     Edge &operator=(const Edge<P, W> &edge)
     {
@@ -146,10 +140,15 @@ public:
         return *this;
     }
 
-    Edge &operator=(Edge<P, W> &&edge)
-        noexcept(noexcept(
-                std::is_nothrow_move_constructible<P>::value
-                    && std::is_nothrow_move_assignable<P>::value))
+    Edge(Edge<P, W> &&edge) noexcept(noexcept(
+            std::is_nothrow_move_constructible<W>::value && std::is_nothrow_move_assignable<W>::value))
+        : idx1_(edge.idx1_), idx2_(edge.idx2_), params_(std::move(edge.params_)), weight_(edge.weight_)
+    {
+        ++moves;
+    }
+
+    Edge &operator=(Edge<P, W> &&edge) noexcept(noexcept(
+            std::is_nothrow_move_constructible<P>::value && std::is_nothrow_move_assignable<P>::value))
     {
         ++moves;
         if (this != &edge) {
@@ -160,6 +159,8 @@ public:
         }
         return *this;
     }
+
+    virtual ~Edge() = default;
 
     vertex_index_t idx1() const { return idx1_; }
     vertex_index_t idx2() const { return idx2_; }
