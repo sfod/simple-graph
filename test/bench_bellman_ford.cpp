@@ -18,7 +18,7 @@ static void bench_bellman_ford(benchmark::State &state)
 
     while (state.KeepRunning()) {
         std::vector<vertex_index_t> path;
-        benchmark::DoNotOptimize(simple_graph::bellman_ford(g, 0, state.range_x() - 1, &path));
+        benchmark::DoNotOptimize(simple_graph::bellman_ford(g, 0, state.range(0) - 1, &path));
     }
 }
 BENCHMARK(bench_bellman_ford)->Range(1<<10, 1<<16);
@@ -60,4 +60,4 @@ static void bench_bellman_ford_random(benchmark::State &state)
 }
 BENCHMARK(bench_bellman_ford_random)->Range(1<<10, 1<<13);
 
-BENCHMARK_MAIN()
+BENCHMARK_MAIN();

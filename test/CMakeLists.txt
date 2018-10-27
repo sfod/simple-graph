@@ -42,7 +42,6 @@ target_include_directories(test_bellman_ford
 )
 target_link_libraries(test_bellman_ford gtest pthread)
 
-
 if (ENABLE_BENCHMARK)
     add_subdirectory(benchmark)
 
