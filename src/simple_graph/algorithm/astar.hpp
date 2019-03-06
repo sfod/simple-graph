@@ -28,7 +28,7 @@ bool astar(const Graph<Dir, V, E, W> &g, vertex_index_t start_idx, vertex_index_
         const std::function<float(simple_graph::vertex_index_t, simple_graph::vertex_index_t)> &heuristic,
         std::vector<vertex_index_t> *path)
 {
-    size_t vnum = g.vertex_num();
+    vertex_index_t vnum = g.vertex_num();
 
     if ((start_idx > vnum) || (goal_idx > vnum)) {
         return false;

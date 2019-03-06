@@ -59,8 +59,8 @@ TEST_F(ListGraphTest, test_undirected_astar_long)
     std::function<float(vertex_index_t, vertex_index_t)> heuristic = [=](vertex_index_t c, vertex_index_t r) {
         return dist(undirected_graph, c, r);
     };
-    EXPECT_EQ(true, astar(undirected_graph, 0, 7, heuristic, &path));
-    EXPECT_EQ(6, path.size());
+    ASSERT_TRUE(astar(undirected_graph, 0, 7, heuristic, &path));
+    ASSERT_EQ(6, path.size());
     EXPECT_EQ(0, path[0]);
     EXPECT_EQ(1, path[1]);
     EXPECT_EQ(4, path[4]);
@@ -92,8 +92,8 @@ TEST_F(ListGraphTest, test_undirected_astar_short)
     std::function<float(vertex_index_t, vertex_index_t)> heuristic = [=](vertex_index_t c, vertex_index_t r) {
         return dist(undirected_graph, c, r);
     };
-    EXPECT_EQ(true, astar(undirected_graph, 0, 7, heuristic, &path));
-    EXPECT_EQ(4, path.size());
+    ASSERT_TRUE(astar(undirected_graph, 0, 7, heuristic, &path));
+    ASSERT_EQ(4, path.size());
     EXPECT_EQ(5, path[1]);
     EXPECT_EQ(6, path[2]);
 }
@@ -114,7 +114,7 @@ TEST_F(ListGraphTest, test_undirected_astar_no_path)
     std::function<float(vertex_index_t, vertex_index_t)> heuristic = [=](vertex_index_t c, vertex_index_t r) {
         return dist(undirected_graph, c, r);
     };
-    EXPECT_EQ(false, astar(undirected_graph, 0, 3, heuristic, &path));
+    ASSERT_FALSE(astar(undirected_graph, 0, 3, heuristic, &path));
     EXPECT_EQ(0, path.size());
 }
 
@@ -144,11 +144,55 @@ TEST_F(ListGraphTest, test_directed_astar_long)
     std::function<float(vertex_index_t, vertex_index_t)> heuristic = [=](vertex_index_t c, vertex_index_t r) {
         return dist(directed_graph, c, r);
     };
-    EXPECT_EQ(true, astar(directed_graph, 0, 7, heuristic, &path));
-    EXPECT_EQ(6, path.size());
+    ASSERT_TRUE(astar(directed_graph, 0, 7, heuristic, &path));
+    ASSERT_EQ(6, path.size());
     EXPECT_EQ(0, path[0]);
     EXPECT_EQ(1, path[1]);
     EXPECT_EQ(4, path[4]);
+}
+
+TEST_F(ListGraphTest, test_big_graph)
+{
+    constexpr int size = 512;
+
+    simple_graph::ListGraph<false, std::pair<int, int>, int, ssize_t> g;
+
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            g.add_vertex(simple_graph::Vertex<std::pair<int, int>>(i * size + j, {i, j}));
+        }
+    }
+
+    /// TODO Use random.
+    for (int i = 0; i < size - 1; ++i) {
+        for (int j = 0; j < size; ++j) {
+            if (j != 0) {
+                g.add_edge(simple_graph::Edge<int, ssize_t>(i * size + j, i * size + j - 1, 0, 1));
+            }
+            if (j != size - 1) {
+                g.add_edge(simple_graph::Edge<int, ssize_t>(i * size + j, i * size + j + 1, 0, 1));
+            }
+            if (i != 0) {
+                g.add_edge(simple_graph::Edge<int, ssize_t>(i * size + j, (i - 1) * size + j, 0, 1));
+            }
+            if (i != size - 1) {
+                g.add_edge(simple_graph::Edge<int, ssize_t>(i * size + j, (i + 1) * size + j, 0, 1));
+            }
+        }
+    }
+
+    std::function<float(vertex_index_t, vertex_index_t)> heuristic = [=](vertex_index_t c, vertex_index_t r) {
+        int ci = c / size;
+        int cj = c % size;
+
+        int ri = r / size;
+        int rj = r % size;
+
+        return std::sqrt(std::pow(ci - ri, 2) + std::pow(cj - rj, 2));
+    };
+
+    std::vector<vertex_index_t> path;
+    EXPECT_TRUE(simple_graph::astar(g, 0, size * size - 1, heuristic, &path));
 }
 
 }  // namespace

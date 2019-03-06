@@ -4,34 +4,40 @@
 #include <set>
 #include <vector>
 
+#include <gsl/gsl>
+
 // TODO use move semantics
 
 namespace simple_graph {
 
-typedef size_t vertex_index_t;
+typedef gsl::index vertex_index_t;
 
 template<typename T>
 class Vertex {
 public:
-    Vertex() : idx_(static_cast<vertex_index_t >(-1)), data_() {
+    Vertex() : idx_(-1), data_() {
         ++default_creations;
     }
 
-    explicit Vertex(vertex_index_t idx) : idx_(idx), data_() {
+    explicit Vertex(vertex_index_t idx) : idx_(idx), data_()
+    {
         ++creations;
     }
 
-    Vertex(vertex_index_t idx, const T &data) : idx_(idx), data_(data) {
+    Vertex(vertex_index_t idx, const T &data) : idx_(idx), data_(data)
+    {
         ++creations;
     }
 
-    Vertex(const Vertex<T> &v) {
+    Vertex(const Vertex<T> &v)
+    {
         ++copies;
         idx_ = v.idx_;
         data_ = v.data_;
     }
 
-    Vertex &operator=(const Vertex<T> &v) {
+    Vertex &operator=(const Vertex<T> &v)
+            {
         ++assigns;
         if (this != &v) {
             idx_ = v.idx_;
@@ -40,15 +46,17 @@ public:
         return *this;
     }
 
-    Vertex(Vertex<T> &&v) noexcept(noexcept(
-            std::is_nothrow_move_constructible<T>::value && std::is_nothrow_move_assignable<T>::value)) {
+    Vertex(Vertex<T> &&v)
+            noexcept(noexcept(std::is_nothrow_move_constructible<T>::value && std::is_nothrow_move_assignable<T>::value))
+    {
         ++moves;
         idx_ = v.idx_;
         std::swap(data_, v.data_);
     }
 
-    Vertex &operator=(Vertex<T> &&v) noexcept(noexcept(
-            std::is_nothrow_move_constructible<T>::value && std::is_nothrow_move_assignable<T>::value)) {
+    Vertex &operator=(Vertex<T> &&v)
+            noexcept(noexcept(std::is_nothrow_move_constructible<T>::value && std::is_nothrow_move_assignable<T>::value))
+    {
         ++moves;
         if (this != &v) {
             idx_ = v.idx_;
@@ -62,7 +70,8 @@ public:
     vertex_index_t idx() const { return idx_; }
     T data() const { return data_; }
 
-    bool operator<(const Vertex<T> &vertex) const {
+    bool operator<(const Vertex<T> &vertex) const
+    {
         return idx_ < vertex.idx_;
     }
 
@@ -74,7 +83,8 @@ public:
     static int moves;
     static int assigns;
 
-    static std::string stat() {
+    static std::string stat()
+    {
         return "creations: " + std::to_string(default_creations) + " + " + std::to_string(creations)
                 + "; copies: " + std::to_string(copies)
                 + "; moves: " + std::to_string(moves)
@@ -213,20 +223,24 @@ class iterator {
 public:
     explicit iterator(std::shared_ptr<IteratorImplBase<T>> b) : base_impl(b) {}
 
-    bool operator==(const iterator<T> &it) const {
+    bool operator==(const iterator<T> &it) const
+    {
         return base_impl->operator==(*it.base_impl);
     }
 
-    bool operator!=(const iterator<T> &it) const {
+    bool operator!=(const iterator<T> &it) const
+    {
         return !operator==(it);
     }
 
-    iterator &operator++() {
+    iterator &operator++()
+    {
         base_impl->operator++();
         return *this;
     }
 
-    T &operator*() {
+    T &operator*()
+    {
         return base_impl->operator*();
     }
 
@@ -251,12 +265,12 @@ protected:
     };
 
 public:
-    // TODO add constructor from std::initializer_list
+    // TODO Add constructor from std::initializer_list.
     virtual ~Graph() = default;
 
     virtual void add_vertex(Vertex<V> vertex) = 0;
     virtual void rm_vertex(vertex_index_t idx) = 0;
-    // TODO measure performance
+    // TODO Measure performance.
     virtual std::set<vertex_index_t> inbounds(vertex_index_t idx) const = 0;
     virtual std::set<vertex_index_t> outbounds(vertex_index_t idx, int mode) const = 0;
 
