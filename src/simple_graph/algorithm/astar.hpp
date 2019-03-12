@@ -2,11 +2,12 @@
 
 #include <functional>
 #include <set>
+#include <unordered_set>
 #include "simple_graph/graph.hpp"
 
 namespace simple_graph {
 
-vertex_index_t min_idx(const std::set<vertex_index_t> &opened, const std::vector<float> &f_score)
+vertex_index_t min_idx(const std::unordered_set<vertex_index_t> &opened, const std::vector<float> &f_score)
 {
     vertex_index_t min_idx = 0;
 
@@ -28,14 +29,14 @@ bool astar(const Graph<Dir, V, E, W> &g, vertex_index_t start_idx, vertex_index_
         const std::function<float(simple_graph::vertex_index_t, simple_graph::vertex_index_t)> &heuristic,
         std::vector<vertex_index_t> *path)
 {
-    size_t vnum = g.vertex_num();
+    vertex_index_t vnum = g.vertex_num();
 
     if ((start_idx > vnum) || (goal_idx > vnum)) {
         return false;
     }
 
-    std::set<vertex_index_t> closed;
-    std::set<vertex_index_t> opened;
+    std::unordered_set<vertex_index_t> closed;
+    std::unordered_set<vertex_index_t> opened;
     std::vector<vertex_index_t> came_from(vnum, 0);
     std::vector<float> g_score(vnum, std::numeric_limits<float>::max());
     std::vector<float> f_score(vnum, std::numeric_limits<float>::max());

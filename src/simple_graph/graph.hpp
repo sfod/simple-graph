@@ -4,46 +4,40 @@
 #include <set>
 #include <vector>
 
+#include <gsl/gsl>
+
 // TODO use move semantics
 
 namespace simple_graph {
 
-typedef size_t vertex_index_t;
+typedef gsl::index vertex_index_t;
 
 template<typename T>
 class Vertex {
 public:
-    Vertex() : idx_(static_cast<vertex_index_t >(-1)), data_() {
+    Vertex() : idx_(-1), data_() {
         ++default_creations;
     }
-    Vertex(const Vertex<T> &v) {
+
+    explicit Vertex(vertex_index_t idx) : idx_(idx), data_()
+    {
+        ++creations;
+    }
+
+    Vertex(vertex_index_t idx, const T &data) : idx_(idx), data_(data)
+    {
+        ++creations;
+    }
+
+    Vertex(const Vertex<T> &v)
+    {
         ++copies;
         idx_ = v.idx_;
         data_ = v.data_;
     }
-    Vertex(Vertex<T> &&v) noexcept(noexcept(
-                std::is_nothrow_move_constructible<T>::value
-                    && std::is_nothrow_move_assignable<T>::value)) {
-        ++moves;
-        idx_ = v.idx_;
-        std::swap(data_, v.data_);
-    }
-    explicit Vertex(vertex_index_t idx) : idx_(idx), data_() {
-        ++creations;
-    }
-    Vertex(vertex_index_t idx, const T &data) : idx_(idx), data_(data) {
-        ++creations;
-    }
-    virtual ~Vertex() = default;
 
-    vertex_index_t idx() const { return idx_; }
-    T data() const { return data_; }
-
-    bool operator<(const Vertex<T> &vertex) const {
-        return idx_ < vertex.idx_;
-    }
-
-    Vertex &operator=(const Vertex<T> &v) {
+    Vertex &operator=(const Vertex<T> &v)
+            {
         ++assigns;
         if (this != &v) {
             idx_ = v.idx_;
@@ -52,15 +46,33 @@ public:
         return *this;
     }
 
-    Vertex &operator=(Vertex<T> &&v) noexcept(noexcept(
-                std::is_nothrow_move_constructible<T>::value
-                    && std::is_nothrow_move_assignable<T>::value)) {
+    Vertex(Vertex<T> &&v)
+            noexcept(noexcept(std::is_nothrow_move_constructible<T>::value && std::is_nothrow_move_assignable<T>::value))
+    {
+        ++moves;
+        idx_ = v.idx_;
+        std::swap(data_, v.data_);
+    }
+
+    Vertex &operator=(Vertex<T> &&v)
+            noexcept(noexcept(std::is_nothrow_move_constructible<T>::value && std::is_nothrow_move_assignable<T>::value))
+    {
         ++moves;
         if (this != &v) {
             idx_ = v.idx_;
             std::swap(data_, v.data_);
         }
         return *this;
+    }
+
+    virtual ~Vertex() = default;
+
+    vertex_index_t idx() const { return idx_; }
+    T data() const { return data_; }
+
+    bool operator<(const Vertex<T> &vertex) const
+    {
+        return idx_ < vertex.idx_;
     }
 
 /// counters to track down objects manipulations
@@ -71,7 +83,8 @@ public:
     static int moves;
     static int assigns;
 
-    static std::string stat() {
+    static std::string stat()
+    {
         return "creations: " + std::to_string(default_creations) + " + " + std::to_string(creations)
                 + "; copies: " + std::to_string(copies)
                 + "; moves: " + std::to_string(moves)
@@ -107,32 +120,23 @@ public:
         ++default_creations;
     }
 
-    Edge(const Edge<P, W> &edge) : idx1_(edge.idx1_), idx2_(edge.idx2_), params_(std::move(edge.params_)), weight_(edge.weight_)
-    {
-        ++copies;
-    }
-
-    Edge(Edge<P, W> &&edge) noexcept(noexcept(
-                std::is_nothrow_move_constructible<W>::value
-                    && std::is_nothrow_move_assignable<W>::value))
-        : idx1_(edge.idx1_), idx2_(edge.idx2_), params_(std::move(edge.params_)), weight_(edge.weight_)
-    {
-        ++moves;
-    }
-
     Edge(vertex_index_t idx1, vertex_index_t idx2, P params)
-        : idx1_(idx1), idx2_(idx2), params_(std::move(params)), weight_(1)
+            : idx1_(idx1), idx2_(idx2), params_(std::move(params)), weight_(1)
     {
         ++creations;
     }
 
     Edge(vertex_index_t idx1, vertex_index_t idx2, P params, W weight)
-        : idx1_(idx1), idx2_(idx2), params_(std::move(params)), weight_(weight)
+            : idx1_(idx1), idx2_(idx2), params_(std::move(params)), weight_(weight)
     {
         ++creations;
     }
 
-    virtual ~Edge() = default;
+    Edge(const Edge<P, W> &edge)
+        : idx1_(edge.idx1_), idx2_(edge.idx2_), params_(std::move(edge.params_)), weight_(edge.weight_)
+    {
+        ++copies;
+    }
 
     Edge &operator=(const Edge<P, W> &edge)
     {
@@ -146,10 +150,15 @@ public:
         return *this;
     }
 
-    Edge &operator=(Edge<P, W> &&edge)
-        noexcept(noexcept(
-                std::is_nothrow_move_constructible<P>::value
-                    && std::is_nothrow_move_assignable<P>::value))
+    Edge(Edge<P, W> &&edge) noexcept(noexcept(
+            std::is_nothrow_move_constructible<W>::value && std::is_nothrow_move_assignable<W>::value))
+        : idx1_(edge.idx1_), idx2_(edge.idx2_), params_(std::move(edge.params_)), weight_(edge.weight_)
+    {
+        ++moves;
+    }
+
+    Edge &operator=(Edge<P, W> &&edge) noexcept(noexcept(
+            std::is_nothrow_move_constructible<P>::value && std::is_nothrow_move_assignable<P>::value))
     {
         ++moves;
         if (this != &edge) {
@@ -160,6 +169,8 @@ public:
         }
         return *this;
     }
+
+    virtual ~Edge() = default;
 
     vertex_index_t idx1() const { return idx1_; }
     vertex_index_t idx2() const { return idx2_; }
@@ -197,6 +208,7 @@ template<typename P, typename W> int Edge<P, W>::copies = 0;
 template<typename P, typename W> int Edge<P, W>::moves = 0;
 template<typename P, typename W> int Edge<P, W>::assigns = 0;
 
+// TODO Use standard iterators.
 template<typename T>
 class IteratorImplBase {
 public:
@@ -212,20 +224,24 @@ class iterator {
 public:
     explicit iterator(std::shared_ptr<IteratorImplBase<T>> b) : base_impl(b) {}
 
-    bool operator==(const iterator<T> &it) const {
+    bool operator==(const iterator<T> &it) const
+    {
         return base_impl->operator==(*it.base_impl);
     }
 
-    bool operator!=(const iterator<T> &it) const {
+    bool operator!=(const iterator<T> &it) const
+    {
         return !operator==(it);
     }
 
-    iterator &operator++() {
+    iterator &operator++()
+    {
         base_impl->operator++();
         return *this;
     }
 
-    T &operator*() {
+    T &operator*()
+    {
         return base_impl->operator*();
     }
 
@@ -250,12 +266,12 @@ protected:
     };
 
 public:
-    // TODO add constructor from std::initializer_list
+    // TODO Add constructor from std::initializer_list.
     virtual ~Graph() = default;
 
     virtual void add_vertex(Vertex<V> vertex) = 0;
     virtual void rm_vertex(vertex_index_t idx) = 0;
-    // TODO measure performance
+    // TODO Measure performance.
     virtual std::set<vertex_index_t> inbounds(vertex_index_t idx) const = 0;
     virtual std::set<vertex_index_t> outbounds(vertex_index_t idx, int mode) const = 0;
 
@@ -274,6 +290,7 @@ public:
     virtual bool restore_edges(const std::vector<Edge<E, W>> &edges) = 0;
     virtual void restore_edges() = 0;
 
+    // FIXME
     virtual EdgesWrapper &edges() = 0;
 };
 

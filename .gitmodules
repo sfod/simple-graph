@@ -4,3 +4,6 @@
 [submodule "test/googletest"]
 	path = test/googletest
 	url = https://github.com/google/googletest
+[submodule "thirdparty/gsl"]
+	path = thirdparty/gsl
+	url = git@github.com:Microsoft/GSL.git

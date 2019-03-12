@@ -11,7 +11,7 @@ template<bool Dir, typename V, typename E, typename W>
 bool dfs(const Graph<Dir, V, E, W> &g, vertex_index_t start_idx, std::function<bool(V)> &pred,
         std::vector<vertex_index_t> *path)
 {
-    size_t vnum = g.vertex_num();
+    vertex_index_t vnum = g.vertex_num();
     if (start_idx > vnum) {
         return false;
     }
