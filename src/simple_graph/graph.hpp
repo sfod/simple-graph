@@ -208,6 +208,7 @@ template<typename P, typename W> int Edge<P, W>::copies = 0;
 template<typename P, typename W> int Edge<P, W>::moves = 0;
 template<typename P, typename W> int Edge<P, W>::assigns = 0;
 
+// TODO Use standard iterators.
 template<typename T>
 class IteratorImplBase {
 public:
@@ -289,6 +290,7 @@ public:
     virtual bool restore_edges(const std::vector<Edge<E, W>> &edges) = 0;
     virtual void restore_edges() = 0;
 
+    // FIXME
     virtual EdgesWrapper &edges() = 0;
 };
 

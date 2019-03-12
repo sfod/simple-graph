@@ -4,7 +4,7 @@
 #include <cassert>
 #include <stdexcept>
 #include <map>
-#include <unordered_map>
+#include <unordered_map>  // TODO Replace with something really fast.
 #include <set>
 #include "graph.hpp"
 
