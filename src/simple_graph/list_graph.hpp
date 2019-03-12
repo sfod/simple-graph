@@ -24,7 +24,7 @@ private:
         /**
          * Iterator implementation for edges.
          */
-        class EdgeIterator : public IteratorImplBase<Edge<E, W>> {
+        class EdgeIterator : public IIterator<Edge<E, W>> {
         public:
             /**
              * Constructor.
@@ -44,7 +44,7 @@ private:
              * @param it Iterator to compare with.
              * @return True if iterators contain the same edge, false otherwise.
              */
-            bool operator==(const IteratorImplBase<Edge<E, W>> &it) const override
+            bool operator==(const IIterator<Edge<E, W>> &it) const override
             {
                 const auto *tmp = dynamic_cast<const EdgeIterator*>(&it);
                 return tmp && current_ == tmp->current_;
@@ -56,7 +56,7 @@ private:
              * @param it Iterator to compare with.
              * @return True if iterators differ, false otherwise.
              */
-            bool operator!=(const IteratorImplBase<Edge<E, W>> &it) const override
+            bool operator!=(const IIterator<Edge<E, W>> &it) const override
             {
                 return !this->operator==(it);
             }
@@ -66,7 +66,7 @@ private:
              *
              * @return Reference to iterator itself.
              */
-            IteratorImplBase<Edge<E, W>> &operator++() override
+            IIterator<Edge<E, W>> &operator++() override
             {
                 while (true) {
                     if (current_ != nullptr) {
@@ -129,18 +129,18 @@ private:
         explicit ListEdgesWrapper(Edges *edges, FilteredEdges *filtered_edges)
             : edges_(edges), filtered_edges_(filtered_edges) {}
 
-        iterator<Edge<E, W>> begin() override
+        IteratorWrapper<Edge<E, W>> begin() override
         {
-            iterator<Edge<E, W>> iter(std::make_shared<EdgeIterator>(EdgeIterator(
+            IteratorWrapper<Edge<E, W>> iter(std::make_shared<EdgeIterator>(EdgeIterator(
                     edges_,
                     filtered_edges_,
                     &edges_->begin()->second.begin()->second)));
             return iter;
         }
 
-        iterator<Edge<E, W>> end() override
+        IteratorWrapper<Edge<E, W>> end() override
         {
-            iterator<Edge<E, W>> iter(std::make_shared<EdgeIterator>(EdgeIterator(edges_, filtered_edges_, NULL)));
+            IteratorWrapper<Edge<E, W>> iter(std::make_shared<EdgeIterator>(EdgeIterator(edges_, filtered_edges_, NULL)));
             return iter;
         }
 

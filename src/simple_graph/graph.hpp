@@ -12,6 +12,11 @@ namespace simple_graph {
 
 typedef gsl::index vertex_index_t;
 
+/**
+ * Graph vertex.
+ *
+ * @tparam T Typename for vertex data.
+ */
 template<typename T>
 class Vertex {
 public:
@@ -75,7 +80,7 @@ public:
         return idx_ < vertex.idx_;
     }
 
-/// counters to track down objects manipulations
+/// Counters to track down objects manipulations.
 public:
     static int default_creations;
     static int creations;
@@ -104,7 +109,7 @@ template<typename T> int Vertex<T>::assigns = 0;
 
 
 /**
- * Class representing edge in a graph.
+ * Graph edge.
  *
  * @tparam P Typename for edge additional parameters.
  * @tparam W Typename for edge weight, must be numeric.
@@ -121,13 +126,13 @@ public:
     }
 
     Edge(vertex_index_t idx1, vertex_index_t idx2, P params)
-            : idx1_(idx1), idx2_(idx2), params_(std::move(params)), weight_(1)
+        : idx1_(idx1), idx2_(idx2), params_(std::move(params)), weight_(1)
     {
         ++creations;
     }
 
     Edge(vertex_index_t idx1, vertex_index_t idx2, P params, W weight)
-            : idx1_(idx1), idx2_(idx2), params_(std::move(params)), weight_(weight)
+        : idx1_(idx1), idx2_(idx2), params_(std::move(params)), weight_(weight)
     {
         ++creations;
     }
@@ -150,15 +155,13 @@ public:
         return *this;
     }
 
-    Edge(Edge<P, W> &&edge) noexcept(noexcept(
-            std::is_nothrow_move_constructible<W>::value && std::is_nothrow_move_assignable<W>::value))
+    Edge(Edge<P, W> &&edge) noexcept(noexcept(std::is_nothrow_move_constructible<W>::value && std::is_nothrow_move_assignable<W>::value))
         : idx1_(edge.idx1_), idx2_(edge.idx2_), params_(std::move(edge.params_)), weight_(edge.weight_)
     {
         ++moves;
     }
 
-    Edge &operator=(Edge<P, W> &&edge) noexcept(noexcept(
-            std::is_nothrow_move_constructible<P>::value && std::is_nothrow_move_assignable<P>::value))
+    Edge &operator=(Edge<P, W> &&edge) noexcept(noexcept(std::is_nothrow_move_constructible<P>::value && std::is_nothrow_move_assignable<P>::value))
     {
         ++moves;
         if (this != &edge) {
@@ -208,33 +211,43 @@ template<typename P, typename W> int Edge<P, W>::copies = 0;
 template<typename P, typename W> int Edge<P, W>::moves = 0;
 template<typename P, typename W> int Edge<P, W>::assigns = 0;
 
-// TODO Use standard iterators.
+/**
+ * Interface for Graph children iterators.
+ *
+ * @tparam T Typename of traversed data.
+ */
 template<typename T>
-class IteratorImplBase {
+class IIterator {
 public:
-    virtual ~IteratorImplBase() = default;
-    virtual bool operator==(const IteratorImplBase<T> &it) const = 0;
-    virtual bool operator!=(const IteratorImplBase<T> &it) const = 0;
-    virtual IteratorImplBase<T> &operator++() = 0;
+    virtual ~IIterator() = default;
+    virtual bool operator==(const IIterator<T> &it) const = 0;
+    virtual bool operator!=(const IIterator<T> &it) const = 0;
+    virtual IIterator<T> &operator++() = 0;
     virtual T &operator*() = 0;
 };
 
-template<typename T>
-class iterator {
-public:
-    explicit iterator(std::shared_ptr<IteratorImplBase<T>> b) : base_impl(b) {}
 
-    bool operator==(const iterator<T> &it) const
+/**
+ * Utility class to provide iterator functionality to Graph children.
+ *
+ * @tparam T Typename of traversed data.
+ */
+template<typename T>
+class IteratorWrapper {
+public:
+    explicit IteratorWrapper(std::shared_ptr<IIterator<T>> b) : base_impl(b) {}
+
+    bool operator==(const IteratorWrapper<T> &it) const
     {
         return base_impl->operator==(*it.base_impl);
     }
 
-    bool operator!=(const iterator<T> &it) const
+    bool operator!=(const IteratorWrapper<T> &it) const
     {
         return !operator==(it);
     }
 
-    iterator &operator++()
+    IteratorWrapper &operator++()
     {
         base_impl->operator++();
         return *this;
@@ -246,7 +259,7 @@ public:
     }
 
 private:
-    std::shared_ptr<IteratorImplBase<T>> base_impl;
+    std::shared_ptr<IIterator<T>> base_impl;
 };
 
 /**
@@ -261,8 +274,8 @@ class Graph {
 protected:
     class EdgesWrapper {
     public:
-        virtual iterator<Edge<E, W>> begin() = 0;
-        virtual iterator<Edge<E, W>> end() = 0;
+        virtual IteratorWrapper<Edge<E, W>> begin() = 0;
+        virtual IteratorWrapper<Edge<E, W>> end() = 0;
     };
 
 public:
