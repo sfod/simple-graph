@@ -46,7 +46,7 @@ target_include_directories(bench_astar
         ${CMAKE_SOURCE_DIR}/src/
 )
 target_include_directories(bench_astar PRIVATE ${PROJECT_SOURCE_DIR}/thirdparty/gsl/include/)
-target_link_libraries(bench_astar -O2 -ggdb -pg -fno-omit-frame-pointer -lJudy)
+target_link_libraries(bench_astar -O2 -ggdb -pg -fno-omit-frame-pointer)
 
 add_executable(test_bellman_ford test_bellman_ford.cpp)
 target_include_directories(test_bellman_ford
@@ -65,7 +65,7 @@ if (ENABLE_BENCHMARK)
             ${CMAKE_SOURCE_DIR}/src/
     )
     target_include_directories(test_performance PRIVATE ${PROJECT_SOURCE_DIR}/thirdparty/gsl/include/)
-    target_link_libraries(test_performance pthread benchmark -lJudy)
+    target_link_libraries(test_performance pthread benchmark)
 
     add_executable(test_performance2 test_performance_2.cpp)
     target_include_directories(test_performance2 PRIVATE ${PROJECT_SOURCE_DIR}/thirdparty/gsl/include/)
