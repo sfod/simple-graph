@@ -57,6 +57,9 @@ target_include_directories(test_bellman_ford PRIVATE ${PROJECT_SOURCE_DIR}/third
 target_link_libraries(test_bellman_ford gtest pthread)
 
 if (ENABLE_BENCHMARK)
+    # Something is wrong with benchmark library tests, disable them.
+    option(BENCHMARK_ENABLE_TESTING OFF)
+
     add_subdirectory(benchmark)
 
     add_executable(test_performance test_performance.cpp)
