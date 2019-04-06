@@ -12,7 +12,7 @@ namespace simple_graph {
 
 template <bool Dir, typename V, typename E, typename W>
 class ListGraph : public Graph<Dir, V, E, W> {
-    using Edges = std::map<vertex_index_t, std::map<vertex_index_t, Edge<E, W>>>;
+    using Edges = std::unordered_map<vertex_index_t, std::unordered_map<vertex_index_t, Edge<E, W>>>;
     using FilteredEdges = std::unordered_map<vertex_index_t, std::set<vertex_index_t>>;
 
 private:
