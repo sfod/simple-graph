@@ -56,6 +56,8 @@ target_include_directories(test_bellman_ford
 target_include_directories(test_bellman_ford PRIVATE ${PROJECT_SOURCE_DIR}/thirdparty/gsl/include/)
 target_link_libraries(test_bellman_ford gtest pthread)
 
+option(ENABLE_BENCHMARK "Enable simple-graph benchmarking" ON)
+
 if (ENABLE_BENCHMARK)
     # Something is wrong with benchmark library tests, disable them.
     option(BENCHMARK_ENABLE_TESTING OFF)
