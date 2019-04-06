@@ -25,17 +25,33 @@ private:
          * Iterator implementation for edges.
          */
         class EdgeIterator : public IIterator<Edge<E, W>> {
+            using Iterator1 = typename Edges::iterator;
+            using Iterator2 = typename Edges::mapped_type::iterator;
+
         public:
             /**
              * Constructor.
              *
-             * @param edges Set of all edges in the graph.
-             * @param filtered_edges Set of filtered edges in the graph.
-             * @param current Edge to start iteration with.
+             * @param edges All edges in the graph.
+             * @param filtered_edges All filtered edges in the graph.
+             * @param is_end Flag indicating that iterator traversed all edges.
              */
-            EdgeIterator(Edges *edges, FilteredEdges *filtered_edges, Edge<E, W> *current)
-                : edges_(edges), filtered_edges_(filtered_edges), current_(current)
+            EdgeIterator(Edges *edges, FilteredEdges *filtered_edges, bool is_end)
+                : edges_(edges), filtered_edges_(filtered_edges), is_end_(is_end)
             {
+                if (is_end_) {
+                    return;
+                }
+
+                // TODO Use const_iterator.
+                it1_ = edges_->begin();
+                if (it1_ == edges_->end()) {
+                    is_end_ = true;
+                }
+                else {
+                    it2_ = it1_->second.begin();
+                    assert(it2_ != it1_->second.end());
+                }
             }
 
             /**
@@ -47,7 +63,7 @@ private:
             bool operator==(const IIterator<Edge<E, W>> &it) const override
             {
                 const auto *tmp = dynamic_cast<const EdgeIterator*>(&it);
-                return tmp && current_ == tmp->current_;
+                return tmp && is_end_ == tmp->is_end_;
             }
 
             /**
@@ -68,42 +84,34 @@ private:
              */
             IIterator<Edge<E, W>> &operator++() override
             {
-                while (true) {
-                    if (current_ != nullptr) {
-                        vertex_index_t idx1;
-                        vertex_index_t idx2;
+                if (is_end_) {
+                    return *this;
+                }
 
-                        if (Dir) {
-                            idx1 = current_->idx1();
-                            idx2 = current_->idx2();
-                        }
-                        else {
-                            auto p = std::minmax(current_->idx1(), current_->idx2());
-                            idx1 = p.first;
-                            idx2 = p.second;
-                        }
+                /// Loop is needed for ignoring filtered edges.
+                while (!is_end_) {
+                    ++it2_;
 
-                        auto it = edges_->at(idx1).upper_bound(idx2);
-                        if (it != edges_->at(idx1).end()) {
-                            current_ = &it->second;
+                    /// Traversed all edges for an index, go to next index.
+                    if (it2_ == it1_->second.end()) {
+                        ++it1_;
+                        if (it1_ != edges_->end()) {
+                            it2_ = it1_->second.begin();
+                            assert(it2_ != it1_->second.end());
                         }
+                        /// Traversed all edges.
                         else {
-                            auto it1 = edges_->upper_bound(idx1);
-                            if (it1 != edges_->end()) {
-                                current_ = &it1->second.begin()->second;
-                            }
-                            /// Traversed all edges.
-                            else {
-                                current_ = nullptr;
-                            }
+                            is_end_ = true;
                         }
                     }
 
-                    /// Skip filtered edges.
-                    if ((current_ == nullptr) || (filtered_edges_->count(current_->idx1()) == 0)
-                            || (filtered_edges_->at(current_->idx1()).count(current_->idx2()) == 0)) {
-                        break;
+                    /// Ignore filtered edges.
+                    if (!is_end_ && (filtered_edges_->count(it2_->second.idx1()) > 0)
+                            && (filtered_edges_->at(it2_->second.idx1()).count(it2_->second.idx2()) > 0)) {
+                        continue;
                     }
+
+                    return *this;
                 }
 
                 return *this;
@@ -116,13 +124,15 @@ private:
              */
             Edge<E, W> &operator*() override
             {
-                return *current_;
+                return it2_->second;
             }
 
         private:
             Edges *edges_;
             FilteredEdges *filtered_edges_;
-            Edge<E, W> *current_;
+            bool is_end_;
+            Iterator1 it1_;
+            Iterator2 it2_;
         };
 
     public:
@@ -131,16 +141,15 @@ private:
 
         IteratorWrapper<Edge<E, W>> begin() override
         {
-            IteratorWrapper<Edge<E, W>> iter(std::make_shared<EdgeIterator>(EdgeIterator(
-                    edges_,
-                    filtered_edges_,
-                    &edges_->begin()->second.begin()->second)));
+            IteratorWrapper<Edge<E, W>> iter(std::make_shared<EdgeIterator>(
+                    EdgeIterator(edges_, filtered_edges_, false)));
             return iter;
         }
 
         IteratorWrapper<Edge<E, W>> end() override
         {
-            IteratorWrapper<Edge<E, W>> iter(std::make_shared<EdgeIterator>(EdgeIterator(edges_, filtered_edges_, NULL)));
+            IteratorWrapper<Edge<E, W>> iter(std::make_shared<EdgeIterator>(
+                    EdgeIterator(edges_, filtered_edges_, true)));
             return iter;
         }
 
