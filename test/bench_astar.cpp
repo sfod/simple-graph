@@ -36,7 +36,7 @@ int main()
         }
     }
 
-    std::function<float(vertex_index_t, vertex_index_t)> heuristic = [=](vertex_index_t c, vertex_index_t r) {
+    auto heuristic = [](vertex_index_t c, vertex_index_t r) {
         int ci = c / size;
         int cj = c % size;
 
@@ -57,8 +57,8 @@ int main()
 
     std::cout << sum << std::endl;
 
-//    std::vector<vertex_index_t> path;
-//    bool rc = simple_graph::astar(g, 0, size * size - 1, heuristic, &path);
+    std::vector<vertex_index_t> path;
+    bool rc = simple_graph::astar(g, 0, size * size - 1, heuristic, &path);
 
-//    std::cout << rc << std::endl;
+    std::cout << rc << std::endl;
 }

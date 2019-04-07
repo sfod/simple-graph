@@ -33,6 +33,44 @@ static void bench_creation(benchmark::State &state)
 }
 BENCHMARK(bench_creation)->RangePair(1<<10, 8<<16, 100, 1<<12)->Complexity();
 
+static void bench_traverse(benchmark::State &state)
+{
+    simple_graph::ListGraph<false, std::pair<int, int>, int, ssize_t> g;
+
+    for (int i = 0; i < state.range(0); ++i) {
+        for (int j = 0; j < state.range(0); ++j) {
+            g.add_vertex(simple_graph::Vertex<std::pair<int, int>>(i * state.range(0) + j, {i, j}));
+        }
+    }
+
+    /// TODO Use random.
+    for (int i = 0; i < state.range(0) - 1; ++i) {
+        for (int j = 0; j < state.range(0); ++j) {
+            if (j != 0) {
+                g.add_edge(simple_graph::Edge<int, ssize_t>(i * state.range(0) + j, i * state.range(0) + j - 1, 0, 1));
+            }
+            if (j != state.range(0) - 1) {
+                g.add_edge(simple_graph::Edge<int, ssize_t>(i * state.range(0) + j, i * state.range(0) + j + 1, 0, 1));
+            }
+            if (i != 0) {
+                g.add_edge(simple_graph::Edge<int, ssize_t>(i * state.range(0) + j, (i - 1) * state.range(0) + j, 0, 1));
+            }
+            if (i != state.range(0) - 1) {
+                g.add_edge(simple_graph::Edge<int, ssize_t>(i * state.range(0) + j, (i + 1) * state.range(0) + j, 0, 1));
+            }
+        }
+    }
+
+    for (auto _ : state) {
+        for (const auto &edge : g.edges()) {
+            benchmark::DoNotOptimize(edge);
+        }
+    }
+
+    state.SetComplexityN(state.range(0));
+}
+BENCHMARK(bench_traverse)->Range(1<<2, 1<<10)->Complexity();
+
 static void bench_bfs_path_length(benchmark::State &state)
 {
     simple_graph::ListGraph<false, int, int,  ssize_t> g;
@@ -126,7 +164,7 @@ static void bench_astar(benchmark::State &state)
         }
     }
 
-    std::function<float(vertex_index_t, vertex_index_t)> heuristic = [=](vertex_index_t c, vertex_index_t r) {
+    auto heuristic = [&state](vertex_index_t c, vertex_index_t r) {
         int ci = c / state.range(0);
         int cj = c % state.range(0);
 
