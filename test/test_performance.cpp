@@ -1,9 +1,10 @@
 #include <random>
 #include "benchmark/benchmark.h"
 #include "simple_graph/list_graph.hpp"
+#include "simple_graph/algorithm/astar.hpp"
+#include "simple_graph/algorithm/bellman_ford.hpp"
 #include "simple_graph/algorithm/bfs.hpp"
 #include "simple_graph/algorithm/dfs.hpp"
-#include "simple_graph/algorithm/astar.hpp"
 
 using simple_graph::vertex_index_t;
 
@@ -182,5 +183,42 @@ static void bench_astar(benchmark::State &state)
     state.SetComplexityN(state.range(0));
 }
 BENCHMARK(bench_astar)->Range(1<<2, 1<<8)->Complexity();
+
+static void bench_bellman_ford(benchmark::State &state)
+{
+    simple_graph::ListGraph<false, std::pair<int, int>, int, ssize_t> g;
+
+    for (int i = 0; i < state.range(0); ++i) {
+        for (int j = 0; j < state.range(0); ++j) {
+            g.add_vertex(simple_graph::Vertex<std::pair<int, int>>(i * state.range(0) + j, {i, j}));
+        }
+    }
+
+    /// TODO Use random.
+    for (int i = 0; i < state.range(0) - 1; ++i) {
+        for (int j = 0; j < state.range(0); ++j) {
+            if (j != 0) {
+                g.add_edge(simple_graph::Edge<int, ssize_t>(i * state.range(0) + j, i * state.range(0) + j - 1, 0, 1));
+            }
+            if (j != state.range(0) - 1) {
+                g.add_edge(simple_graph::Edge<int, ssize_t>(i * state.range(0) + j, i * state.range(0) + j + 1, 0, 1));
+            }
+            if (i != 0) {
+                g.add_edge(simple_graph::Edge<int, ssize_t>(i * state.range(0) + j, (i - 1) * state.range(0) + j, 0, 1));
+            }
+            if (i != state.range(0) - 1) {
+                g.add_edge(simple_graph::Edge<int, ssize_t>(i * state.range(0) + j, (i + 1) * state.range(0) + j, 0, 1));
+            }
+        }
+    }
+
+    for (auto _ : state) {
+        std::vector<vertex_index_t> path;
+        benchmark::DoNotOptimize(simple_graph::bellman_ford(g, 0, state.range(0) * state.range(0) - 1, &path));
+    }
+
+    state.SetComplexityN(state.range(0));
+}
+BENCHMARK(bench_bellman_ford)->Range(1<<2, 1<<8)->Complexity();
 
 BENCHMARK_MAIN();
