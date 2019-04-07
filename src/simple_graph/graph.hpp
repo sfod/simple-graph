@@ -120,7 +120,7 @@ class Edge {
             "Integer or floating-point number required for weight typename.");
 
 public:
-    Edge() : idx1_(-1), idx2_(-1), params_(), weight_()
+    Edge() : idx1_(-1), idx2_(-1), params_(), weight_(1)
     {
         ++default_creations;
     }
