@@ -1,9 +1,6 @@
 [submodule "test/benchmark"]
 	path = test/benchmark
 	url = https://github.com/google/benchmark
-[submodule "test/googletest"]
-	path = test/googletest
-	url = https://github.com/google/googletest
 [submodule "thirdparty/gsl"]
 	path = thirdparty/gsl
 	url = git@github.com:Microsoft/GSL.git

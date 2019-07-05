@@ -34,4 +34,6 @@ target_compile_options(simple-graph PRIVATE -Werror)
 target_compile_features(simple-graph PRIVATE cxx_std_17)
 set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 
+include(CTest)
+
 add_subdirectory(test)
