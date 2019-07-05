@@ -52,6 +52,12 @@ private:
                     it2_ = it1_->second.begin();
                     assert(it2_ != it1_->second.end());
                 }
+
+                // FIXME
+                if (!is_end_ && (filtered_edges_->count(it2_->second.idx1()) > 0)
+                        && (filtered_edges_->at(it2_->second.idx1()).count(it2_->second.idx2()) > 0)) {
+                    this->operator++();
+                }
             }
 
             /**
