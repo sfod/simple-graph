@@ -29,7 +29,7 @@ set(SOURCE_FILES
         src/simple_graph/algorithm/bellman_ford.hpp
 )
 add_library(simple-graph SHARED ${SOURCE_FILES})
-target_include_directories(simple-graph PRIVATE ${PROJECT_SOURCE_DIR}/thirdparty/gsl/include/)
+target_include_directories(simple-graph PUBLIC ${PROJECT_SOURCE_DIR}/thirdparty/gsl/include/)
 target_compile_options(simple-graph PRIVATE -Werror)
 target_compile_features(simple-graph PRIVATE cxx_std_17)
 set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
