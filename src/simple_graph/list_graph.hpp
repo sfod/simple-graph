@@ -94,7 +94,7 @@ private:
                     return *this;
                 }
 
-                /// Loop is needed for ignoring filtered edges.
+                /// Loop is needed to ignore filtered edges.
                 while (!is_end_) {
                     ++it2_;
 
