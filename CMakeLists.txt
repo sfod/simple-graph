@@ -20,6 +20,8 @@ else()
     message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 endif()
 
+include(cmake/sanitize.cmake)
+
 set(SOURCE_FILES
         src/simple_graph/graph.hpp
         src/simple_graph/list_graph.hpp
