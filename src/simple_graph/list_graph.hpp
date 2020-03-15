@@ -268,7 +268,8 @@ public:
             edge.swap_vertices();
         }
 
-        edges_[edge.idx1()].emplace(edge.idx2(), std::move(edge));
+        auto idx2 = edge.idx2(); /// Make idx2 copy as edge will be moved.
+        edges_[edge.idx1()].emplace(idx2, std::move(edge));
     }
 
     const Edge<E, W> &edge(vertex_index_t idx1, vertex_index_t idx2) const override
